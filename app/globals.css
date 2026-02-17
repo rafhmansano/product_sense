@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+:root {
+  --alabaster: #F2F0EB;
+  --navy: #1A2744;
+  --navy-light: #243260;
+  --copper: #B5860A;
+  --copper-light: #D4A017;
+  --rust: #C45E3E;
+  --sage: #2E7D52;
+  --purple: #7C5CBF;
+  --blue: #4A6FA5;
+  --ink: #1C1C1E;
+  --ink-muted: #6B6B6B;
+  --ink-subtle: #9B9B9B;
+  --surface: #FFFFFF;
+  --surface-raised: #F9F8F5;
+  --border: #E5E3DC;
+  --border-strong: #C8C4B8;
+  --background: var(--alabaster);
+  --foreground: var(--ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--alabaster);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-subtle);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes xpGain {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out both;
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 2s ease-in-out infinite;
+}
+
+.animate-xp-gain {
+  animation: xpGain 0.4s ease-out;
+}
+
+.stagger-children > *:nth-child(1) { animation: fadeIn 0.4s 0ms ease-out both; }
+.stagger-children > *:nth-child(2) { animation: fadeIn 0.4s 60ms ease-out both; }
+.stagger-children > *:nth-child(3) { animation: fadeIn 0.4s 120ms ease-out both; }
+.stagger-children > *:nth-child(4) { animation: fadeIn 0.4s 180ms ease-out both; }
+.stagger-children > *:nth-child(5) { animation: fadeIn 0.4s 240ms ease-out both; }
+.stagger-children > *:nth-child(6) { animation: fadeIn 0.4s 300ms ease-out both; }
+
+textarea {
+  resize: none;
+}
+
+::selection {
+  background: rgba(181, 134, 10, 0.2);
+}
+
+:focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.card-interactive {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(26, 39, 68, 0.1);
+}
