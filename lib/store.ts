@@ -2,263 +2,163 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Exercise, UserStats, BadgeId, StepId } from '@/types';
-import { BADGES, calculateXpForExercise, XP_PER_LEVEL } from '@/lib/framework';
+import {
+  Trip,
+  Flight,
+  Hotel,
+  CarRental,
+  AgendaEvent,
+  BudgetCategory,
+  Expense,
+  TripDocument,
+  EXPENSE_TO_BUDGET,
+} from '@/types';
+import { DEFAULT_BUDGET_CATEGORIES, DEFAULT_DOCUMENTS } from '@/lib/data';
 
 interface AppState {
-  exercises: Exercise[];
-  stats: UserStats;
-  activeExerciseId: string | null;
+  // Data
+  trip: Trip;
+  flights: Flight[];
+  hotel: Hotel | null;
+  carRental: CarRental | null;
+  events: AgendaEvent[];
+  budgetCategories: BudgetCategory[];
+  expenses: Expense[];
+  documents: TripDocument[];
+  exchangeRate: number; // USD to BRL
 
-  // Exercise actions
-  createExercise: (question: string, difficulty: 'Easy' | 'Medium' | 'Hard', category: string, company?: string, tags?: string[]) => string;
-  updateExerciseStep: (exerciseId: string, stepId: StepId, content: string) => void;
-  completeExercise: (exerciseId: string, scores: Record<StepId, number>) => void;
-  deleteExercise: (exerciseId: string) => void;
-  setActiveExercise: (id: string | null) => void;
+  // Trip
+  updateTrip: (trip: Partial<Trip>) => void;
 
-  // Stats actions
-  awardBadge: (badgeId: BadgeId) => void;
-  updateStreak: () => void;
+  // Flights
+  addFlight: (flight: Flight) => void;
+  updateFlight: (id: string, data: Partial<Flight>) => void;
+  deleteFlight: (id: string) => void;
+
+  // Hotel
+  setHotel: (hotel: Hotel) => void;
+  updateHotel: (data: Partial<Hotel>) => void;
+
+  // Car
+  setCarRental: (car: CarRental) => void;
+  updateCarRental: (data: Partial<CarRental>) => void;
+
+  // Events
+  addEvent: (event: AgendaEvent) => void;
+  updateEvent: (id: string, data: Partial<AgendaEvent>) => void;
+  deleteEvent: (id: string) => void;
+  toggleEventComplete: (id: string) => void;
+
+  // Budget
+  updateBudgetCategory: (id: string, data: Partial<BudgetCategory>) => void;
+  setExchangeRate: (rate: number) => void;
+
+  // Expenses
+  addExpense: (expense: Expense) => void;
+  updateExpense: (id: string, data: Partial<Expense>) => void;
+  deleteExpense: (id: string) => void;
+
+  // Documents
+  updateDocument: (id: string, data: Partial<TripDocument>) => void;
+  addDocument: (doc: TripDocument) => void;
+  deleteDocument: (id: string) => void;
 }
 
-const DEFAULT_STATS: UserStats = {
-  level: 1,
-  xp: 0,
-  xpToNextLevel: XP_PER_LEVEL,
-  totalExercises: 0,
-  completedExercises: 0,
-  averageScore: 0,
-  streak: 0,
-  longestStreak: 0,
-  badges: [],
-  stepMastery: {
-    clarification: 0,
-    segmentation: 0,
-    problem: 0,
-    solutions: 0,
-    metrics: 0,
-  },
-  totalTimeSpent: 0,
+const DEFAULT_TRIP: Trip = {
+  destination: 'Orlando, FL',
+  origin: 'Sao Paulo, SP',
+  originCode: 'GRU',
+  destinationCode: 'MCO',
+  startDate: '',
+  endDate: '',
+  members: [
+    { name: 'Rafael', role: 'pai' },
+    { name: 'Jac', role: 'mae' },
+    { name: '', role: 'crianca', age: 3, heightCm: 95 },
+  ],
 };
 
 export const useAppStore = create<AppState>()(
   persist(
-    (set, get) => ({
-      exercises: [],
-      stats: DEFAULT_STATS,
-      activeExerciseId: null,
+    (set) => ({
+      trip: DEFAULT_TRIP,
+      flights: [],
+      hotel: null,
+      carRental: null,
+      events: [],
+      budgetCategories: DEFAULT_BUDGET_CATEGORIES,
+      expenses: [],
+      documents: DEFAULT_DOCUMENTS,
+      exchangeRate: 5.5,
 
-      createExercise: (question, difficulty, category, company, tags = []) => {
-        const id = `ex_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-        const exercise: Exercise = {
-          id,
-          question,
-          company,
-          difficulty,
-          category,
-          steps: [],
-          createdAt: new Date().toISOString(),
-          status: 'draft',
-          tags,
-        };
+      updateTrip: (data) =>
+        set((state) => ({ trip: { ...state.trip, ...data } })),
 
-        set((state) => {
-          const newStats = { ...state.stats, totalExercises: state.stats.totalExercises + 1 };
-          const newBadges = [...state.stats.badges];
-
-          if (state.stats.totalExercises === 0 && !state.stats.badges.includes('first_exercise')) {
-            newBadges.push('first_exercise');
-            const badge = BADGES.find((b) => b.id === 'first_exercise');
-            newStats.xp += badge?.xpReward ?? 0;
-          }
-
-          newStats.badges = newBadges;
-          newStats.level = Math.floor(newStats.xp / XP_PER_LEVEL) + 1;
-          newStats.xpToNextLevel = XP_PER_LEVEL - (newStats.xp % XP_PER_LEVEL);
-
-          return {
-            exercises: [exercise, ...state.exercises],
-            stats: newStats,
-            activeExerciseId: id,
-          };
-        });
-
-        return id;
-      },
-
-      updateExerciseStep: (exerciseId, stepId, content) => {
+      addFlight: (flight) =>
+        set((state) => ({ flights: [...state.flights, flight] })),
+      updateFlight: (id, data) =>
         set((state) => ({
-          exercises: state.exercises.map((ex) => {
-            if (ex.id !== exerciseId) return ex;
-            const existingStepIndex = ex.steps.findIndex((s) => s.stepId === stepId);
-            const updatedStep = { stepId, content };
-            const newSteps =
-              existingStepIndex >= 0
-                ? ex.steps.map((s, i) => (i === existingStepIndex ? updatedStep : s))
-                : [...ex.steps, updatedStep];
-            return { ...ex, steps: newSteps, status: 'in_progress' as const };
-          }),
-        }));
-      },
+          flights: state.flights.map((f) => (f.id === id ? { ...f, ...data } : f)),
+        })),
+      deleteFlight: (id) =>
+        set((state) => ({ flights: state.flights.filter((f) => f.id !== id) })),
 
-      completeExercise: (exerciseId, scores) => {
-        const state = get();
-        const exercise = state.exercises.find((e) => e.id === exerciseId);
-        if (!exercise) return;
+      setHotel: (hotel) => set({ hotel }),
+      updateHotel: (data) =>
+        set((state) => ({ hotel: state.hotel ? { ...state.hotel, ...data } : null })),
 
-        const stepIds: StepId[] = ['clarification', 'segmentation', 'problem', 'solutions', 'metrics'];
-        const totalScore = Math.round(
-          stepIds.reduce((sum, id) => sum + (scores[id] ?? 0), 0) / stepIds.length
-        );
-
-        const xpEarned = calculateXpForExercise(totalScore, exercise.difficulty, state.stats.streak);
-
-        set((state) => {
-          const completedExercises = state.stats.completedExercises + 1;
-          const allScores = state.exercises
-            .filter((e) => e.status === 'completed' && e.score !== undefined)
-            .map((e) => e.score as number);
-          allScores.push(totalScore);
-          const averageScore = Math.round(allScores.reduce((a, b) => a + b, 0) / allScores.length);
-
-          const newXp = state.stats.xp + xpEarned;
-          const newLevel = Math.floor(newXp / XP_PER_LEVEL) + 1;
-          const newXpToNext = XP_PER_LEVEL - (newXp % XP_PER_LEVEL);
-
-          const newBadges = [...state.stats.badges];
-
-          if (completedExercises === 1 && !newBadges.includes('first_completion')) {
-            newBadges.push('first_completion');
-          }
-          if (exercise.difficulty === 'Hard' && !newBadges.includes('hard_mode')) {
-            newBadges.push('hard_mode');
-          }
-          if (totalScore === 100 && !newBadges.includes('perfect_score')) {
-            newBadges.push('perfect_score');
-          }
-          if (completedExercises >= 10 && !newBadges.includes('solutions_master')) {
-            newBadges.push('solutions_master');
-          }
-          if (newLevel >= 10 && !newBadges.includes('framework_master')) {
-            newBadges.push('framework_master');
-          }
-
-          // Update step mastery
-          const newStepMastery = { ...state.stats.stepMastery };
-          stepIds.forEach((id) => {
-            if (scores[id] !== undefined) {
-              const prev = newStepMastery[id] ?? 0;
-              newStepMastery[id] = Math.round((prev + scores[id]) / 2);
-            }
-          });
-
-          return {
-            exercises: state.exercises.map((ex) =>
-              ex.id === exerciseId
-                ? {
-                    ...ex,
-                    score: totalScore,
-                    status: 'completed' as const,
-                    completedAt: new Date().toISOString(),
-                    xpEarned,
-                  }
-                : ex
-            ),
-            stats: {
-              ...state.stats,
-              xp: newXp,
-              level: newLevel,
-              xpToNextLevel: newXpToNext,
-              completedExercises,
-              averageScore,
-              badges: newBadges,
-              stepMastery: newStepMastery,
-            },
-          };
-        });
-      },
-
-      deleteExercise: (exerciseId) => {
+      setCarRental: (car) => set({ carRental: car }),
+      updateCarRental: (data) =>
         set((state) => ({
-          exercises: state.exercises.filter((e) => e.id !== exerciseId),
-          activeExerciseId: state.activeExerciseId === exerciseId ? null : state.activeExerciseId,
-        }));
-      },
+          carRental: state.carRental ? { ...state.carRental, ...data } : null,
+        })),
 
-      setActiveExercise: (id) => {
-        set({ activeExerciseId: id });
-      },
+      addEvent: (event) =>
+        set((state) => ({ events: [...state.events, event] })),
+      updateEvent: (id, data) =>
+        set((state) => ({
+          events: state.events.map((e) => (e.id === id ? { ...e, ...data } : e)),
+        })),
+      deleteEvent: (id) =>
+        set((state) => ({ events: state.events.filter((e) => e.id !== id) })),
+      toggleEventComplete: (id) =>
+        set((state) => ({
+          events: state.events.map((e) =>
+            e.id === id ? { ...e, completed: !e.completed } : e
+          ),
+        })),
 
-      awardBadge: (badgeId) => {
-        set((state) => {
-          if (state.stats.badges.includes(badgeId)) return state;
-          const badge = BADGES.find((b) => b.id === badgeId);
-          const newXp = state.stats.xp + (badge?.xpReward ?? 0);
-          return {
-            stats: {
-              ...state.stats,
-              badges: [...state.stats.badges, badgeId],
-              xp: newXp,
-              level: Math.floor(newXp / XP_PER_LEVEL) + 1,
-              xpToNextLevel: XP_PER_LEVEL - (newXp % XP_PER_LEVEL),
-            },
-          };
-        });
-      },
+      updateBudgetCategory: (id, data) =>
+        set((state) => ({
+          budgetCategories: state.budgetCategories.map((c) =>
+            c.id === id ? { ...c, ...data } : c
+          ),
+        })),
+      setExchangeRate: (rate) => set({ exchangeRate: rate }),
 
-      updateStreak: () => {
-        set((state) => {
-          const today = new Date().toDateString();
-          const lastPractice = state.stats.lastPracticeDate
-            ? new Date(state.stats.lastPracticeDate).toDateString()
-            : null;
-          const yesterday = new Date(Date.now() - 86400000).toDateString();
+      addExpense: (expense) =>
+        set((state) => ({
+          expenses: [
+            { ...expense, budgetCategoryId: EXPENSE_TO_BUDGET[expense.category] },
+            ...state.expenses,
+          ],
+        })),
+      updateExpense: (id, data) =>
+        set((state) => ({
+          expenses: state.expenses.map((e) => (e.id === id ? { ...e, ...data } : e)),
+        })),
+      deleteExpense: (id) =>
+        set((state) => ({ expenses: state.expenses.filter((e) => e.id !== id) })),
 
-          let newStreak = state.stats.streak;
-          if (lastPractice === today) return state;
-          if (lastPractice === yesterday) {
-            newStreak += 1;
-          } else if (lastPractice !== today) {
-            newStreak = 1;
-          }
-
-          const longestStreak = Math.max(newStreak, state.stats.longestStreak);
-          const newBadges = [...state.stats.badges];
-          let bonusXp = 0;
-
-          if (newStreak >= 3 && !newBadges.includes('streak_3')) {
-            newBadges.push('streak_3');
-            bonusXp += BADGES.find((b) => b.id === 'streak_3')?.xpReward ?? 0;
-          }
-          if (newStreak >= 7 && !newBadges.includes('streak_7')) {
-            newBadges.push('streak_7');
-            bonusXp += BADGES.find((b) => b.id === 'streak_7')?.xpReward ?? 0;
-          }
-          if (newStreak >= 30 && !newBadges.includes('streak_30')) {
-            newBadges.push('streak_30');
-            bonusXp += BADGES.find((b) => b.id === 'streak_30')?.xpReward ?? 0;
-          }
-
-          const newXp = state.stats.xp + bonusXp;
-
-          return {
-            stats: {
-              ...state.stats,
-              streak: newStreak,
-              longestStreak,
-              lastPracticeDate: new Date().toISOString(),
-              badges: newBadges,
-              xp: newXp,
-              level: Math.floor(newXp / XP_PER_LEVEL) + 1,
-              xpToNextLevel: XP_PER_LEVEL - (newXp % XP_PER_LEVEL),
-            },
-          };
-        });
-      },
+      updateDocument: (id, data) =>
+        set((state) => ({
+          documents: state.documents.map((d) => (d.id === id ? { ...d, ...data } : d)),
+        })),
+      addDocument: (doc) =>
+        set((state) => ({ documents: [...state.documents, doc] })),
+      deleteDocument: (id) =>
+        set((state) => ({ documents: state.documents.filter((d) => d.id !== id) })),
     }),
-    {
-      name: 'product-sense-storage',
-    }
+    { name: 'family-trip-storage' }
   )
 );
