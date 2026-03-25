@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, StateCreator } from 'zustand/middleware';
 import {
   Trip,
   Flight,
@@ -14,6 +14,7 @@ import {
   EXPENSE_TO_BUDGET,
 } from '@/types';
 import { DEFAULT_BUDGET_CATEGORIES, DEFAULT_DOCUMENTS } from '@/lib/data';
+import { saveTripToCloud, generateTripCode, getTripCodeFromURL, setTripCodeInURL, loadTripFromCloud } from '@/lib/sync';
 
 export interface TripData {
   trip: Trip;
@@ -33,38 +34,31 @@ interface AppState extends TripData {
   setTripCode: (code: string) => void;
   hydrateFromCloud: (data: TripData) => void;
   getTripData: () => TripData;
-
+  initializeStore: () => Promise<void>;
   // Trip
   updateTrip: (trip: Partial<Trip>) => void;
-
   // Flights
   addFlight: (flight: Flight) => void;
   updateFlight: (id: string, data: Partial<Flight>) => void;
   deleteFlight: (id: string) => void;
-
   // Hotel
   setHotel: (hotel: Hotel) => void;
   updateHotel: (data: Partial<Hotel>) => void;
-
   // Car
   setCarRental: (car: CarRental) => void;
   updateCarRental: (data: Partial<CarRental>) => void;
-
   // Events
   addEvent: (event: AgendaEvent) => void;
   updateEvent: (id: string, data: Partial<AgendaEvent>) => void;
   deleteEvent: (id: string) => void;
   toggleEventComplete: (id: string) => void;
-
   // Budget
   updateBudgetCategory: (id: string, data: Partial<BudgetCategory>) => void;
   setExchangeRate: (rate: number) => void;
-
   // Expenses
   addExpense: (expense: Expense) => void;
   updateExpense: (id: string, data: Partial<Expense>) => void;
   deleteExpense: (id: string) => void;
-
   // Documents
   updateDocument: (id: string, data: Partial<TripDocument>) => void;
   addDocument: (doc: TripDocument) => void;
@@ -85,9 +79,31 @@ const DEFAULT_TRIP: Trip = {
   ],
 };
 
+// Custom middleware for cloud sync
+const cloudSyncMiddleware = (
+  config: StateCreator<AppState, [['zustand/persist', unknown]]
+) => (set, get, api) => {
+  const state = config(
+    (update) => {
+      set(update);
+      // Sync to cloud after every state update
+      const tripCode = (get() as AppState).tripCode;
+      if (tripCode) {
+        const tripData = (get() as AppState).getTripData();
+        saveTripToCloud(tripCode, tripData).catch(err => 
+          console.error('Cloud sync failed:', err)
+        );
+      }
+    },
+    get,
+    api
+  );
+  return state;
+};
+
 export const useAppStore = create<AppState>()(
   persist(
-    (set, get) => ({
+    cloudSyncMiddleware((set, get) => ({
       trip: DEFAULT_TRIP,
       flights: [],
       hotel: null,
@@ -129,23 +145,62 @@ export const useAppStore = create<AppState>()(
         };
       },
 
+      initializeStore: async () => {
+        try {
+          // Check if there's a trip code in the URL
+          const urlCode = getTripCodeFromURL();
+          if (urlCode) {
+            // Load from cloud
+            const cloudData = await loadTripFromCloud(urlCode);
+            if (cloudData) {
+              set({ tripCode: urlCode });
+              set((state) => ({
+                trip: cloudData.trip,
+                flights: cloudData.flights,
+                hotel: cloudData.hotel,
+                carRental: cloudData.carRental,
+                events: cloudData.events,
+                budgetCategories: cloudData.budgetCategories,
+                expenses: cloudData.expenses,
+                documents: cloudData.documents,
+                exchangeRate: cloudData.exchangeRate,
+              }));
+              return;
+            }
+          }
+          // If no URL code or load failed, generate a new code
+          const newCode = generateTripCode();
+          set({ tripCode: newCode });
+          setTripCodeInURL(newCode);
+          // Save initial data to cloud
+          const tripData = get().getTripData();
+          await saveTripToCloud(newCode, tripData);
+        } catch (error) {
+          console.error('Failed to initialize store:', error);
+        }
+      },
+
       updateTrip: (data) =>
         set((state) => ({ trip: { ...state.trip, ...data } })),
 
       addFlight: (flight) =>
         set((state) => ({ flights: [...state.flights, flight] })),
+
       updateFlight: (id, data) =>
         set((state) => ({
           flights: state.flights.map((f) => (f.id === id ? { ...f, ...data } : f)),
         })),
+
       deleteFlight: (id) =>
         set((state) => ({ flights: state.flights.filter((f) => f.id !== id) })),
 
       setHotel: (hotel) => set({ hotel }),
+
       updateHotel: (data) =>
         set((state) => ({ hotel: state.hotel ? { ...state.hotel, ...data } : null })),
 
       setCarRental: (car) => set({ carRental: car }),
+
       updateCarRental: (data) =>
         set((state) => ({
           carRental: state.carRental ? { ...state.carRental, ...data } : null,
@@ -153,12 +208,15 @@ export const useAppStore = create<AppState>()(
 
       addEvent: (event) =>
         set((state) => ({ events: [...state.events, event] })),
+
       updateEvent: (id, data) =>
         set((state) => ({
           events: state.events.map((e) => (e.id === id ? { ...e, ...data } : e)),
         })),
+
       deleteEvent: (id) =>
         set((state) => ({ events: state.events.filter((e) => e.id !== id) })),
+
       toggleEventComplete: (id) =>
         set((state) => ({
           events: state.events.map((e) =>
@@ -172,6 +230,7 @@ export const useAppStore = create<AppState>()(
             c.id === id ? { ...c, ...data } : c
           ),
         })),
+
       setExchangeRate: (rate) => set({ exchangeRate: rate }),
 
       addExpense: (expense) =>
@@ -181,10 +240,12 @@ export const useAppStore = create<AppState>()(
             ...state.expenses,
           ],
         })),
+
       updateExpense: (id, data) =>
         set((state) => ({
           expenses: state.expenses.map((e) => (e.id === id ? { ...e, ...data } : e)),
         })),
+
       deleteExpense: (id) =>
         set((state) => ({ expenses: state.expenses.filter((e) => e.id !== id) })),
 
@@ -192,11 +253,13 @@ export const useAppStore = create<AppState>()(
         set((state) => ({
           documents: state.documents.map((d) => (d.id === id ? { ...d, ...data } : d)),
         })),
+
       addDocument: (doc) =>
         set((state) => ({ documents: [...state.documents, doc] })),
+
       deleteDocument: (id) =>
         set((state) => ({ documents: state.documents.filter((d) => d.id !== id) })),
-    }),
+    })),
     { name: 'family-trip-storage' }
   )
 );
