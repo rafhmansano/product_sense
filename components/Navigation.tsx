@@ -30,11 +30,9 @@ export default function Navigation() {
           color: 'white',
           width: '220px',
           minHeight: '100vh',
-          display: 'flex',
           flexDirection: 'column',
           position: 'fixed',
           left: 0,
-          top: 0,
           zIndex: 50,
           borderRight: '1px solid rgba(255,255,255,0.06)',
           overflowY: 'auto',
@@ -95,11 +93,9 @@ export default function Navigation() {
       <nav
         className="mobile-nav"
         style={{
-          display: 'none',
           position: 'fixed',
           bottom: 0,
           left: 0,
-          right: 0,
           background: 'var(--ocean)',
           zIndex: 50,
           padding: '6px 4px',
