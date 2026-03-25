@@ -254,3 +254,31 @@ export interface ParkInfo {
   route?: ParkRoute[];
   tips: string[];
 }
+
+// === CHECKLISTS ===
+export interface ChecklistItem {
+  id: string;
+  name: string;
+  checked: boolean;
+  category: string;
+}
+
+// === CUSTOM RESTAURANTS ===
+export interface CustomRestaurant {
+  id: string;
+  name: string;
+  location: string;
+  parkOrArea: string;
+  internalLocation: string;
+  highlight: string;
+  kidFriendly: boolean;
+}
+
+// === CUSTOM FOOD ITEMS (Alimentacao) ===
+export interface FoodItem {
+  id: string;
+  name: string;
+  category: 'mercado' | 'farmacia' | 'parque-snack' | 'outro';
+  notes: string;
+  checked: boolean;
+}

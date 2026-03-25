@@ -11,9 +11,19 @@ import {
   BudgetCategory,
   Expense,
   TripDocument,
+  ChecklistItem,
+  CustomRestaurant,
+  FoodItem,
   EXPENSE_TO_BUDGET,
 } from '@/types';
-import { DEFAULT_BUDGET_CATEGORIES, DEFAULT_DOCUMENTS } from '@/lib/data';
+import {
+  DEFAULT_BUDGET_CATEGORIES,
+  DEFAULT_DOCUMENTS,
+  DEFAULT_SUITCASE_ITEMS,
+  DEFAULT_BACKPACK_ITEMS,
+  DEFAULT_PHARMACY_ITEMS,
+  DEFAULT_GROCERY_ITEMS,
+} from '@/lib/data';
 
 export interface TripData {
   trip: Trip;
@@ -25,6 +35,12 @@ export interface TripData {
   expenses: Expense[];
   documents: TripDocument[];
   exchangeRate: number;
+  suitcaseItems: ChecklistItem[];
+  backpackItems: ChecklistItem[];
+  pharmacyItems: ChecklistItem[];
+  groceryItems: ChecklistItem[];
+  customRestaurants: CustomRestaurant[];
+  foodItems: FoodItem[];
 }
 
 interface AppState extends TripData {
@@ -61,6 +77,22 @@ interface AppState extends TripData {
   updateDocument: (id: string, data: Partial<TripDocument>) => void;
   addDocument: (doc: TripDocument) => void;
   deleteDocument: (id: string) => void;
+
+  // Checklists (suitcase, backpack, pharmacy, grocery)
+  toggleChecklistItem: (list: 'suitcaseItems' | 'backpackItems' | 'pharmacyItems' | 'groceryItems', id: string) => void;
+  addChecklistItem: (list: 'suitcaseItems' | 'backpackItems' | 'pharmacyItems' | 'groceryItems', item: ChecklistItem) => void;
+  deleteChecklistItem: (list: 'suitcaseItems' | 'backpackItems' | 'pharmacyItems' | 'groceryItems', id: string) => void;
+
+  // Custom Restaurants
+  addRestaurant: (r: CustomRestaurant) => void;
+  updateRestaurant: (id: string, data: Partial<CustomRestaurant>) => void;
+  deleteRestaurant: (id: string) => void;
+
+  // Food Items
+  addFoodItem: (item: FoodItem) => void;
+  updateFoodItem: (id: string, data: Partial<FoodItem>) => void;
+  deleteFoodItem: (id: string) => void;
+  toggleFoodItem: (id: string) => void;
 }
 
 const DEFAULT_TRIP: Trip = {
@@ -89,6 +121,12 @@ export const useAppStore = create<AppState>()(
       expenses: [],
       documents: DEFAULT_DOCUMENTS,
       exchangeRate: 5.5,
+      suitcaseItems: DEFAULT_SUITCASE_ITEMS,
+      backpackItems: DEFAULT_BACKPACK_ITEMS,
+      pharmacyItems: DEFAULT_PHARMACY_ITEMS,
+      groceryItems: DEFAULT_GROCERY_ITEMS,
+      customRestaurants: [],
+      foodItems: [],
       tripCode: null,
 
       setTripCode: (code) => set({ tripCode: code }),
@@ -104,6 +142,12 @@ export const useAppStore = create<AppState>()(
           expenses: data.expenses,
           documents: data.documents,
           exchangeRate: data.exchangeRate,
+          suitcaseItems: data.suitcaseItems ?? DEFAULT_SUITCASE_ITEMS,
+          backpackItems: data.backpackItems ?? DEFAULT_BACKPACK_ITEMS,
+          pharmacyItems: data.pharmacyItems ?? DEFAULT_PHARMACY_ITEMS,
+          groceryItems: data.groceryItems ?? DEFAULT_GROCERY_ITEMS,
+          customRestaurants: data.customRestaurants ?? [],
+          foodItems: data.foodItems ?? [],
         }),
 
       getTripData: () => {
@@ -118,6 +162,12 @@ export const useAppStore = create<AppState>()(
           expenses: s.expenses,
           documents: s.documents,
           exchangeRate: s.exchangeRate,
+          suitcaseItems: s.suitcaseItems,
+          backpackItems: s.backpackItems,
+          pharmacyItems: s.pharmacyItems,
+          groceryItems: s.groceryItems,
+          customRestaurants: s.customRestaurants,
+          foodItems: s.foodItems,
         };
       },
 
@@ -200,6 +250,50 @@ export const useAppStore = create<AppState>()(
 
       deleteDocument: (id) =>
         set((state) => ({ documents: state.documents.filter((d) => d.id !== id) })),
+
+      // Checklists
+      toggleChecklistItem: (list, id) =>
+        set((state) => ({
+          [list]: state[list].map((item: ChecklistItem) =>
+            item.id === id ? { ...item, checked: !item.checked } : item
+          ),
+        })),
+      addChecklistItem: (list, item) =>
+        set((state) => ({ [list]: [...state[list], item] })),
+      deleteChecklistItem: (list, id) =>
+        set((state) => ({
+          [list]: state[list].filter((item: ChecklistItem) => item.id !== id),
+        })),
+
+      // Custom Restaurants
+      addRestaurant: (r) =>
+        set((state) => ({ customRestaurants: [...state.customRestaurants, r] })),
+      updateRestaurant: (id, data) =>
+        set((state) => ({
+          customRestaurants: state.customRestaurants.map((r) =>
+            r.id === id ? { ...r, ...data } : r
+          ),
+        })),
+      deleteRestaurant: (id) =>
+        set((state) => ({
+          customRestaurants: state.customRestaurants.filter((r) => r.id !== id),
+        })),
+
+      // Food Items
+      addFoodItem: (item) =>
+        set((state) => ({ foodItems: [...state.foodItems, item] })),
+      updateFoodItem: (id, data) =>
+        set((state) => ({
+          foodItems: state.foodItems.map((f) => (f.id === id ? { ...f, ...data } : f)),
+        })),
+      deleteFoodItem: (id) =>
+        set((state) => ({ foodItems: state.foodItems.filter((f) => f.id !== id) })),
+      toggleFoodItem: (id) =>
+        set((state) => ({
+          foodItems: state.foodItems.map((f) =>
+            f.id === id ? { ...f, checked: !f.checked } : f
+          ),
+        })),
     }),
     { name: 'family-trip-storage' }
   )

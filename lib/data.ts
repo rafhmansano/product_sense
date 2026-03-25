@@ -1,4 +1,4 @@
-import { BudgetCategory, TripDocument, ParkInfo, ParkRoute } from '@/types';
+import { BudgetCategory, TripDocument, ParkInfo, ParkRoute, ChecklistItem, FoodItem } from '@/types';
 
 // === DEFAULT BUDGET CATEGORIES ===
 export const DEFAULT_BUDGET_CATEGORIES: BudgetCategory[] = [
@@ -250,6 +250,143 @@ export const SUPERMARKET_ESSENTIALS: string[] = [
 ];
 
 // === GENERAL TIPS ===
+// === SUITCASE CHECKLIST (Mala de Viagem) ===
+let _sId = 0;
+const sId = () => `suit-${++_sId}`;
+
+export const DEFAULT_SUITCASE_ITEMS: ChecklistItem[] = [
+  // Roupas
+  { id: sId(), name: 'Camisetas (1 por dia + 2 extras)', checked: false, category: 'Roupas' },
+  { id: sId(), name: 'Shorts / bermudas', checked: false, category: 'Roupas' },
+  { id: sId(), name: 'Calcas compridas (2 para dias frios/restaurantes)', checked: false, category: 'Roupas' },
+  { id: sId(), name: 'Meias (1 par por dia + 2 extras)', checked: false, category: 'Roupas' },
+  { id: sId(), name: 'Roupas intimas', checked: false, category: 'Roupas' },
+  { id: sId(), name: 'Pijamas', checked: false, category: 'Roupas' },
+  { id: sId(), name: 'Casaco / moletom leve (ar condicionado forte)', checked: false, category: 'Roupas' },
+  { id: sId(), name: 'Roupa de banho / biquini / sunga', checked: false, category: 'Roupas' },
+  { id: sId(), name: 'Tenis confortavel para parques', checked: false, category: 'Roupas' },
+  { id: sId(), name: 'Chinelo / sandalia', checked: false, category: 'Roupas' },
+  { id: sId(), name: 'Bone / chapeu', checked: false, category: 'Roupas' },
+  // Crianca
+  { id: sId(), name: 'Roupas da crianca (extras para acidentes)', checked: false, category: 'Crianca' },
+  { id: sId(), name: 'Fraldas (quantidade para os primeiros dias)', checked: false, category: 'Crianca' },
+  { id: sId(), name: 'Lencos umedecidos', checked: false, category: 'Crianca' },
+  { id: sId(), name: 'Brinquedo / pelucia favorita', checked: false, category: 'Crianca' },
+  { id: sId(), name: 'Mamadeira / copo com tampa', checked: false, category: 'Crianca' },
+  { id: sId(), name: 'Carrinho de bebe / stroller', checked: false, category: 'Crianca' },
+  { id: sId(), name: 'Cadeirinha de carro (ou alugar la)', checked: false, category: 'Crianca' },
+  // Higiene
+  { id: sId(), name: 'Escova e pasta de dente', checked: false, category: 'Higiene' },
+  { id: sId(), name: 'Shampoo / condicionador', checked: false, category: 'Higiene' },
+  { id: sId(), name: 'Sabonete', checked: false, category: 'Higiene' },
+  { id: sId(), name: 'Desodorante', checked: false, category: 'Higiene' },
+  { id: sId(), name: 'Protetor solar (FPS 50+)', checked: false, category: 'Higiene' },
+  { id: sId(), name: 'Repelente de insetos', checked: false, category: 'Higiene' },
+  // Eletronicos
+  { id: sId(), name: 'Celular + carregador', checked: false, category: 'Eletronicos' },
+  { id: sId(), name: 'Power bank', checked: false, category: 'Eletronicos' },
+  { id: sId(), name: 'Adaptador de tomada (EUA usa tipo A/B)', checked: false, category: 'Eletronicos' },
+  { id: sId(), name: 'Fone de ouvido', checked: false, category: 'Eletronicos' },
+  { id: sId(), name: 'Camera / GoPro', checked: false, category: 'Eletronicos' },
+  { id: sId(), name: 'Tablet / iPad (para crianca no aviao)', checked: false, category: 'Eletronicos' },
+  // Documentos
+  { id: sId(), name: 'Passaportes de todos', checked: false, category: 'Documentos' },
+  { id: sId(), name: 'Vistos / ESTA', checked: false, category: 'Documentos' },
+  { id: sId(), name: 'CNH Internacional', checked: false, category: 'Documentos' },
+  { id: sId(), name: 'Comprovantes de reserva impressos', checked: false, category: 'Documentos' },
+  { id: sId(), name: 'Seguro viagem (copia digital e impressa)', checked: false, category: 'Documentos' },
+  { id: sId(), name: 'Cartao de credito internacional', checked: false, category: 'Documentos' },
+  { id: sId(), name: 'Dolares em especie', checked: false, category: 'Documentos' },
+  // Outros
+  { id: sId(), name: 'Capa de chuva compacta', checked: false, category: 'Outros' },
+  { id: sId(), name: 'Garrafa de agua reutilizavel', checked: false, category: 'Outros' },
+  { id: sId(), name: 'Mochila pequena para os parques', checked: false, category: 'Outros' },
+  { id: sId(), name: 'Saco plastico para roupa suja', checked: false, category: 'Outros' },
+  { id: sId(), name: 'Almofada de pescoco (aviao)', checked: false, category: 'Outros' },
+];
+
+// === BACKPACK CHECKLIST (Mochila do Parque) ===
+let _bId = 0;
+const bId = () => `back-${++_bId}`;
+
+export const DEFAULT_BACKPACK_ITEMS: ChecklistItem[] = [
+  { id: bId(), name: 'Protetor solar', checked: false, category: 'Essenciais' },
+  { id: bId(), name: 'Garrafas de agua (geladas)', checked: false, category: 'Essenciais' },
+  { id: bId(), name: 'Snacks / biscoitos para crianca', checked: false, category: 'Essenciais' },
+  { id: bId(), name: 'Fraldas + lencos umedecidos', checked: false, category: 'Essenciais' },
+  { id: bId(), name: 'Troca de roupa da crianca', checked: false, category: 'Essenciais' },
+  { id: bId(), name: 'Power bank carregado', checked: false, category: 'Essenciais' },
+  { id: bId(), name: 'Celular + carregador', checked: false, category: 'Essenciais' },
+  { id: bId(), name: 'Bone / chapeu', checked: false, category: 'Protecao' },
+  { id: bId(), name: 'Capa de chuva compacta', checked: false, category: 'Protecao' },
+  { id: bId(), name: 'Casaco leve (ar condicionado)', checked: false, category: 'Protecao' },
+  { id: bId(), name: 'Oculos de sol', checked: false, category: 'Protecao' },
+  { id: bId(), name: 'Remedios basicos (dor, febre, alergia)', checked: false, category: 'Saude' },
+  { id: bId(), name: 'Band-aid', checked: false, category: 'Saude' },
+  { id: bId(), name: 'Repelente', checked: false, category: 'Saude' },
+  { id: bId(), name: 'Alcool em gel', checked: false, category: 'Saude' },
+  { id: bId(), name: 'Brinquedo pequeno / livro para filas', checked: false, category: 'Crianca' },
+  { id: bId(), name: 'Mamadeira / copo com tampa', checked: false, category: 'Crianca' },
+  { id: bId(), name: 'Chupeta (se usar)', checked: false, category: 'Crianca' },
+  { id: bId(), name: 'Cartao de credito / dolares', checked: false, category: 'Outros' },
+  { id: bId(), name: 'Ingressos do parque (digital/impresso)', checked: false, category: 'Outros' },
+  { id: bId(), name: 'Autografo book + caneta (para personagens)', checked: false, category: 'Outros' },
+];
+
+// === PHARMACY CHECKLIST ===
+let _pId = 0;
+const pId = () => `pharm-${++_pId}`;
+
+export const DEFAULT_PHARMACY_ITEMS: ChecklistItem[] = [
+  { id: pId(), name: 'Dipirona / Paracetamol infantil', checked: false, category: 'Medicamentos' },
+  { id: pId(), name: 'Ibuprofeno infantil', checked: false, category: 'Medicamentos' },
+  { id: pId(), name: 'Antialergico (Allegra / Loratadina)', checked: false, category: 'Medicamentos' },
+  { id: pId(), name: 'Soro fisiologico (spray nasal)', checked: false, category: 'Medicamentos' },
+  { id: pId(), name: 'Remedio para enjoo', checked: false, category: 'Medicamentos' },
+  { id: pId(), name: 'Buscopan (colica)', checked: false, category: 'Medicamentos' },
+  { id: pId(), name: 'Antidiarreico', checked: false, category: 'Medicamentos' },
+  { id: pId(), name: 'Pomada para assadura', checked: false, category: 'Medicamentos' },
+  { id: pId(), name: 'Termometro digital', checked: false, category: 'Primeiros Socorros' },
+  { id: pId(), name: 'Band-aids variados', checked: false, category: 'Primeiros Socorros' },
+  { id: pId(), name: 'Gaze e esparadrapo', checked: false, category: 'Primeiros Socorros' },
+  { id: pId(), name: 'Alcool em gel', checked: false, category: 'Primeiros Socorros' },
+  { id: pId(), name: 'Pomada para picada de inseto', checked: false, category: 'Primeiros Socorros' },
+  { id: pId(), name: 'Colirio lubrificante', checked: false, category: 'Primeiros Socorros' },
+  { id: pId(), name: 'Protetor solar FPS 50+ (adulto)', checked: false, category: 'Protecao' },
+  { id: pId(), name: 'Protetor solar FPS 50+ (infantil)', checked: false, category: 'Protecao' },
+  { id: pId(), name: 'Protetor labial com FPS', checked: false, category: 'Protecao' },
+  { id: pId(), name: 'Repelente de insetos (adulto)', checked: false, category: 'Protecao' },
+  { id: pId(), name: 'Repelente de insetos (infantil)', checked: false, category: 'Protecao' },
+];
+
+// === GROCERY CHECKLIST ===
+let _gId = 0;
+const gId = () => `groc-${++_gId}`;
+
+export const DEFAULT_GROCERY_ITEMS: ChecklistItem[] = [
+  { id: gId(), name: 'Agua mineral (pack)', checked: false, category: 'Bebidas' },
+  { id: gId(), name: 'Suco de frutas (caixinha)', checked: false, category: 'Bebidas' },
+  { id: gId(), name: 'Leite', checked: false, category: 'Bebidas' },
+  { id: gId(), name: 'Cereal matinal', checked: false, category: 'Cafe da Manha' },
+  { id: gId(), name: 'Pao de forma', checked: false, category: 'Cafe da Manha' },
+  { id: gId(), name: 'Manteiga / cream cheese', checked: false, category: 'Cafe da Manha' },
+  { id: gId(), name: 'Iogurte', checked: false, category: 'Cafe da Manha' },
+  { id: gId(), name: 'Frutas (banana, maca, uva)', checked: false, category: 'Cafe da Manha' },
+  { id: gId(), name: 'Ovos', checked: false, category: 'Cafe da Manha' },
+  { id: gId(), name: 'Barra de cereal', checked: false, category: 'Snacks' },
+  { id: gId(), name: 'Biscoito / bolacha', checked: false, category: 'Snacks' },
+  { id: gId(), name: 'Fruta seca / castanhas', checked: false, category: 'Snacks' },
+  { id: gId(), name: 'Biscoito de arroz', checked: false, category: 'Snacks' },
+  { id: gId(), name: 'Goldfish crackers (crianca adora)', checked: false, category: 'Snacks' },
+  { id: gId(), name: 'Queijo em tablete / babybel', checked: false, category: 'Snacks' },
+  { id: gId(), name: 'Presunto / peito de peru', checked: false, category: 'Refeicoes' },
+  { id: gId(), name: 'Queijo fatiado', checked: false, category: 'Refeicoes' },
+  { id: gId(), name: 'Macarrao instantaneo / cup noodles', checked: false, category: 'Refeicoes' },
+  { id: gId(), name: 'Papel toalha', checked: false, category: 'Utilitarios' },
+  { id: gId(), name: 'Sacos plasticos ziplock', checked: false, category: 'Utilitarios' },
+  { id: gId(), name: 'Guardanapos', checked: false, category: 'Utilitarios' },
+];
+
 export const GENERAL_TIPS: { category: string; icon: string; tips: string[] }[] = [
   {
     category: 'Clima e Protecao',

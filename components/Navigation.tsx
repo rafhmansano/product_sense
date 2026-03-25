@@ -15,6 +15,9 @@ const navItems = [
   { href: '/gastos', label: 'Gastos', icon: '🧾' },
   { href: '/parques', label: 'Parques', icon: '🏰' },
   { href: '/alimentacao', label: 'Alimentacao', icon: '🍽️' },
+  { href: '/mala', label: 'Mala', icon: '🧳' },
+  { href: '/mochila', label: 'Mochila', icon: '🎒' },
+  { href: '/listas', label: 'Compras', icon: '🛒' },
   { href: '/documentos', label: 'Documentos', icon: '📋' },
   { href: '/dicas', label: 'Dicas', icon: '💡' },
 ];
