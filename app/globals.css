@@ -201,31 +201,33 @@ textarea, input, select {
   flex-direction: column;
 }
 
-.mobile-nav {
+.mobile-header,
+.mobile-drawer,
+.mobile-drawer-backdrop {
   display: none;
 }
-
 
 /* Desktop layout */
 .main-content {
   margin-left: 220px;
 }
 
-
 /* Mobile responsive */
 @media (max-width: 768px) {
   .desktop-sidebar {
-    display: none;
+    display: none !important;
+  }
+  .mobile-header {
+    display: flex !important;
+  }
+  .mobile-drawer,
+  .mobile-drawer-backdrop {
+    display: flex !important;
   }
   .main-content {
     margin-left: 0 !important;
-    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
-  }
-  .mobile-nav {
-    display: flex !important;
-  }
-  .mobile-nav-overlay {
-    display: block !important;
+    padding-top: 56px !important;
+    padding-bottom: 24px !important;
   }
   .dashboard-content,
   .main-content > div {
@@ -243,12 +245,5 @@ textarea, input, select {
   }
   h1 {
     font-size: 24px !important;
-  }
-}
-
-/* Ensure viewport accounts for safe areas on mobile */
-@supports (padding: env(safe-area-inset-bottom)) {
-  html {
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 }

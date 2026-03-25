@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: '🏠' },
@@ -18,31 +18,26 @@ const navItems = [
   { href: '/dicas', label: 'Dicas', icon: '💡' },
 ];
 
-// Primary tabs shown in bottom nav (5 items max for good mobile UX)
-const mobileMainItems = [
-  { href: '/', label: 'Home', icon: '🏠' },
-  { href: '/agenda', label: 'Agenda', icon: '📅' },
-  { href: '/parques', label: 'Parques', icon: '🏰' },
-  { href: '/orcamento', label: 'Gastos', icon: '💰' },
-];
-
-const mobileMoreItems = [
-  { href: '/voos', label: 'Voos', icon: '✈️' },
-  { href: '/hotel', label: 'Hotel', icon: '🏨' },
-  { href: '/carro', label: 'Carro', icon: '🚗' },
-  { href: '/gastos', label: 'Gastos', icon: '🧾' },
-  { href: '/alimentacao', label: 'Alimentacao', icon: '🍽️' },
-  { href: '/documentos', label: 'Documentos', icon: '📋' },
-  { href: '/dicas', label: 'Dicas', icon: '💡' },
-];
-
 export default function Navigation() {
   const pathname = usePathname();
-  const [moreOpen, setMoreOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const isMoreActive = mobileMoreItems.some(
-    (item) => pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
-  );
+  // Close drawer on route change
+  useEffect(() => {
+    setDrawerOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when drawer is open
+  useEffect(() => {
+    if (drawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [drawerOpen]);
 
   return (
     <>
@@ -57,6 +52,7 @@ export default function Navigation() {
           flexDirection: 'column',
           position: 'fixed',
           left: 0,
+          top: 0,
           zIndex: 50,
           borderRight: '1px solid rgba(255,255,255,0.06)',
           overflowY: 'auto',
@@ -113,130 +109,178 @@ export default function Navigation() {
         </div>
       </nav>
 
-      {/* Mobile "More" overlay */}
-      {moreOpen && (
-        <div
-          className="mobile-nav-overlay"
-          style={{
-            display: 'none',
-            position: 'fixed',
-            inset: 0,
-            zIndex: 60,
-          }}
-        >
-          {/* Backdrop */}
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'rgba(0,0,0,0.4)',
-            }}
-            onClick={() => setMoreOpen(false)}
-          />
-          {/* Menu panel */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '64px',
-              left: '8px',
-              right: '8px',
-              background: 'var(--ocean)',
-              borderRadius: '16px',
-              padding: '8px',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '4px',
-              paddingBottom: 'calc(8px + env(safe-area-inset-bottom, 0px))',
-            }}
-          >
-            {mobileMoreItems.map((item) => {
-              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMoreOpen(false)}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '4px',
-                    padding: '12px 4px',
-                    textDecoration: 'none',
-                    color: isActive ? 'white' : 'rgba(255,255,255,0.7)',
-                    background: isActive ? 'rgba(255,255,255,0.12)' : 'transparent',
-                    borderRadius: '12px',
-                    fontSize: '11px',
-                    fontWeight: isActive ? '600' : '400',
-                  }}
-                >
-                  <span style={{ fontSize: '22px' }}>{item.icon}</span>
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Mobile bottom nav */}
-      <nav
-        className="mobile-nav"
+      {/* Mobile top header with hamburger */}
+      <header
+        className="mobile-header"
         style={{
+          display: 'none',
           position: 'fixed',
-          bottom: 0,
+          top: 0,
           left: 0,
+          right: 0,
+          zIndex: 100,
           background: 'var(--ocean)',
-          zIndex: 50,
-          padding: '6px 4px',
-          paddingBottom: 'calc(6px + env(safe-area-inset-bottom, 0px))',
-          justifyContent: 'space-around',
-          borderTop: '1px solid rgba(255,255,255,0.1)',
+          height: '56px',
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 16px',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
         }}
       >
-        {mobileMainItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '2px',
-                padding: '6px 10px',
-                textDecoration: 'none',
-                color: isActive ? 'white' : 'rgba(255,255,255,0.5)',
-                fontSize: '10px',
-                fontWeight: isActive ? '600' : '400',
-              }}
-            >
-              <span style={{ fontSize: '20px' }}>{item.icon}</span>
-              {item.label}
-            </Link>
-          );
-        })}
-        {/* More button */}
+        {/* Hamburger button */}
         <button
-          onClick={() => setMoreOpen(!moreOpen)}
+          onClick={() => setDrawerOpen(true)}
+          aria-label="Abrir menu"
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '2px',
-            padding: '6px 10px',
             background: 'none',
             border: 'none',
-            color: isMoreActive || moreOpen ? 'white' : 'rgba(255,255,255,0.5)',
-            fontSize: '10px',
-            fontWeight: isMoreActive ? '600' : '400',
+            color: 'white',
             cursor: 'pointer',
+            padding: '8px',
+            marginLeft: '-8px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '5px',
           }}
         >
-          <span style={{ fontSize: '20px' }}>{'•••'}</span>
-          Mais
+          <span style={{ display: 'block', width: '22px', height: '2px', background: 'white', borderRadius: '1px' }} />
+          <span style={{ display: 'block', width: '22px', height: '2px', background: 'white', borderRadius: '1px' }} />
+          <span style={{ display: 'block', width: '16px', height: '2px', background: 'white', borderRadius: '1px' }} />
         </button>
+
+        {/* Title */}
+        <div style={{ fontSize: '15px', fontWeight: '600', color: 'white', letterSpacing: '-0.01em' }}>
+          Family Trip ✈️
+        </div>
+
+        {/* Spacer to balance layout */}
+        <div style={{ width: '38px' }} />
+      </header>
+
+      {/* Mobile drawer backdrop */}
+      <div
+        className="mobile-drawer-backdrop"
+        onClick={() => setDrawerOpen(false)}
+        style={{
+          display: 'none',
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.5)',
+          zIndex: 200,
+          opacity: drawerOpen ? 1 : 0,
+          pointerEvents: drawerOpen ? 'auto' : 'none',
+          transition: 'opacity 0.3s ease',
+        }}
+      />
+
+      {/* Mobile drawer */}
+      <nav
+        className="mobile-drawer"
+        style={{
+          display: 'none',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: '280px',
+          maxWidth: '85vw',
+          background: 'var(--ocean)',
+          zIndex: 201,
+          flexDirection: 'column',
+          transform: drawerOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+        }}
+      >
+        {/* Drawer header */}
+        <div style={{
+          padding: '20px 20px 16px',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+          <div>
+            <div style={{ fontSize: '10px', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '4px' }}>
+              Family Trip
+            </div>
+            <div style={{ fontSize: '17px', fontWeight: '700', letterSpacing: '-0.02em', color: 'white', lineHeight: 1.2 }}>
+              Orlando 2026 ✈️
+            </div>
+          </div>
+          {/* Close button */}
+          <button
+            onClick={() => setDrawerOpen(false)}
+            aria-label="Fechar menu"
+            style={{
+              background: 'rgba(255,255,255,0.1)',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              padding: '8px',
+              borderRadius: '8px',
+              fontSize: '18px',
+              lineHeight: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '36px',
+              height: '36px',
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Trip info */}
+        <div style={{ padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: '12px' }}>
+          <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '2px' }}>GRU → MCO</div>
+          <div style={{ color: 'rgba(255,255,255,0.7)' }}>👨‍👩‍👦 Rafael, Jac + Filho</div>
+        </div>
+
+        {/* Nav links */}
+        <div style={{ flex: 1, padding: '12px 0' }}>
+          {navItems.map((item) => {
+            const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setDrawerOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '13px 20px',
+                  textDecoration: 'none',
+                  color: isActive ? 'white' : 'rgba(255,255,255,0.6)',
+                  background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
+                  borderLeft: isActive ? '3px solid var(--sky)' : '3px solid transparent',
+                  transition: 'all 0.15s ease',
+                  fontSize: '15px',
+                  fontWeight: isActive ? '600' : '400',
+                }}
+              >
+                <span style={{ fontSize: '20px', width: '28px', textAlign: 'center' }}>{item.icon}</span>
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          padding: '14px 20px',
+          paddingBottom: 'calc(14px + env(safe-area-inset-bottom, 0px))',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
+          fontSize: '11px',
+          color: 'rgba(255,255,255,0.3)',
+        }}>
+          Family Trip Manager v1.0
+        </div>
       </nav>
     </>
   );

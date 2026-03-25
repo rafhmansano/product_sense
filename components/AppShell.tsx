@@ -12,7 +12,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           flex: 1,
           minHeight: '100vh',
           overflow: 'auto',
-          paddingBottom: '80px',
         }}
       >
         {children}
