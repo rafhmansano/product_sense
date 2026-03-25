@@ -195,6 +195,12 @@ textarea, input, select {
   letter-spacing: 0.05em;
 }
 
+/* Desktop layout */
+.main-content {
+  margin-left: 220px;
+}
+
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .desktop-sidebar {
