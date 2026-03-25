@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: '🏠' },
@@ -17,8 +18,31 @@ const navItems = [
   { href: '/dicas', label: 'Dicas', icon: '💡' },
 ];
 
+// Primary tabs shown in bottom nav (5 items max for good mobile UX)
+const mobileMainItems = [
+  { href: '/', label: 'Home', icon: '🏠' },
+  { href: '/agenda', label: 'Agenda', icon: '📅' },
+  { href: '/parques', label: 'Parques', icon: '🏰' },
+  { href: '/orcamento', label: 'Gastos', icon: '💰' },
+];
+
+const mobileMoreItems = [
+  { href: '/voos', label: 'Voos', icon: '✈️' },
+  { href: '/hotel', label: 'Hotel', icon: '🏨' },
+  { href: '/carro', label: 'Carro', icon: '🚗' },
+  { href: '/gastos', label: 'Gastos', icon: '🧾' },
+  { href: '/alimentacao', label: 'Alimentacao', icon: '🍽️' },
+  { href: '/documentos', label: 'Documentos', icon: '📋' },
+  { href: '/dicas', label: 'Dicas', icon: '💡' },
+];
+
 export default function Navigation() {
   const pathname = usePathname();
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  const isMoreActive = mobileMoreItems.some(
+    (item) => pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
+  );
 
   return (
     <>
@@ -51,7 +75,7 @@ export default function Navigation() {
         {/* Trip info */}
         <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: '12px' }}>
           <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>GRU → MCO</div>
-          <div style={{ color: 'rgba(255,255,255,0.7)' }}>👨‍👩‍👧 Rafael, Jac + Filho(a)</div>
+          <div style={{ color: 'rgba(255,255,255,0.7)' }}>👨‍👩‍👦 Rafael, Jac + Filho</div>
         </div>
 
         {/* Nav links */}
@@ -89,6 +113,72 @@ export default function Navigation() {
         </div>
       </nav>
 
+      {/* Mobile "More" overlay */}
+      {moreOpen && (
+        <div
+          className="mobile-nav-overlay"
+          style={{
+            display: 'none',
+            position: 'fixed',
+            inset: 0,
+            zIndex: 60,
+          }}
+        >
+          {/* Backdrop */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(0,0,0,0.4)',
+            }}
+            onClick={() => setMoreOpen(false)}
+          />
+          {/* Menu panel */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '64px',
+              left: '8px',
+              right: '8px',
+              background: 'var(--ocean)',
+              borderRadius: '16px',
+              padding: '8px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '4px',
+              paddingBottom: 'calc(8px + env(safe-area-inset-bottom, 0px))',
+            }}
+          >
+            {mobileMoreItems.map((item) => {
+              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMoreOpen(false)}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '12px 4px',
+                    textDecoration: 'none',
+                    color: isActive ? 'white' : 'rgba(255,255,255,0.7)',
+                    background: isActive ? 'rgba(255,255,255,0.12)' : 'transparent',
+                    borderRadius: '12px',
+                    fontSize: '11px',
+                    fontWeight: isActive ? '600' : '400',
+                  }}
+                >
+                  <span style={{ fontSize: '22px' }}>{item.icon}</span>
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Mobile bottom nav */}
       <nav
         className="mobile-nav"
@@ -99,11 +189,12 @@ export default function Navigation() {
           background: 'var(--ocean)',
           zIndex: 50,
           padding: '6px 4px',
+          paddingBottom: 'calc(6px + env(safe-area-inset-bottom, 0px))',
           justifyContent: 'space-around',
           borderTop: '1px solid rgba(255,255,255,0.1)',
         }}
       >
-        {navItems.slice(0, 6).map((item) => {
+        {mobileMainItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
           return (
             <Link
@@ -114,17 +205,38 @@ export default function Navigation() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: '2px',
-                padding: '4px 8px',
+                padding: '6px 10px',
                 textDecoration: 'none',
                 color: isActive ? 'white' : 'rgba(255,255,255,0.5)',
                 fontSize: '10px',
+                fontWeight: isActive ? '600' : '400',
               }}
             >
-              <span style={{ fontSize: '18px' }}>{item.icon}</span>
+              <span style={{ fontSize: '20px' }}>{item.icon}</span>
               {item.label}
             </Link>
           );
         })}
+        {/* More button */}
+        <button
+          onClick={() => setMoreOpen(!moreOpen)}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '2px',
+            padding: '6px 10px',
+            background: 'none',
+            border: 'none',
+            color: isMoreActive || moreOpen ? 'white' : 'rgba(255,255,255,0.5)',
+            fontSize: '10px',
+            fontWeight: isMoreActive ? '600' : '400',
+            cursor: 'pointer',
+          }}
+        >
+          <span style={{ fontSize: '20px' }}>{'•••'}</span>
+          Mais
+        </button>
       </nav>
     </>
   );

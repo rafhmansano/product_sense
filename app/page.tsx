@@ -197,7 +197,7 @@ export default function Dashboard() {
 
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '1100px' }} className="animate-fade-in">
+      <div className="animate-fade-in dashboard-content" style={{ padding: '40px 48px', maxWidth: '1100px' }}>
         {/* Header */}
         <div style={{ marginBottom: '12px' }}>
           <div
@@ -408,7 +408,7 @@ export default function Dashboard() {
         </div>
 
         {/* Two column: Upcoming Events + Budget/Documents */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '32px' }}>
+        <div className="dashboard-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '32px' }}>
           {/* Next Events */}
           <div
             className="card"
@@ -647,11 +647,11 @@ export default function Dashboard() {
           }}
         >
           <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 16px', fontFamily: 'sans-serif' }}>
-            👨‍👩‍👧 Viajantes
+            👨‍👩‍👦 Viajantes
           </h2>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             {trip.members.map((member, i) => {
-              const roleEmoji = member.role === 'pai' ? '👨' : member.role === 'mae' ? '👩' : '👧';
+              const roleEmoji = member.role === 'pai' ? '👨' : member.role === 'mae' ? '👩' : '👦';
               const roleLabel = member.role === 'pai' ? 'Pai' : member.role === 'mae' ? 'Mae' : 'Crianca';
               return (
                 <div
