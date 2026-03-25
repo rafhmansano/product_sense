@@ -195,6 +195,17 @@ textarea, input, select {
   letter-spacing: 0.05em;
 }
 
+/* Default display settings */
+.desktop-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-nav {
+  display: none;
+}
+
+
 /* Desktop layout */
 .main-content {
   margin-left: 220px;
