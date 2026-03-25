@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { persist, StateCreator } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import {
   Trip,
   Flight,
@@ -14,7 +14,6 @@ import {
   EXPENSE_TO_BUDGET,
 } from '@/types';
 import { DEFAULT_BUDGET_CATEGORIES, DEFAULT_DOCUMENTS } from '@/lib/data';
-import { saveTripToCloud, generateTripCode, getTripCodeFromURL, setTripCodeInURL, loadTripFromCloud } from '@/lib/sync';
 
 export interface TripData {
   trip: Trip;
@@ -34,7 +33,6 @@ interface AppState extends TripData {
   setTripCode: (code: string) => void;
   hydrateFromCloud: (data: TripData) => void;
   getTripData: () => TripData;
-  initializeStore: () => Promise<void>;
   // Trip
   updateTrip: (trip: Partial<Trip>) => void;
   // Flights
@@ -79,31 +77,9 @@ const DEFAULT_TRIP: Trip = {
   ],
 };
 
-// Custom middleware for cloud sync
-const cloudSyncMiddleware = (
-  config: StateCreator<AppState, [['zustand/persist', unknown]]
-) => (set, get, api) => {
-  const state = config(
-    (update) => {
-      set(update);
-      // Sync to cloud after every state update
-      const tripCode = (get() as AppState).tripCode;
-      if (tripCode) {
-        const tripData = (get() as AppState).getTripData();
-        saveTripToCloud(tripCode, tripData).catch(err => 
-          console.error('Cloud sync failed:', err)
-        );
-      }
-    },
-    get,
-    api
-  );
-  return state;
-};
-
 export const useAppStore = create<AppState>()(
   persist(
-    cloudSyncMiddleware((set, get) => ({
+    (set, get) => ({
       trip: DEFAULT_TRIP,
       flights: [],
       hotel: null,
@@ -143,41 +119,6 @@ export const useAppStore = create<AppState>()(
           documents: s.documents,
           exchangeRate: s.exchangeRate,
         };
-      },
-
-      initializeStore: async () => {
-        try {
-          // Check if there's a trip code in the URL
-          const urlCode = getTripCodeFromURL();
-          if (urlCode) {
-            // Load from cloud
-            const cloudData = await loadTripFromCloud(urlCode);
-            if (cloudData) {
-              set({ tripCode: urlCode });
-              set((state) => ({
-                trip: cloudData.trip,
-                flights: cloudData.flights,
-                hotel: cloudData.hotel,
-                carRental: cloudData.carRental,
-                events: cloudData.events,
-                budgetCategories: cloudData.budgetCategories,
-                expenses: cloudData.expenses,
-                documents: cloudData.documents,
-                exchangeRate: cloudData.exchangeRate,
-              }));
-              return;
-            }
-          }
-          // If no URL code or load failed, generate a new code
-          const newCode = generateTripCode();
-          set({ tripCode: newCode });
-          setTripCodeInURL(newCode);
-          // Save initial data to cloud
-          const tripData = get().getTripData();
-          await saveTripToCloud(newCode, tripData);
-        } catch (error) {
-          console.error('Failed to initialize store:', error);
-        }
       },
 
       updateTrip: (data) =>
@@ -259,7 +200,7 @@ export const useAppStore = create<AppState>()(
 
       deleteDocument: (id) =>
         set((state) => ({ documents: state.documents.filter((d) => d.id !== id) })),
-    })),
+    }),
     { name: 'family-trip-storage' }
   )
 );
