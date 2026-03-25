@@ -9,7 +9,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <main
         className="main-content"
         style={{
-          marginLeft: '220px',
           flex: 1,
           minHeight: '100vh',
           overflow: 'auto',
