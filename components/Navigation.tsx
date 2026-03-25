@@ -46,7 +46,7 @@ export default function Navigation() {
             Family Trip
           </div>
           <div style={{ fontSize: '17px', fontWeight: '700', letterSpacing: '-0.02em', color: 'white', lineHeight: 1.2 }}>
-            Orlando<br />2025 ✈️
+            Orlando<br />2026 ✈️
           </div>
         </div>
 
