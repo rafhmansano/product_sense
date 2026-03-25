@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import ShareButton from './ShareButton';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: '🏠' },
@@ -103,8 +104,13 @@ export default function Navigation() {
           })}
         </div>
 
+        {/* Share */}
+        <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <ShareButton />
+        </div>
+
         {/* Footer */}
-        <div style={{ padding: '14px 20px', borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>
+        <div style={{ padding: '10px 20px', fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>
           Family Trip Manager v1.0
         </div>
       </nav>
@@ -271,11 +277,15 @@ export default function Navigation() {
           })}
         </div>
 
+        {/* Share */}
+        <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <ShareButton />
+        </div>
+
         {/* Footer */}
         <div style={{
-          padding: '14px 20px',
-          paddingBottom: 'calc(14px + env(safe-area-inset-bottom, 0px))',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
+          padding: '10px 20px',
+          paddingBottom: 'calc(10px + env(safe-area-inset-bottom, 0px))',
           fontSize: '11px',
           color: 'rgba(255,255,255,0.3)',
         }}>

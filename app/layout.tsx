@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import TripProvider from '@/components/TripProvider';
 
 export const metadata: Metadata = {
-  title: 'Family Trip Manager — Orlando 2025',
+  title: 'Family Trip Manager — Orlando 2026',
   description: 'Gestao completa da viagem em familia para Orlando. Disney, Universal, SeaWorld.',
 };
 
@@ -15,7 +16,9 @@ export const viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body>
+        <TripProvider>{children}</TripProvider>
+      </body>
     </html>
   );
 }

@@ -15,8 +15,7 @@ import {
 } from '@/types';
 import { DEFAULT_BUDGET_CATEGORIES, DEFAULT_DOCUMENTS } from '@/lib/data';
 
-interface AppState {
-  // Data
+export interface TripData {
   trip: Trip;
   flights: Flight[];
   hotel: Hotel | null;
@@ -25,7 +24,15 @@ interface AppState {
   budgetCategories: BudgetCategory[];
   expenses: Expense[];
   documents: TripDocument[];
-  exchangeRate: number; // USD to BRL
+  exchangeRate: number;
+}
+
+interface AppState extends TripData {
+  // Cloud sync
+  tripCode: string | null;
+  setTripCode: (code: string) => void;
+  hydrateFromCloud: (data: TripData) => void;
+  getTripData: () => TripData;
 
   // Trip
   updateTrip: (trip: Partial<Trip>) => void;
@@ -80,7 +87,7 @@ const DEFAULT_TRIP: Trip = {
 
 export const useAppStore = create<AppState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       trip: DEFAULT_TRIP,
       flights: [],
       hotel: null,
@@ -90,6 +97,37 @@ export const useAppStore = create<AppState>()(
       expenses: [],
       documents: DEFAULT_DOCUMENTS,
       exchangeRate: 5.5,
+      tripCode: null,
+
+      setTripCode: (code) => set({ tripCode: code }),
+
+      hydrateFromCloud: (data) =>
+        set({
+          trip: data.trip,
+          flights: data.flights,
+          hotel: data.hotel,
+          carRental: data.carRental,
+          events: data.events,
+          budgetCategories: data.budgetCategories,
+          expenses: data.expenses,
+          documents: data.documents,
+          exchangeRate: data.exchangeRate,
+        }),
+
+      getTripData: () => {
+        const s = get();
+        return {
+          trip: s.trip,
+          flights: s.flights,
+          hotel: s.hotel,
+          carRental: s.carRental,
+          events: s.events,
+          budgetCategories: s.budgetCategories,
+          expenses: s.expenses,
+          documents: s.documents,
+          exchangeRate: s.exchangeRate,
+        };
+      },
 
       updateTrip: (data) =>
         set((state) => ({ trip: { ...state.trip, ...data } })),
