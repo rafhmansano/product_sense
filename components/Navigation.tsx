@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { useAppStore } from '@/lib/store';
 import ShareButton from './ShareButton';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: '🏠' },
+  { href: '/familia', label: 'Familia', icon: '👨‍👩‍👦' },
   { href: '/voos', label: 'Voos', icon: '✈️' },
   { href: '/hotel', label: 'Hotel', icon: '🏨' },
   { href: '/carro', label: 'Carro', icon: '🚗' },
@@ -21,6 +23,26 @@ const navItems = [
   { href: '/documentos', label: 'Documentos', icon: '📋' },
   { href: '/dicas', label: 'Dicas', icon: '💡' },
 ];
+
+function FamilyInfo() {
+  const members = useAppStore((s) => s.trip.members);
+  const trip = useAppStore((s) => s.trip);
+
+  const memberDisplay = members.length > 0
+    ? members.map((m) => m.name || m.role).join(', ')
+    : 'Sem viajantes';
+
+  return (
+    <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: '12px' }}>
+      <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>
+        {trip.originCode || 'GRU'} → {trip.destinationCode || 'MCO'}
+      </div>
+      <div style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.4 }}>
+        {memberDisplay}
+      </div>
+    </div>
+  );
+}
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -72,11 +94,8 @@ export default function Navigation() {
           </div>
         </div>
 
-        {/* Trip info */}
-        <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: '12px' }}>
-          <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>GRU → MCO</div>
-          <div style={{ color: 'rgba(255,255,255,0.7)' }}>👨‍👩‍👦 Rafael, Jac + Filho</div>
-        </div>
+        {/* Trip info with dynamic member names */}
+        <FamilyInfo />
 
         {/* Nav links */}
         <div style={{ flex: 1, padding: '8px 0' }}>
@@ -244,11 +263,8 @@ export default function Navigation() {
           </button>
         </div>
 
-        {/* Trip info */}
-        <div style={{ padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: '12px' }}>
-          <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '2px' }}>GRU → MCO</div>
-          <div style={{ color: 'rgba(255,255,255,0.7)' }}>👨‍👩‍👦 Rafael, Jac + Filho</div>
-        </div>
+        {/* Trip info with dynamic member names */}
+        <FamilyInfo />
 
         {/* Nav links */}
         <div style={{ flex: 1, padding: '12px 0' }}>

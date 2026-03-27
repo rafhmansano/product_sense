@@ -1,39 +1,57 @@
 'use client';
 
-
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { familyService } from '@/services/family.service';
 import { tripService } from '@/services/trip.service';
 
 export default function OnboardingPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
+        <div style={{ fontSize: '16px', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>Carregando...</div>
+      </div>
+    }>
+      <OnboardingContent />
+    </Suspense>
+  );
+}
+
+function OnboardingContent() {
   const { user, signOut } = useAuth();
   const router = useRouter();
-  const [mode, setMode] = useState<'choose' | 'create' | 'join'>('choose');
+  const searchParams = useSearchParams();
+  const codeFromUrl = searchParams.get('code');
+
+  const [mode, setMode] = useState<'choose' | 'create' | 'join'>(codeFromUrl ? 'join' : 'choose');
   const [familyName, setFamilyName] = useState('');
-  const [inviteCode, setInviteCode] = useState('');
+  const [inviteCode, setInviteCode] = useState(codeFromUrl?.toUpperCase() || '');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [inviteCodeResult, setInviteCodeResult] = useState('');
 
-    // Check if user already has a family and redirect to home
+  // Auto-fill invite code from URL
+  useEffect(() => {
+    if (codeFromUrl) {
+      setInviteCode(codeFromUrl.toUpperCase());
+      setMode('join');
+    }
+  }, [codeFromUrl]);
+
+  // Check if user already has a family and redirect to home
   useEffect(() => {
     const checkFamily = async () => {
       try {
         const myFamily = await familyService.getMyFamily();
         if (myFamily && myFamily.family) {
-          // User already belongs to a family, redirect to home
           router.push('/');
         }
-      } catch (error) {
-        // User doesn't have a family yet, allow them to create/join
-        console.log('No existing family found');
+      } catch {
+        // User doesn't have a family yet
       }
     };
     checkFamily();
-  }, []);
+  }, [router]);
 
   async function handleCreateFamily() {
     if (!familyName.trim()) return;
@@ -128,18 +146,11 @@ export default function OnboardingPage() {
                 <input className="input-field" type="text" value={familyName} onChange={(e) => setFamilyName(e.target.value)} placeholder="Ex: Familia Santos" autoFocus />
               </div>
               {error && <div style={{ padding: '10px 14px', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', fontSize: '13px', color: '#dc2626', fontFamily: 'sans-serif' }}>{error}</div>}
-              {inviteCodeResult && (
-                <div style={{ padding: '14px', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '8px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '12px', color: '#16a34a', fontFamily: 'sans-serif', marginBottom: '4px' }}>Codigo de convite da familia:</div>
-                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#15803d', letterSpacing: '0.15em', fontFamily: 'monospace' }}>{inviteCodeResult}</div>
-                  <div style={{ fontSize: '11px', color: '#16a34a', fontFamily: 'sans-serif', marginTop: '4px' }}>Compartilhe com sua familia!</div>
-                </div>
-              )}
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button onClick={handleCreateFamily} disabled={loading} style={{ flex: 1, padding: '12px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1 }}>
                   {loading ? 'Criando...' : 'Criar familia'}
                 </button>
-                <button onClick={() => { setMode('choose'); setError(''); setInviteCodeResult(''); }} style={{ padding: '12px 20px', background: 'white', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '14px', cursor: 'pointer' }}>
+                <button onClick={() => { setMode('choose'); setError(''); }} style={{ padding: '12px 20px', background: 'white', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '14px', cursor: 'pointer' }}>
                   Voltar
                 </button>
               </div>
@@ -155,6 +166,11 @@ export default function OnboardingPage() {
                 <label className="label">Codigo de convite</label>
                 <input className="input-field" type="text" value={inviteCode} onChange={(e) => setInviteCode(e.target.value.toUpperCase())} placeholder="Ex: AB12CD34" style={{ textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '18px', textAlign: 'center' }} autoFocus />
               </div>
+              {codeFromUrl && (
+                <div style={{ padding: '10px 14px', background: 'rgba(59, 130, 246, 0.06)', border: '1px solid rgba(59, 130, 246, 0.15)', borderRadius: '8px', fontSize: '13px', color: 'var(--ocean)', fontFamily: 'sans-serif' }}>
+                  Codigo preenchido automaticamente a partir do link de convite
+                </div>
+              )}
               {error && <div style={{ padding: '10px 14px', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', fontSize: '13px', color: '#dc2626', fontFamily: 'sans-serif' }}>{error}</div>}
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button onClick={handleJoinFamily} disabled={loading} style={{ flex: 1, padding: '12px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1 }}>
