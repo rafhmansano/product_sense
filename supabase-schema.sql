@@ -248,6 +248,103 @@ create table public.food_items (
 );
 
 -- =====================
+-- 2b. RPC Functions (atomic operations)
+-- =====================
+
+-- Create family + add creator as admin atomically
+create or replace function public.create_family_with_member(p_name text)
+returns json as $$
+declare
+  v_family_id uuid;
+  v_invite_code text;
+  v_user_id uuid := auth.uid();
+begin
+  if v_user_id is null then
+    raise exception 'Not authenticated';
+  end if;
+
+  -- Check if user already belongs to a family
+  if exists (select 1 from public.family_members where user_id = v_user_id) then
+    raise exception 'Voce ja pertence a uma familia';
+  end if;
+
+  -- Create family
+  insert into public.families (name, created_by)
+  values (p_name, v_user_id)
+  returning id, invite_code into v_family_id, v_invite_code;
+
+  -- Add creator as admin
+  insert into public.family_members (family_id, user_id, role)
+  values (v_family_id, v_user_id, 'admin');
+
+  return json_build_object(
+    'id', v_family_id,
+    'name', p_name,
+    'invite_code', v_invite_code
+  );
+end;
+$$ language plpgsql security definer;
+
+-- Join family by invite code atomically
+create or replace function public.join_family_by_code(p_invite_code text)
+returns json as $$
+declare
+  v_family record;
+  v_user_id uuid := auth.uid();
+begin
+  if v_user_id is null then
+    raise exception 'Not authenticated';
+  end if;
+
+  -- Check if user already belongs to a family
+  if exists (select 1 from public.family_members where user_id = v_user_id) then
+    raise exception 'Voce ja pertence a uma familia';
+  end if;
+
+  -- Find family by invite code
+  select id, name, invite_code into v_family
+  from public.families
+  where invite_code = upper(p_invite_code);
+
+  if v_family.id is null then
+    raise exception 'Codigo de convite invalido';
+  end if;
+
+  -- Add as member
+  insert into public.family_members (family_id, user_id, role)
+  values (v_family.id, v_user_id, 'member');
+
+  return json_build_object(
+    'id', v_family.id,
+    'name', v_family.name,
+    'invite_code', v_family.invite_code
+  );
+end;
+$$ language plpgsql security definer;
+
+-- Get invite code for a family (for sharing)
+create or replace function public.get_family_invite_code(p_family_id uuid)
+returns text as $$
+declare
+  v_code text;
+begin
+  select invite_code into v_code
+  from public.families
+  where id = p_family_id;
+
+  -- Verify caller is a member
+  if not exists (
+    select 1 from public.family_members
+    where family_id = p_family_id and user_id = auth.uid()
+  ) then
+    raise exception 'Not a family member';
+  end if;
+
+  return v_code;
+end;
+$$ language plpgsql security definer;
+
+-- =====================
 -- 3. Row Level Security
 -- =====================
 
@@ -283,7 +380,10 @@ create policy "Users update own profile" on public.profiles for update using (id
 
 -- families
 create policy "Members see own family" on public.families for select
-  using (exists (select 1 from public.family_members where family_id = families.id and user_id = auth.uid()));
+  using (
+    created_by = auth.uid()
+    or exists (select 1 from public.family_members where family_id = families.id and user_id = auth.uid())
+  );
 create policy "Users create family" on public.families for insert with check (created_by = auth.uid());
 create policy "Admin updates family" on public.families for update
   using (exists (select 1 from public.family_members where family_id = families.id and user_id = auth.uid() and role = 'admin'));

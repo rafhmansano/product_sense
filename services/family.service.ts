@@ -17,45 +17,44 @@ export const familyService = {
 
   async createFamily(name: string) {
     if (!supabase) throw new Error('Supabase not configured');
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
 
-    const { data: family, error } = await supabase
-      .from('families')
-      .insert({ name, created_by: user.id })
-      .select()
-      .single();
-
-    if (error) throw error;
-
-    await supabase.from('family_members').insert({
-      family_id: family.id,
-      user_id: user.id,
-      role: 'admin',
+    const { data, error } = await supabase.rpc('create_family_with_member', {
+      p_name: name,
     });
 
-    return family;
+    if (error) throw new Error(error.message);
+    return data as { id: string; name: string; invite_code: string };
   },
 
   async joinFamily(inviteCode: string) {
     if (!supabase) throw new Error('Supabase not configured');
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
 
-    const { data: family, error } = await supabase
-      .from('families')
-      .select('id')
-      .eq('invite_code', inviteCode.toUpperCase())
-      .single();
+    const { data, error } = await supabase.rpc('join_family_by_code', {
+      p_invite_code: inviteCode.toUpperCase(),
+    });
 
-    if (error || !family) throw new Error('Codigo de convite invalido');
+    if (error) {
+      // Map Postgres exceptions to user-friendly messages
+      if (error.message.includes('Codigo de convite invalido')) {
+        throw new Error('Codigo de convite invalido');
+      }
+      if (error.message.includes('ja pertence')) {
+        throw new Error('Voce ja pertence a uma familia');
+      }
+      throw new Error(error.message);
+    }
+    return data as { id: string; name: string; invite_code: string };
+  },
 
-    const { error: joinError } = await supabase
-      .from('family_members')
-      .insert({ family_id: family.id, user_id: user.id, role: 'member' });
+  async getInviteCode(familyId: string) {
+    if (!supabase) return null;
 
-    if (joinError) throw joinError;
-    return family;
+    const { data, error } = await supabase.rpc('get_family_invite_code', {
+      p_family_id: familyId,
+    });
+
+    if (error) throw new Error(error.message);
+    return data as string;
   },
 
   async getMembers(familyId: string) {

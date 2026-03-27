@@ -14,6 +14,7 @@ export default function OnboardingPage() {
   const [inviteCode, setInviteCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [inviteCodeResult, setInviteCodeResult] = useState('');
 
   async function handleCreateFamily() {
     if (!familyName.trim()) return;
@@ -31,7 +32,8 @@ export default function OnboardingPage() {
       });
       router.push('/');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Erro ao criar familia');
+      const msg = err instanceof Error ? err.message : 'Erro ao criar familia';
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -45,7 +47,8 @@ export default function OnboardingPage() {
       await familyService.joinFamily(inviteCode.trim());
       router.push('/');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Codigo invalido');
+      const msg = err instanceof Error ? err.message : 'Codigo invalido';
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -106,11 +109,18 @@ export default function OnboardingPage() {
                 <input className="input-field" type="text" value={familyName} onChange={(e) => setFamilyName(e.target.value)} placeholder="Ex: Familia Santos" autoFocus />
               </div>
               {error && <div style={{ padding: '10px 14px', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', fontSize: '13px', color: '#dc2626', fontFamily: 'sans-serif' }}>{error}</div>}
+              {inviteCodeResult && (
+                <div style={{ padding: '14px', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '8px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '12px', color: '#16a34a', fontFamily: 'sans-serif', marginBottom: '4px' }}>Codigo de convite da familia:</div>
+                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#15803d', letterSpacing: '0.15em', fontFamily: 'monospace' }}>{inviteCodeResult}</div>
+                  <div style={{ fontSize: '11px', color: '#16a34a', fontFamily: 'sans-serif', marginTop: '4px' }}>Compartilhe com sua familia!</div>
+                </div>
+              )}
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button onClick={handleCreateFamily} disabled={loading} style={{ flex: 1, padding: '12px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1 }}>
                   {loading ? 'Criando...' : 'Criar familia'}
                 </button>
-                <button onClick={() => { setMode('choose'); setError(''); }} style={{ padding: '12px 20px', background: 'white', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '14px', cursor: 'pointer' }}>
+                <button onClick={() => { setMode('choose'); setError(''); setInviteCodeResult(''); }} style={{ padding: '12px 20px', background: 'white', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '14px', cursor: 'pointer' }}>
                   Voltar
                 </button>
               </div>
