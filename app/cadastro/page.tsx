@@ -24,7 +24,7 @@ export default function CadastroPage() {
                 if (err) throw err;
                 // If email confirmation is disabled, Supabase returns a session immediately
           if (data?.session) {
-                    router.push('/');
+                    window.location.href = '/';
           } else {
                     setSuccess(true);
           }
