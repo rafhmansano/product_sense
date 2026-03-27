@@ -30,7 +30,7 @@ export default function OnboardingPage() {
       } catch (error) {
         // User doesn't have a family yet, allow them to create/join
         console.log('No existing family found');
-    }
+    };
     checkFamily();
   }, []);
 
