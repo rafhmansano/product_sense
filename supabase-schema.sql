@@ -468,3 +468,10 @@ alter publication supabase_realtime add table public.expenses;
 alter publication supabase_realtime add table public.documents;
 alter publication supabase_realtime add table public.packing_items;
 alter publication supabase_realtime add table public.food_items;
+
+-- =====================
+-- 2c. Grant Permissions
+-- =====================
+grant execute on function public.create_family_with_member(text) to anon, authenticated;
+grant execute on function public.join_family_by_code(text) to anon, authenticated;
+grant execute on function public.get_family_invite_code(uuid) to anon, authenticated;
