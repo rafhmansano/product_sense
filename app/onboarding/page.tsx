@@ -17,7 +17,6 @@ export default function OnboardingPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [inviteCodeResult, setInviteCodeResult] = useState('');
-   const [isChecking, setIsChecking] = useState(true);
 
     // Check if user already has a family and redirect to home
   useEffect(() => {
@@ -31,8 +30,6 @@ export default function OnboardingPage() {
       } catch (error) {
         // User doesn't have a family yet, allow them to create/join
         console.log('No existing family found');
-              setIsChecking(false);
-      }
     };
     checkFamily();
   }, []);
@@ -75,7 +72,6 @@ export default function OnboardingPage() {
     }
   }
 
-    if (isChecking) return null;
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)', padding: '20px' }}>
       <div style={{ width: '100%', maxWidth: '440px' }}>
