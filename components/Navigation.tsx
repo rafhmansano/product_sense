@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
+import { useAuth } from '@/hooks/useAuth';
+import { isSupabaseConfigured } from '@/lib/supabase';
 import ShareButton from './ShareButton';
 
 const navItems = [
@@ -46,7 +48,14 @@ function FamilyInfo() {
 
 export default function Navigation() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, signOut } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  async function handleSignOut() {
+    await signOut();
+    router.push('/login');
+  }
 
   // Close drawer on route change
   useEffect(() => {
@@ -130,6 +139,25 @@ export default function Navigation() {
         <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           <ShareButton />
         </div>
+
+        {/* Logout */}
+        {isSupabaseConfigured() && user && (
+          <div style={{ padding: '4px 16px 8px' }}>
+            <button
+              onClick={handleSignOut}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
+                padding: '10px 16px', background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px',
+                color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '13px',
+                fontFamily: 'sans-serif', transition: 'all 0.2s',
+              }}
+            >
+              <span style={{ fontSize: '15px' }}>🚪</span>
+              Sair da conta
+            </button>
+          </div>
+        )}
 
         {/* Footer */}
         <div style={{ padding: '10px 20px', fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>
@@ -300,6 +328,25 @@ export default function Navigation() {
         <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           <ShareButton />
         </div>
+
+        {/* Logout */}
+        {isSupabaseConfigured() && user && (
+          <div style={{ padding: '4px 16px 8px' }}>
+            <button
+              onClick={handleSignOut}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '10px', width: '100%',
+                padding: '12px 16px', background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px',
+                color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '14px',
+                fontFamily: 'sans-serif', transition: 'all 0.2s',
+              }}
+            >
+              <span style={{ fontSize: '18px' }}>🚪</span>
+              Sair da conta
+            </button>
+          </div>
+        )}
 
         {/* Footer */}
         <div style={{
