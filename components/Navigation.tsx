@@ -26,7 +26,7 @@ const navItems = [
   { href: '/dicas', label: 'Dicas', icon: '💡' },
 ];
 
-function FamilyInfo() {
+function FamilyInfo({ compact }: { compact?: boolean }) {
   const members = useAppStore((s) => s.trip.members);
   const trip = useAppStore((s) => s.trip);
 
@@ -35,11 +35,11 @@ function FamilyInfo() {
     : 'Sem viajantes';
 
   return (
-    <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: '12px' }}>
-      <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>
+    <div style={{ padding: compact ? '8px 16px' : '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: compact ? '11px' : '12px' }}>
+      <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '2px' }}>
         {trip.originCode || 'GRU'} → {trip.destinationCode || 'MCO'}
       </div>
-      <div style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.4 }}>
+      <div style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.3 }}>
         {memberDisplay}
       </div>
     </div>
@@ -83,31 +83,31 @@ export default function Navigation() {
           background: 'var(--ocean)',
           color: 'white',
           width: '220px',
-          minHeight: '100vh',
+          height: '100vh',
+          display: 'flex',
           flexDirection: 'column',
           position: 'fixed',
           left: 0,
           top: 0,
           zIndex: 50,
           borderRight: '1px solid rgba(255,255,255,0.06)',
-          overflowY: 'auto',
         }}
       >
-        {/* Logo */}
-        <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ fontSize: '10px', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '4px' }}>
+        {/* Logo — compact */}
+        <div style={{ padding: '14px 16px 10px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '2px' }}>
             Family Trip
           </div>
-          <div style={{ fontSize: '17px', fontWeight: '700', letterSpacing: '-0.02em', color: 'white', lineHeight: 1.2 }}>
-            Orlando<br />2026 ✈️
+          <div style={{ fontSize: '15px', fontWeight: '700', letterSpacing: '-0.02em', color: 'white', lineHeight: 1.2 }}>
+            Orlando 2026 ✈️
           </div>
         </div>
 
-        {/* Trip info with dynamic member names */}
-        <FamilyInfo />
+        {/* Trip info — compact */}
+        <FamilyInfo compact />
 
-        {/* Nav links */}
-        <div style={{ flex: 1, padding: '8px 0' }}>
+        {/* Nav links — tight spacing */}
+        <div style={{ flex: 1, padding: '4px 0', overflowY: 'auto' }}>
           {navItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             return (
@@ -117,51 +117,42 @@ export default function Navigation() {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px',
-                  padding: '9px 20px',
+                  gap: '8px',
+                  padding: '6px 16px',
                   textDecoration: 'none',
                   color: isActive ? 'white' : 'rgba(255,255,255,0.55)',
                   background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
                   borderLeft: isActive ? '3px solid var(--sky)' : '3px solid transparent',
                   transition: 'all 0.15s ease',
-                  fontSize: '13px',
+                  fontSize: '12.5px',
                   fontWeight: isActive ? '600' : '400',
                 }}
               >
-                <span style={{ fontSize: '15px' }}>{item.icon}</span>
+                <span style={{ fontSize: '14px' }}>{item.icon}</span>
                 {item.label}
               </Link>
             );
           })}
         </div>
 
-        {/* Share */}
-        <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+        {/* Bottom section — share + logout */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', padding: '8px 12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <ShareButton />
-        </div>
-
-        {/* Logout */}
-        {isSupabaseConfigured() && user && (
-          <div style={{ padding: '4px 16px 8px' }}>
+          {isSupabaseConfigured() && user && (
             <button
               onClick={handleSignOut}
               style={{
                 display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
-                padding: '10px 16px', background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px',
-                color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '13px',
+                padding: '8px 12px', background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px',
+                color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '12px',
                 fontFamily: 'sans-serif', transition: 'all 0.2s',
               }}
             >
-              <span style={{ fontSize: '15px' }}>🚪</span>
-              Sair da conta
+              <span style={{ fontSize: '13px' }}>🚪</span>
+              Sair
             </button>
-          </div>
-        )}
-
-        {/* Footer */}
-        <div style={{ padding: '10px 20px', fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>
-          Family Trip Manager v1.0
+          )}
         </div>
       </nav>
 
