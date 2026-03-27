@@ -22,8 +22,13 @@ export const familyService = {
       p_name: name,
     });
 
-    if (error) throw new Error(error.message);
-    return data as { id: string; name: string; invite_code: string };
+if (error) {
+    // Map Postgres exceptions to user-friendly messages
+    if (error.message.includes('ja pertence')) {
+      throw new Error('Voce ja pertence a uma familia');
+    }
+    throw new Error(error.message);
+  }    return data as { id: string; name: string; invite_code: string };
   },
 
   async joinFamily(inviteCode: string) {
