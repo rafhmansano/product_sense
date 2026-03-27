@@ -1,5 +1,7 @@
 'use client';
 
+
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,6 +17,23 @@ export default function OnboardingPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [inviteCodeResult, setInviteCodeResult] = useState('');
+
+    // Check if user already has a family and redirect to home
+  useEffect(() => {
+    const checkFamily = async () => {
+      try {
+        const myFamily = await familyService.getMyFamily();
+        if (myFamily && myFamily.family) {
+          // User already belongs to a family, redirect to home
+          router.push('/');
+        }
+      } catch (error) {
+        // User doesn't have a family yet, allow them to create/join
+        console.log('No existing family found');
+      }
+    };
+    checkFamily();
+  }, []);
 
   async function handleCreateFamily() {
     if (!familyName.trim()) return;
