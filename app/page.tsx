@@ -32,12 +32,15 @@ function QuickCard({
       <div
         className="card"
         style={{
-          padding: '20px',
+          padding: '18px',
           borderRadius: '16px',
           background: 'var(--surface)',
           border: '1px solid var(--border)',
           cursor: 'pointer',
           transition: 'transform 0.2s, box-shadow 0.2s',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-2px)';
@@ -63,11 +66,17 @@ function QuickCard({
         </div>
         <div
           style={{
-            fontSize: '20px',
+            fontSize: '16px',
             fontWeight: '700',
             color,
-            lineHeight: 1.2,
+            lineHeight: 1.3,
             fontFamily: 'sans-serif',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            flex: 1,
           }}
         >
           {value}
@@ -78,7 +87,10 @@ function QuickCard({
               fontSize: '12px',
               color: 'var(--ink-muted)',
               fontFamily: 'sans-serif',
-              marginTop: '2px',
+              marginTop: '4px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
           >
             {sub}
@@ -148,9 +160,15 @@ export default function Dashboard() {
     exchangeRate,
   } = useAppStore();
 
+  // Derive trip dates from flights if trip dates not set manually
+  const outboundFlight = flights.find((f) => f.type === 'ida');
+  const returnFlight = flights.find((f) => f.type === 'volta');
+  const departureDate = trip.startDate || outboundFlight?.departureDate || '';
+  const returnDate = trip.endDate || returnFlight?.departureDate || '';
+
   // Countdown
-  const hasStartDate = trip.startDate !== '';
-  const daysLeft = hasStartDate ? getDaysUntil(trip.startDate) : null;
+  const hasStartDate = departureDate !== '';
+  const daysLeft = hasStartDate ? getDaysUntil(departureDate) : null;
 
   // Documents progress
   const docsCompleted = documents.filter((d) => d.status === 'concluido').length;
@@ -300,15 +318,15 @@ export default function Dashboard() {
                 )}
               </div>
               <div style={{ fontSize: '14px', opacity: 0.8, fontFamily: 'sans-serif', marginTop: '4px' }}>
-                {new Date(trip.startDate + 'T00:00:00').toLocaleDateString('pt-BR', {
+                {new Date(departureDate + 'T00:00:00').toLocaleDateString('pt-BR', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric',
                 })}
-                {trip.endDate && (
+                {returnDate && (
                   <>
                     {' — '}
-                    {new Date(trip.endDate + 'T00:00:00').toLocaleDateString('pt-BR', {
+                    {new Date(returnDate + 'T00:00:00').toLocaleDateString('pt-BR', {
                       day: 'numeric',
                       month: 'long',
                       year: 'numeric',
@@ -341,7 +359,7 @@ export default function Dashboard() {
                 Defina a data da viagem
               </div>
               <div style={{ fontSize: '14px', opacity: 0.8, fontFamily: 'sans-serif', marginTop: '4px' }}>
-                Acesse as configuracoes para definir as datas de ida e volta.
+                Cadastre seus voos ou defina as datas manualmente.
               </div>
             </>
           )}
@@ -351,11 +369,11 @@ export default function Dashboard() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-            gap: '16px',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+            gap: '12px',
             marginBottom: '32px',
           }}
-          className="stagger-children"
+          className="stagger-children quick-cards-grid"
         >
           <QuickCard
             emoji="✈️"

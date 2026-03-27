@@ -236,6 +236,9 @@ textarea, input, select {
   .dashboard-two-col {
     grid-template-columns: 1fr !important;
   }
+  .quick-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
   .card {
     padding: 16px !important;
   }
