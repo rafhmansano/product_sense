@@ -177,6 +177,7 @@ export default function ChecklistPage({
                       flexShrink: 0,
                     }}
                     title="Remover item"
+                    aria-label={`Remover ${item.name}`}
                   >
                     ✕
                   </button>

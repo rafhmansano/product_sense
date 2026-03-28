@@ -12,9 +12,9 @@ const STATUS_CYCLE: Record<string, TripDocument['status']> = {
 };
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; color: string; icon: string }> = {
-  'concluido': { label: 'Concluido', bg: '#dcfce7', color: '#16a34a', icon: '\u2713' },
+  'concluido': { label: 'Concluído', bg: '#dcfce7', color: '#16a34a', icon: '\u2713' },
   'pendente': { label: 'Pendente', bg: '#fef9c3', color: '#ca8a04', icon: '\u26A0' },
-  'nao-iniciado': { label: 'Nao Iniciado', bg: '#fee2e2', color: '#dc2626', icon: '\u2717' },
+  'nao-iniciado': { label: 'Não Iniciado', bg: '#fee2e2', color: '#dc2626', icon: '\u2717' },
 };
 
 function StatusBadge({ status, onClick }: { status: TripDocument['status']; onClick: () => void }) {
@@ -115,7 +115,7 @@ export default function DocumentosPage() {
               lineHeight: 1.6,
             }}
           >
-            Controle todos os documentos necessarios para a viagem. Clique no status para atualizar o progresso.
+            Controle todos os documentos necessários para a viagem. Clique no status para atualizar o progresso.
           </p>
         </div>
 
@@ -227,7 +227,7 @@ export default function DocumentosPage() {
               </div>
               <div>
                 <label className="label" style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  Responsavel
+                  Responsável
                 </label>
                 <input
                   className="input-field"
@@ -249,7 +249,7 @@ export default function DocumentosPage() {
               </div>
               <div>
                 <label className="label" style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  Observacoes
+                  Observações
                 </label>
                 <input
                   className="input-field"

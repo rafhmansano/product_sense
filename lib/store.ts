@@ -295,6 +295,20 @@ export const useAppStore = create<AppState>()(
           ),
         })),
     }),
-    { name: 'family-trip-storage' }
+    {
+      name: 'family-trip-storage',
+      version: 2,
+      migrate: (persisted: unknown, version: number) => {
+        const state = persisted as Record<string, unknown>;
+        if (version < 2) {
+          // Merge missing default documents
+          const storedDocs = (state.documents as TripDocument[]) || [];
+          const storedIds = new Set(storedDocs.map((d) => d.id));
+          const missingDocs = DEFAULT_DOCUMENTS.filter((d) => !storedIds.has(d.id));
+          state.documents = [...storedDocs, ...missingDocs];
+        }
+        return state as unknown as AppState;
+      },
+    }
   )
 );

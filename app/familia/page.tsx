@@ -8,8 +8,8 @@ import type { FamilyMember } from '@/types';
 
 const ROLE_LABELS: Record<string, string> = {
   pai: 'Pai',
-  mae: 'Mae',
-  crianca: 'Crianca',
+  mae: 'Mãe',
+  crianca: 'Criança',
 };
 
 const ROLE_ICONS: Record<string, string> = {
@@ -29,6 +29,8 @@ export default function FamiliaPage() {
   const [role, setRole] = useState<FamilyMember['role']>('crianca');
   const [age, setAge] = useState('');
   const [heightCm, setHeightCm] = useState('');
+
+  const [nameError, setNameError] = useState('');
 
   // Invite state
   const [inviteCode, setInviteCode] = useState<string | null>(null);
@@ -63,7 +65,11 @@ export default function FamiliaPage() {
   }
 
   function handleAddMember() {
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      setNameError('Informe o nome do viajante');
+      return;
+    }
+    setNameError('');
     const newMember: FamilyMember = {
       name: name.trim(),
       role,
@@ -85,7 +91,12 @@ export default function FamiliaPage() {
   }
 
   function handleSaveEdit() {
-    if (editingId === null || !name.trim()) return;
+    if (editingId === null) return;
+    if (!name.trim()) {
+      setNameError('Informe o nome do viajante');
+      return;
+    }
+    setNameError('');
     const updated = [...trip.members];
     updated[editingId] = {
       name: name.trim(),
@@ -98,6 +109,8 @@ export default function FamiliaPage() {
   }
 
   function handleDeleteMember(index: number) {
+    const member = trip.members[index];
+    if (!confirm(`Tem certeza que deseja remover "${member.name || 'este viajante'}"?`)) return;
     const updated = trip.members.filter((_, i) => i !== index);
     updateTrip({ members: updated });
   }
@@ -109,6 +122,7 @@ export default function FamiliaPage() {
     setHeightCm('');
     setShowAddForm(false);
     setEditingId(null);
+    setNameError('');
   }
 
   async function handleCopyCode() {
@@ -156,7 +170,7 @@ export default function FamiliaPage() {
     <div style={{ maxWidth: '600px', margin: '0 auto' }}>
       <div style={{ marginBottom: '28px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--ink)', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span>👨‍👩‍👦</span> Familia
+          <span>👨‍👩‍👦</span> Família
         </h1>
         <p style={{ fontSize: '14px', color: 'var(--ink-muted)', margin: 0, fontFamily: 'sans-serif' }}>
           Gerencie os membros da viagem e convide outras pessoas
@@ -209,6 +223,7 @@ export default function FamiliaPage() {
                   onClick={() => handleEditMember(index)}
                   style={{ padding: '6px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', borderRadius: '6px' }}
                   title="Editar"
+                  aria-label={`Editar ${member.name || 'viajante'}`}
                 >
                   ✏️
                 </button>
@@ -216,6 +231,7 @@ export default function FamiliaPage() {
                   onClick={() => handleDeleteMember(index)}
                   style={{ padding: '6px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', borderRadius: '6px' }}
                   title="Remover"
+                  aria-label={`Remover ${member.name || 'viajante'}`}
                 >
                   🗑️
                 </button>
@@ -244,21 +260,23 @@ export default function FamiliaPage() {
                 className="input-field"
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => { setName(e.target.value); setNameError(''); }}
                 placeholder="Nome do viajante"
                 autoFocus
+                style={nameError ? { borderColor: '#dc2626' } : {}}
               />
+              {nameError && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{nameError}</span>}
             </div>
             <div>
-              <label className="label">Papel na familia</label>
+              <label className="label">Papel na família</label>
               <select
                 className="input-field"
                 value={role}
                 onChange={(e) => setRole(e.target.value as FamilyMember['role'])}
               >
                 <option value="pai">Pai</option>
-                <option value="mae">Mae</option>
-                <option value="crianca">Crianca</option>
+                <option value="mae">Mãe</option>
+                <option value="crianca">Criança</option>
               </select>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -410,7 +428,7 @@ export default function FamiliaPage() {
       {/* Info card */}
       <div style={{ padding: '16px 18px', background: 'rgba(59, 130, 246, 0.06)', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.12)' }}>
         <div style={{ fontSize: '13px', color: 'var(--ocean)', fontFamily: 'sans-serif', lineHeight: 1.5 }}>
-          <strong>Dica:</strong> Cadastre todos os viajantes com idade e altura para facilitar a verificacao de restricoes de atrações nos parques. Use o convite para que outros membros da familia possam acessar e editar a viagem.
+          <strong>Dica:</strong> Cadastre todos os viajantes com idade e altura para facilitar a verificação de restrições de atrações nos parques. Use o convite para que outros membros da familia possam acessar e editar a viagem.
         </div>
       </div>
     </div>

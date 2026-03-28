@@ -68,9 +68,19 @@ export default function GastosPage() {
     );
   }
 
+  const [amountError, setAmountError] = useState('');
+
   function handleAdd() {
     const parsed = parseFloat(amount);
-    if (isNaN(parsed) || parsed <= 0) return;
+    if (!amount.trim()) {
+      setAmountError('Informe o valor do gasto');
+      return;
+    }
+    if (isNaN(parsed) || parsed <= 0) {
+      setAmountError('O valor deve ser maior que zero');
+      return;
+    }
+    setAmountError('');
 
     addExpense({
       id: `exp_${Date.now()}`,
@@ -239,12 +249,12 @@ export default function GastosPage() {
                 min="0"
                 placeholder="0.00"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => { setAmount(e.target.value); setAmountError(''); }}
                 onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
                 style={{
                   width: '100%',
                   padding: '10px 12px',
-                  border: '1px solid var(--border)',
+                  border: `1px solid ${amountError ? '#dc2626' : 'var(--border)'}`,
                   borderRadius: '8px',
                   fontSize: '15px',
                   fontWeight: '600',
@@ -252,6 +262,7 @@ export default function GastosPage() {
                   boxSizing: 'border-box',
                 }}
               />
+              {amountError && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{amountError}</span>}
             </div>
 
             {/* Currency Toggle */}
@@ -401,7 +412,7 @@ export default function GastosPage() {
                   letterSpacing: '0.05em',
                 }}
               >
-                Descricao
+                Descrição
               </label>
               <input
                 className="input-field"
@@ -653,7 +664,7 @@ export default function GastosPage() {
                     {/* Delete Button */}
                     <button
                       className="btn-danger"
-                      onClick={() => deleteExpense(exp.id)}
+                      onClick={() => { if (confirm('Tem certeza que deseja excluir este gasto?')) deleteExpense(exp.id); }}
                       style={{
                         padding: '6px 14px',
                         background: 'transparent',

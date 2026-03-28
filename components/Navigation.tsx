@@ -10,15 +10,15 @@ import ShareButton from './ShareButton';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: '🏠' },
-  { href: '/familia', label: 'Familia', icon: '👨‍👩‍👦' },
+  { href: '/familia', label: 'Família', icon: '👨‍👩‍👦' },
   { href: '/voos', label: 'Voos', icon: '✈️' },
   { href: '/hotel', label: 'Hotel', icon: '🏨' },
   { href: '/carro', label: 'Carro', icon: '🚗' },
   { href: '/agenda', label: 'Agenda', icon: '📅' },
-  { href: '/orcamento', label: 'Orcamento', icon: '💰' },
+  { href: '/orcamento', label: 'Orçamento', icon: '💰' },
   { href: '/gastos', label: 'Gastos', icon: '🧾' },
   { href: '/parques', label: 'Parques', icon: '🏰' },
-  { href: '/alimentacao', label: 'Alimentacao', icon: '🍽️' },
+  { href: '/alimentacao', label: 'Alimentação', icon: '🍽️' },
   { href: '/mala', label: 'Mala', icon: '🧳' },
   { href: '/mochila', label: 'Mochila', icon: '🎒' },
   { href: '/listas', label: 'Compras', icon: '🛒' },

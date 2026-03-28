@@ -44,13 +44,22 @@ export default function VoosPage() {
   const [form, setForm] = useState<Omit<Flight, 'id'>>(EMPTY_FLIGHT);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const handleChange = (field: keyof Omit<Flight, 'id'>, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    setFormErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
   const handleSubmit = () => {
-    if (!form.airline || !form.flightNumber) return;
+    const errors: Record<string, string> = {};
+    if (!form.airline.trim()) errors.airline = 'Informe a companhia aérea';
+    if (!form.flightNumber.trim()) errors.flightNumber = 'Informe o número do voo';
+    if (!form.departureDate) errors.departureDate = 'Informe a data de partida';
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
 
     if (editingId) {
       updateFlight(editingId, form);
@@ -74,6 +83,7 @@ export default function VoosPage() {
     setForm(EMPTY_FLIGHT);
     setEditingId(null);
     setShowForm(false);
+    setFormErrors({});
   };
 
   const handleDelete = (id: string) => {
@@ -139,22 +149,26 @@ export default function VoosPage() {
             {/* Airline & Flight Number */}
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginBottom: '16px' }}>
               <div>
-                <label className="label">Companhia Aerea</label>
+                <label className="label">Companhia Aérea</label>
                 <input
                   className="input-field"
                   placeholder="Ex: LATAM, GOL, American Airlines"
                   value={form.airline}
                   onChange={(e) => handleChange('airline', e.target.value)}
+                  style={formErrors.airline ? { borderColor: '#dc2626' } : {}}
                 />
+                {formErrors.airline && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{formErrors.airline}</span>}
               </div>
               <div>
-                <label className="label">Numero do Voo</label>
+                <label className="label">Número do Voo</label>
                 <input
                   className="input-field"
                   placeholder="Ex: LA8180"
                   value={form.flightNumber}
                   onChange={(e) => handleChange('flightNumber', e.target.value)}
+                  style={formErrors.flightNumber ? { borderColor: '#dc2626' } : {}}
                 />
+                {formErrors.flightNumber && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{formErrors.flightNumber}</span>}
               </div>
             </div>
 
@@ -170,7 +184,7 @@ export default function VoosPage() {
                 />
               </div>
               <div>
-                <label className="label">Codigo (IATA)</label>
+                <label className="label">Código (IATA)</label>
                 <input
                   className="input-field"
                   placeholder="Ex: GRU"
@@ -192,7 +206,7 @@ export default function VoosPage() {
                 />
               </div>
               <div>
-                <label className="label">Codigo (IATA)</label>
+                <label className="label">Código (IATA)</label>
                 <input
                   className="input-field"
                   placeholder="Ex: MCO"
@@ -211,7 +225,9 @@ export default function VoosPage() {
                   className="input-field"
                   value={form.departureDate}
                   onChange={(e) => handleChange('departureDate', e.target.value)}
+                  style={formErrors.departureDate ? { borderColor: '#dc2626' } : {}}
                 />
+                {formErrors.departureDate && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{formErrors.departureDate}</span>}
               </div>
               <div>
                 <label className="label">Horario de Partida</label>
@@ -249,7 +265,7 @@ export default function VoosPage() {
             {/* Duration & PNR */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
               <div>
-                <label className="label">Duracao</label>
+                <label className="label">Duração</label>
                 <input
                   className="input-field"
                   placeholder="Ex: 10h30"
@@ -258,7 +274,7 @@ export default function VoosPage() {
                 />
               </div>
               <div>
-                <label className="label">Codigo de Reserva (PNR)</label>
+                <label className="label">Código de Reserva (PNR)</label>
                 <input
                   className="input-field"
                   placeholder="Ex: ABC123"
@@ -293,7 +309,7 @@ export default function VoosPage() {
             {/* Check-in & Boarding Pass */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
               <div>
-                <label className="label">Check-in Disponivel</label>
+                <label className="label">Check-in Disponível</label>
                 <input
                   className="input-field"
                   placeholder="Ex: 24h antes"
@@ -302,7 +318,7 @@ export default function VoosPage() {
                 />
               </div>
               <div>
-                <label className="label">Cartao de Embarque</label>
+                <label className="label">Cartão de Embarque</label>
                 <input
                   className="input-field"
                   placeholder="Ex: Pendente / Emitido"
@@ -314,7 +330,7 @@ export default function VoosPage() {
 
             {/* Notes */}
             <div style={{ marginBottom: '20px' }}>
-              <label className="label">Observacoes</label>
+              <label className="label">Observações</label>
               <textarea
                 className="input-field"
                 rows={3}
@@ -328,7 +344,7 @@ export default function VoosPage() {
             {/* Actions */}
             <div style={{ display: 'flex', gap: '12px' }}>
               <button className="btn-primary" onClick={handleSubmit}>
-                {editingId ? 'Salvar Alteracoes' : 'Adicionar Voo'}
+                {editingId ? 'Salvar Alterações' : 'Adicionar Voo'}
               </button>
               <button className="btn-secondary" onClick={handleCancel}>
                 Cancelar
@@ -350,7 +366,7 @@ export default function VoosPage() {
             <span style={{ fontSize: '48px', display: 'block', marginBottom: '16px' }}>✈️</span>
             <p style={{ fontSize: '16px', margin: '0 0 8px' }}>Nenhum voo cadastrado ainda.</p>
             <p style={{ fontSize: '14px', color: 'var(--ink-subtle)', margin: 0 }}>
-              Clique em &quot;Adicionar Voo&quot; para comecar.
+              Clique em &quot;Adicionar Voo&quot; para começar.
             </p>
           </div>
         )}

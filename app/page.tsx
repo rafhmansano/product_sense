@@ -254,7 +254,7 @@ export default function Dashboard() {
               lineHeight: 1.5,
             }}
           >
-            Tudo sobre a viagem da familia em um so lugar. 🌴
+            Tudo sobre a viagem da família em um só lugar. 🌴
           </p>
         </div>
 
@@ -295,7 +295,7 @@ export default function Dashboard() {
                   marginBottom: '4px',
                 }}
               >
-                {daysLeft > 0 ? 'Contagem regressiva' : daysLeft === 0 ? 'Hoje e o dia!' : 'Viagem em andamento'}
+                {daysLeft > 0 ? 'Contagem regressiva' : daysLeft === 0 ? 'Hoje é o dia!' : 'Viagem em andamento'}
               </div>
               <div
                 style={{
@@ -386,7 +386,7 @@ export default function Dashboard() {
           <QuickCard
             emoji="🏨"
             label="Hotel"
-            value={hotel ? hotel.name : 'Nao definido'}
+            value={hotel ? hotel.name : 'Não definido'}
             sub={
               hotel
                 ? `${hotel.checkInDate ? new Date(hotel.checkInDate + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : '—'}`
@@ -398,7 +398,7 @@ export default function Dashboard() {
           <QuickCard
             emoji="🚗"
             label="Carro"
-            value={carRental ? carRental.company : 'Nao definido'}
+            value={carRental ? carRental.company : 'Não definido'}
             sub={
               carRental
                 ? carRental.vehicleCategory || 'Reservado'
@@ -411,13 +411,13 @@ export default function Dashboard() {
             emoji="📄"
             label="Documentos"
             value={`${docsCompleted} / ${docsTotal}`}
-            sub={docsCompleted === docsTotal && docsTotal > 0 ? 'Tudo pronto! ✓' : 'concluidos'}
+            sub={docsCompleted === docsTotal && docsTotal > 0 ? 'Tudo pronto! ✓' : 'concluídos'}
             color="var(--green)"
             href="/documentos"
           />
           <QuickCard
             emoji="💰"
-            label="Orcamento"
+            label="Orçamento"
             value={`R$ ${totalSpentBRL.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
             sub={`de R$ ${totalPlannedBRL.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} planejado`}
             color="var(--coral)"
@@ -439,7 +439,7 @@ export default function Dashboard() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0, fontFamily: 'sans-serif' }}>
-                📅 Proximos Eventos
+                📅 Próximos Eventos
               </h2>
               <Link
                 href="/agenda"
@@ -459,7 +459,7 @@ export default function Dashboard() {
                     margin: '0 0 14px',
                   }}
                 >
-                  Nenhum evento proximo.
+                  Nenhum evento próximo.
                 </p>
                 <Link
                   href="/agenda"
@@ -539,7 +539,7 @@ export default function Dashboard() {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0, fontFamily: 'sans-serif' }}>
-                  💸 Orcamento Geral
+                  💸 Orçamento Geral
                 </h2>
                 <Link
                   href="/orcamento"
@@ -576,7 +576,7 @@ export default function Dashboard() {
                 <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>
                   {Math.round((totalSpentBRL / totalPlannedBRL) * 100)}% utilizado
                   {totalSpentBRL < totalPlannedBRL && (
-                    <> · R$ {(totalPlannedBRL - totalSpentBRL).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} disponivel</>
+                    <> · R$ {(totalPlannedBRL - totalSpentBRL).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} disponível</>
                   )}
                 </div>
               )}
@@ -627,7 +627,7 @@ export default function Dashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)', fontFamily: 'sans-serif', marginBottom: '6px' }}>
-                    {docsCompleted} de {docsTotal} concluidos
+                    {docsCompleted} de {docsTotal} concluídos
                   </div>
                   <ProgressBar
                     value={docsCompleted}
@@ -642,7 +642,7 @@ export default function Dashboard() {
                     {documents.filter((d) => d.status === 'nao-iniciado').length > 0 && (
                       <>
                         {documents.filter((d) => d.status === 'pendente').length > 0 ? ' · ' : ''}
-                        {documents.filter((d) => d.status === 'nao-iniciado').length} nao iniciado(s)
+                        {documents.filter((d) => d.status === 'nao-iniciado').length} não iniciado(s)
                       </>
                     )}
                     {docsCompleted === docsTotal && docsTotal > 0 && 'Tudo pronto! 🎉'}
@@ -670,7 +670,7 @@ export default function Dashboard() {
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             {trip.members.map((member, i) => {
               const roleEmoji = member.role === 'pai' ? '👨' : member.role === 'mae' ? '👩' : '👦';
-              const roleLabel = member.role === 'pai' ? 'Pai' : member.role === 'mae' ? 'Mae' : 'Crianca';
+              const roleLabel = member.role === 'pai' ? 'Pai' : member.role === 'mae' ? 'Mãe' : 'Criança';
               return (
                 <div
                   key={i}

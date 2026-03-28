@@ -96,6 +96,7 @@ export default function AgendaPage() {
   };
 
   const handleDelete = (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir este evento?')) return;
     deleteEvent(id);
   };
 
@@ -202,7 +203,7 @@ export default function AgendaPage() {
               }}
             >
               <div style={{ gridColumn: '1 / -1' }}>
-                <label className="label">Titulo</label>
+                <label className="label">Título</label>
                 <input
                   className="input-field"
                   type="text"
@@ -253,7 +254,7 @@ export default function AgendaPage() {
                 />
               </div>
               <div style={{ gridColumn: '1 / -1' }}>
-                <label className="label">Descricao</label>
+                <label className="label">Descrição</label>
                 <textarea
                   className="input-field"
                   rows={3}

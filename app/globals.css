@@ -83,6 +83,21 @@ body {
 .stagger-children > *:nth-child(4) { animation: fadeIn 0.4s 180ms ease-out both; }
 .stagger-children > *:nth-child(5) { animation: fadeIn 0.4s 240ms ease-out both; }
 .stagger-children > *:nth-child(6) { animation: fadeIn 0.4s 300ms ease-out both; }
+.stagger-children > *:nth-child(7) { animation: fadeIn 0.4s 360ms ease-out both; }
+.stagger-children > *:nth-child(8) { animation: fadeIn 0.4s 420ms ease-out both; }
+.stagger-children > *:nth-child(9) { animation: fadeIn 0.4s 480ms ease-out both; }
+.stagger-children > *:nth-child(10) { animation: fadeIn 0.4s 540ms ease-out both; }
+.stagger-children > *:nth-child(n+11) { animation: fadeIn 0.4s 600ms ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-in,
+  .stagger-children > * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
 
 textarea, input, select {
   font-family: inherit;
