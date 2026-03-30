@@ -4,7 +4,7 @@ export type TripPhase = 'pre-trip' | 'during' | 'post-trip';
 
 export interface FamilyMember {
   name: string;
-  role: 'pai' | 'mae' | 'crianca';
+  role: 'pai' | 'mae' | 'crianca' | 'bebe' | 'adolescente' | 'avo' | 'avó' | 'tio' | 'tia' | 'outro';
   age?: number;
   heightCm?: number;
 }

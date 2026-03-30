@@ -9,13 +9,27 @@ import type { FamilyMember } from '@/types';
 const ROLE_LABELS: Record<string, string> = {
   pai: 'Pai',
   mae: 'Mãe',
+  bebe: 'Bebê',
   crianca: 'Criança',
+  adolescente: 'Adolescente',
+  avo: 'Avô',
+  'avó': 'Avó',
+  tio: 'Tio',
+  tia: 'Tia',
+  outro: 'Outro',
 };
 
 const ROLE_ICONS: Record<string, string> = {
   pai: '👨',
   mae: '👩',
+  bebe: '👶',
   crianca: '👦',
+  adolescente: '🧑',
+  avo: '👴',
+  'avó': '👵',
+  tio: '👨',
+  tia: '👩',
+  outro: '👤',
 };
 
 export default function FamiliaPage() {
@@ -26,7 +40,7 @@ export default function FamiliaPage() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [name, setName] = useState('');
-  const [role, setRole] = useState<FamilyMember['role']>('crianca');
+  const [role, setRole] = useState<FamilyMember['role']>('outro');
   const [age, setAge] = useState('');
   const [heightCm, setHeightCm] = useState('');
 
@@ -117,7 +131,7 @@ export default function FamiliaPage() {
 
   function resetForm() {
     setName('');
-    setRole('crianca');
+    setRole('outro');
     setAge('');
     setHeightCm('');
     setShowAddForm(false);
@@ -276,7 +290,14 @@ export default function FamiliaPage() {
               >
                 <option value="pai">Pai</option>
                 <option value="mae">Mãe</option>
-                <option value="crianca">Criança</option>
+                <option value="bebe">Bebê (0-2)</option>
+                <option value="crianca">Criança (3-11)</option>
+                <option value="adolescente">Adolescente (12-17)</option>
+                <option value="avo">Avô</option>
+                <option value="avó">Avó</option>
+                <option value="tio">Tio</option>
+                <option value="tia">Tia</option>
+                <option value="outro">Outro</option>
               </select>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>

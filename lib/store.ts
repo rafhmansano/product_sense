@@ -97,16 +97,12 @@ interface AppState extends TripData {
 
 const DEFAULT_TRIP: Trip = {
   destination: 'Orlando, FL',
-  origin: 'Sao Paulo, SP',
-  originCode: 'GRU',
+  origin: '',
+  originCode: '',
   destinationCode: 'MCO',
   startDate: '',
   endDate: '',
-  members: [
-    { name: 'Rafael', role: 'pai' },
-    { name: 'Jac', role: 'mae' },
-    { name: '', role: 'crianca', age: 3, heightCm: 95 },
-  ],
+  members: [],
 };
 
 export const useAppStore = create<AppState>()(

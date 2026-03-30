@@ -669,8 +669,10 @@ export default function Dashboard() {
           </h2>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             {trip.members.map((member, i) => {
-              const roleEmoji = member.role === 'pai' ? '👨' : member.role === 'mae' ? '👩' : '👦';
-              const roleLabel = member.role === 'pai' ? 'Pai' : member.role === 'mae' ? 'Mãe' : 'Criança';
+              const ROLE_EMOJI_MAP: Record<string, string> = { pai: '👨', mae: '👩', bebe: '👶', crianca: '👦', adolescente: '🧑', avo: '👴', 'avó': '👵', tio: '👨', tia: '👩', outro: '👤' };
+              const ROLE_LABEL_MAP: Record<string, string> = { pai: 'Pai', mae: 'Mãe', bebe: 'Bebê', crianca: 'Criança', adolescente: 'Adolescente', avo: 'Avô', 'avó': 'Avó', tio: 'Tio', tia: 'Tia', outro: 'Outro' };
+              const roleEmoji = ROLE_EMOJI_MAP[member.role] || '👤';
+              const roleLabel = ROLE_LABEL_MAP[member.role] || member.role;
               return (
                 <div
                   key={i}
