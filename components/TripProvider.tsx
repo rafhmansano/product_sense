@@ -30,6 +30,7 @@ export default function TripProvider({ children }: { children: React.ReactNode }
   const {
     tripCode,
     setTripCode,
+    setFamilyName,
     hydrateFromCloud,
     getTripData,
   } = useAppStore();
@@ -69,6 +70,11 @@ export default function TripProvider({ children }: { children: React.ReactNode }
           router.push('/onboarding');
           setLoading(false);
           return;
+        }
+
+        // Store family name for display in navigation
+        if (memberData.family?.name) {
+          setFamilyName(memberData.family.name);
         }
 
         const familyId = memberData.family_id;

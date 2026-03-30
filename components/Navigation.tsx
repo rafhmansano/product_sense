@@ -28,7 +28,16 @@ const navItems = [
 
 function FamilyInfo({ compact }: { compact?: boolean }) {
   const members = useAppStore((s) => s.trip.members);
-  const trip = useAppStore((s) => s.trip);
+  const flights = useAppStore((s) => s.flights);
+  const familyName = useAppStore((s) => s.familyName);
+
+  const hasFlights = flights.length > 0;
+  const outbound = flights.find((f) => f.type === 'ida');
+  const routeDisplay = outbound
+    ? `${outbound.originCode} → ${outbound.destinationCode}`
+    : hasFlights
+      ? `${flights[0].originCode} → ${flights[0].destinationCode}`
+      : null;
 
   const memberDisplay = members.length > 0
     ? members.map((m) => m.name || m.role).join(', ')
@@ -36,14 +45,37 @@ function FamilyInfo({ compact }: { compact?: boolean }) {
 
   return (
     <div style={{ padding: compact ? '8px 16px' : '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: compact ? '11px' : '12px' }}>
-      <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '2px' }}>
-        {trip.originCode || 'GRU'} → {trip.destinationCode || 'MCO'}
-      </div>
+      {familyName && (
+        <div style={{ color: 'rgba(255,255,255,0.7)', fontWeight: '600', marginBottom: '2px' }}>
+          {familyName}
+        </div>
+      )}
+      {routeDisplay && (
+        <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '2px' }}>
+          {routeDisplay}
+        </div>
+      )}
       <div style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.3 }}>
         {memberDisplay}
       </div>
     </div>
   );
+}
+
+function useTripYear() {
+  const flights = useAppStore((s) => s.flights);
+  const outbound = flights.find((f) => f.type === 'ida');
+  const dateStr = outbound?.departureDate || (flights.length > 0 ? flights[0].departureDate : '');
+  if (dateStr) {
+    const year = new Date(dateStr + 'T00:00:00').getFullYear();
+    if (!isNaN(year)) return year;
+  }
+  return null;
+}
+
+function TripTitle() {
+  const year = useTripYear();
+  return <>Orlando {year || ''} ✈️</>;
 }
 
 export default function Navigation() {
@@ -99,7 +131,7 @@ export default function Navigation() {
             Family Trip
           </div>
           <div style={{ fontSize: '15px', fontWeight: '700', letterSpacing: '-0.02em', color: 'white', lineHeight: 1.2 }}>
-            Orlando 2026 ✈️
+            <TripTitle />
           </div>
         </div>
 
@@ -255,7 +287,7 @@ export default function Navigation() {
               Family Trip
             </div>
             <div style={{ fontSize: '17px', fontWeight: '700', letterSpacing: '-0.02em', color: 'white', lineHeight: 1.2 }}>
-              Orlando 2026 ✈️
+              <TripTitle />
             </div>
           </div>
           {/* Close button */}
