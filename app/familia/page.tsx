@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import AppShell from '@/components/AppShell';
 import { useAppStore } from '@/lib/store';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
@@ -181,6 +182,7 @@ export default function FamiliaPage() {
   }
 
   return (
+    <AppShell>
     <div style={{ maxWidth: '600px', margin: '0 auto' }}>
       <div style={{ marginBottom: '28px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--ink)', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -453,5 +455,6 @@ export default function FamiliaPage() {
         </div>
       </div>
     </div>
+    </AppShell>
   );
 }
