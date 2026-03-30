@@ -55,7 +55,7 @@ export default function CadastroPage() {
       const { data, error: err } = await signUp(email, password, fullName);
       if (err) throw err;
       if (data?.session) {
-        window.location.href = '/';
+        window.location.href = '/onboarding';
       } else {
         setSuccess(true);
       }
