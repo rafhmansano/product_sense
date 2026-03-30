@@ -1,6 +1,7 @@
 'use client';
 
 import AppShell from '@/components/AppShell';
+import OnboardingTour from '@/components/OnboardingTour';
 import { useAppStore } from '@/lib/store';
 import Link from 'next/link';
 
@@ -215,6 +216,7 @@ export default function Dashboard() {
 
   return (
     <AppShell>
+      <OnboardingTour />
       <div className="animate-fade-in dashboard-content" style={{ padding: '40px 48px', maxWidth: '1100px' }}>
         {/* Header */}
         <div style={{ marginBottom: '12px' }}>
