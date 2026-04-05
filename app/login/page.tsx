@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 function translateError(msg: string): string {
   const map: Record<string, string> = {
@@ -23,7 +22,6 @@ function translateError(msg: string): string {
 
 export default function LoginPage() {
   const { signIn, signInWithGoogle } = useAuth();
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -46,7 +44,7 @@ export default function LoginPage() {
     try {
       const { error: err } = await signIn(email, password);
       if (err) throw err;
-      router.push('/');
+      window.location.href = '/';
     } catch (err: unknown) {
       setError(translateError(err instanceof Error ? err.message : 'Erro ao fazer login'));
     } finally {
