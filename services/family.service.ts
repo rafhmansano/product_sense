@@ -7,11 +7,16 @@ export const familyService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('family_members')
       .select('*, family:families(*)')
       .eq('user_id', user.id)
       .maybeSingle();
+
+    if (error) {
+      console.error('getMyFamily error:', error.message);
+      throw new Error(error.message);
+    }
 
     return data;
   },

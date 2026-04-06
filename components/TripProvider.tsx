@@ -64,11 +64,20 @@ export default function TripProvider({ children }: { children: React.ReactNode }
     async function init() {
       try {
         // Check if user has a family
-        const memberData = await familyService.getMyFamily();
-        if (!memberData) {
-          // No family yet — redirect to onboarding
-          router.push('/onboarding');
+        let memberData = null;
+        try {
+          memberData = await familyService.getMyFamily();
+        } catch (err) {
+          // Query error (RLS, network, etc.) — do NOT redirect to onboarding
+          console.error('Failed to check family membership:', err);
+          initializedRef.current = true;
           setLoading(false);
+          return;
+        }
+
+        if (!memberData) {
+          // Confirmed: user has no family — redirect to onboarding
+          window.location.href = '/onboarding';
           return;
         }
 
@@ -80,16 +89,24 @@ export default function TripProvider({ children }: { children: React.ReactNode }
         const familyId = memberData.family_id;
 
         // Get trips for this family
-        const trips = await tripService.getTrips(familyId);
+        let trips: { id: string }[] = [];
+        try {
+          trips = await tripService.getTrips(familyId);
+        } catch {
+          // Non-critical — continue with empty trips
+        }
         if (trips.length === 0) {
-          // No trips — create default
-          await tripService.createTrip(familyId, {
-            name: 'Orlando 2026',
-            destination: 'Orlando, FL',
-            destination_code: 'MCO',
-            origin: 'Sao Paulo, SP',
-            origin_code: 'GRU',
-          });
+          try {
+            await tripService.createTrip(familyId, {
+              name: 'Orlando 2026',
+              destination: 'Orlando, FL',
+              destination_code: 'MCO',
+              origin: 'Sao Paulo, SP',
+              origin_code: 'GRU',
+            });
+          } catch {
+            // Non-critical
+          }
         }
 
         // For now, use the legacy sync (single JSONB blob in trips table)
