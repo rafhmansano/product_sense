@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { familyService } from '@/services/family.service';
 import { tripService } from '@/services/trip.service';
@@ -20,7 +20,6 @@ export default function OnboardingPage() {
 
 function OnboardingContent() {
   const { user, signOut } = useAuth();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const codeFromUrl = searchParams.get('code');
 
@@ -44,14 +43,15 @@ function OnboardingContent() {
       try {
         const myFamily = await familyService.getMyFamily();
         if (myFamily && myFamily.family) {
-          router.push('/');
+          window.location.href = '/';
+          return;
         }
       } catch {
         // User doesn't have a family yet
       }
     };
     checkFamily();
-  }, [router]);
+  }, []);
 
   async function handleCreateFamily() {
     if (!familyName.trim()) return;
@@ -67,7 +67,7 @@ function OnboardingContent() {
         origin: 'Sao Paulo, SP',
         origin_code: 'GRU',
       });
-      router.push('/');
+      window.location.href = '/';
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro ao criar familia';
       setError(msg);
@@ -82,7 +82,7 @@ function OnboardingContent() {
     setLoading(true);
     try {
       await familyService.joinFamily(inviteCode.trim());
-      router.push('/');
+      window.location.href = '/';
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Codigo invalido';
       setError(msg);
@@ -129,7 +129,7 @@ function OnboardingContent() {
             </button>
 
             <button
-              onClick={() => signOut()}
+              onClick={async () => { await signOut(); window.location.href = '/login'; }}
               style={{ padding: '10px', background: 'none', border: 'none', color: 'var(--ink-subtle)', fontSize: '13px', cursor: 'pointer', fontFamily: 'sans-serif', marginTop: '8px' }}
             >
               Sair da conta
