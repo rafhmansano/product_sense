@@ -1,9 +1,9 @@
-import { createServerClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
+  let res = NextResponse.next({ request: req });
 
   // Skip if Supabase is not configured
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -18,6 +18,10 @@ export async function middleware(req: NextRequest) {
         return req.cookies.getAll().map(c => ({ name: c.name, value: c.value }));
       },
       setAll: (cookies) => {
+        cookies.forEach(({ name, value }) => {
+          req.cookies.set(name, value);
+        });
+        res = NextResponse.next({ request: req });
         cookies.forEach(({ name, value, options }) => {
           res.cookies.set(name, value, options);
         });
@@ -25,7 +29,7 @@ export async function middleware(req: NextRequest) {
     },
   });
 
-  // Refresh session
+  // Refresh session — this also updates cookies if the token was refreshed
   const { data: { user } } = await supabase.auth.getUser();
 
   const pathname = req.nextUrl.pathname;
@@ -35,6 +39,10 @@ export async function middleware(req: NextRequest) {
   const isPublic = publicPaths.some(p => pathname.startsWith(p));
 
   if (isPublic) {
+    // If logged in and on login/cadastro, redirect to home
+    if (user && (pathname === '/login' || pathname === '/cadastro')) {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
     return res;
   }
 
