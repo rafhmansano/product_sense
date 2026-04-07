@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AppShell from '@/components/AppShell';
 import { useAppStore } from '@/lib/store';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
+import { familyService } from '@/services/family.service';
 import type { FamilyMember } from '@/types';
 
 const ROLE_LABELS: Record<string, string> = {
@@ -46,6 +47,52 @@ export default function FamiliaPage() {
   const [heightCm, setHeightCm] = useState('');
 
   const [nameError, setNameError] = useState('');
+
+  // Family name editing
+  const [familyId, setFamilyId] = useState<string | null>(null);
+  const [familyNameValue, setFamilyNameValue] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [editingFamilyName, setEditingFamilyName] = useState(false);
+  const [savingFamilyName, setSavingFamilyName] = useState(false);
+  const [familyNameError, setFamilyNameError] = useState('');
+
+  const familyName = useAppStore((s) => s.familyName);
+  const setFamilyNameStore = useAppStore((s) => s.setFamilyName);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured() || !supabase) return;
+    async function loadFamily() {
+      try {
+        const data = await familyService.getMyFamily();
+        if (data) {
+          setFamilyId(data.family_id);
+          setFamilyNameValue((data.family as Record<string, string>)?.name || '');
+          setIsAdmin(data.role === 'admin');
+        }
+      } catch {
+        // ignore
+      }
+    }
+    loadFamily();
+  }, []);
+
+  async function handleSaveFamilyName() {
+    if (!familyId || !familyNameValue.trim()) {
+      setFamilyNameError('Informe o nome da família');
+      return;
+    }
+    setFamilyNameError('');
+    setSavingFamilyName(true);
+    try {
+      await familyService.updateFamilyName(familyId, familyNameValue.trim());
+      setFamilyNameStore(familyNameValue.trim());
+      setEditingFamilyName(false);
+    } catch (err) {
+      setFamilyNameError(err instanceof Error ? err.message : 'Erro ao salvar');
+    } finally {
+      setSavingFamilyName(false);
+    }
+  }
 
   // Invite state
   const [inviteCode, setInviteCode] = useState<string | null>(null);
@@ -192,6 +239,61 @@ export default function FamiliaPage() {
           Gerencie os membros da viagem e convide outras pessoas
         </p>
       </div>
+
+      {/* Family name */}
+      {isSupabaseConfigured() && familyId && (
+        <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '4px' }}>
+                Nome da família
+              </div>
+              {editingFamilyName ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <input
+                    className="input-field"
+                    type="text"
+                    value={familyNameValue}
+                    onChange={(e) => { setFamilyNameValue(e.target.value); setFamilyNameError(''); }}
+                    autoFocus
+                    style={familyNameError ? { borderColor: '#dc2626' } : {}}
+                  />
+                  {familyNameError && <span style={{ fontSize: '12px', color: '#dc2626', fontFamily: 'sans-serif' }}>{familyNameError}</span>}
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                      onClick={handleSaveFamilyName}
+                      disabled={savingFamilyName}
+                      style={{ padding: '8px 16px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: savingFamilyName ? 'wait' : 'pointer', opacity: savingFamilyName ? 0.7 : 1 }}
+                    >
+                      {savingFamilyName ? 'Salvando...' : 'Salvar'}
+                    </button>
+                    <button
+                      onClick={() => { setEditingFamilyName(false); setFamilyNameValue(familyName || ''); setFamilyNameError(''); }}
+                      style={{ padding: '8px 16px', background: 'white', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', cursor: 'pointer' }}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ fontSize: '18px', fontWeight: '700', color: 'var(--ink)', fontFamily: 'sans-serif' }}>
+                  {familyName || familyNameValue || 'Sem nome'}
+                </div>
+              )}
+            </div>
+            {isAdmin && !editingFamilyName && (
+              <button
+                onClick={() => { setFamilyNameValue(familyName || ''); setEditingFamilyName(true); }}
+                style={{ padding: '6px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', flexShrink: 0 }}
+                title="Editar nome da família"
+                aria-label="Editar nome da família"
+              >
+                ✏️
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Members list */}
       <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>

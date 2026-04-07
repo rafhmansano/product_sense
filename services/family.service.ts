@@ -116,6 +116,17 @@ export const familyService = {
     return data ?? [];
   },
 
+  async updateFamilyName(familyId: string, name: string) {
+    if (!supabase) throw new Error('Supabase not configured');
+
+    const { error } = await supabase
+      .from('families')
+      .update({ name })
+      .eq('id', familyId);
+
+    if (error) throw new Error(error.message);
+  },
+
   async updateMember(memberId: string, updates: { nickname?: string; member_role?: string; age?: number; height_cm?: number }) {
     if (!supabase) throw new Error('Supabase not configured');
 
