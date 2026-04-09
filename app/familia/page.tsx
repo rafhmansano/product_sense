@@ -62,15 +62,41 @@ export default function FamiliaPage() {
   useEffect(() => {
     if (!isSupabaseConfigured() || !supabase) return;
     async function loadFamily() {
+      if (!supabase) return;
       try {
-        const data = await familyService.getMyFamily();
-        if (data) {
-          setFamilyId(data.family_id);
-          setFamilyNameValue((data.family as Record<string, string>)?.name || '');
-          setIsAdmin(data.role === 'admin');
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return;
+
+        // Load family_members row (no nested join to avoid RLS issues)
+        const { data: memberRow, error: memberErr } = await supabase
+          .from('family_members')
+          .select('family_id, role')
+          .eq('user_id', authUser.id)
+          .maybeSingle();
+
+        if (memberErr || !memberRow) {
+          console.error('Failed to load family member:', memberErr?.message);
+          return;
         }
-      } catch {
-        // ignore
+
+        setFamilyId(memberRow.family_id);
+
+        // Load family details separately
+        const { data: familyRow } = await supabase
+          .from('families')
+          .select('name, created_by')
+          .eq('id', memberRow.family_id)
+          .maybeSingle();
+
+        if (familyRow) {
+          setFamilyNameValue(familyRow.name || '');
+          // User is admin if role is 'admin' OR they are the creator
+          const adminByRole = memberRow.role === 'admin';
+          const adminByCreator = familyRow.created_by === authUser.id;
+          setIsAdmin(adminByRole || adminByCreator);
+        }
+      } catch (err) {
+        console.error('loadFamily error:', err);
       }
     }
     loadFamily();
@@ -241,7 +267,7 @@ export default function FamiliaPage() {
       </div>
 
       {/* Family name */}
-      {isSupabaseConfigured() && familyId && (
+      {isSupabaseConfigured() && (familyName || familyNameValue) && (
         <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ flex: 1, minWidth: 0 }}>
