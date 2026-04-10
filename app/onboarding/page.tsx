@@ -59,18 +59,21 @@ function OnboardingContent() {
     setLoading(true);
     try {
       const family = await familyService.createFamily(familyName.trim());
-      // Create default trip
-      await tripService.createTrip(family.id, {
-        name: 'Orlando 2026',
-        destination: 'Orlando, FL',
-        destination_code: 'MCO',
-        origin: 'Sao Paulo, SP',
-        origin_code: 'GRU',
-      });
+      // Create default trip (non-critical — TripProvider also creates one)
+      try {
+        await tripService.createTrip(family.id, {
+          name: 'Orlando 2026',
+          destination: 'Orlando, FL',
+          destination_code: 'MCO',
+        });
+      } catch (tripErr) {
+        console.error('Default trip creation failed (non-critical):', tripErr);
+      }
       window.location.href = '/';
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Erro ao criar familia';
-      setError(msg);
+      console.error('Create family error:', err);
+      const msg = err instanceof Error ? err.message : String(err);
+      setError(msg || 'Erro ao criar família. Tente novamente.');
     } finally {
       setLoading(false);
     }

@@ -24,38 +24,48 @@ export const familyService = {
   async createFamily(name: string) {
     if (!supabase) throw new Error('Supabase not configured');
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    if (!user) throw new Error('Não autenticado');
 
     // Generate UUID client-side so we don't need .select() after insert
     const familyId = crypto.randomUUID();
 
-    // Step 1: Insert family (RLS allows insert when created_by = auth.uid())
+    // Step 1: Insert family
     const { error: familyError } = await supabase
       .from('families')
       .insert({ id: familyId, name, created_by: user.id });
 
     if (familyError) {
-      if (familyError.message.includes('ja pertence')) {
-        throw new Error('Voce ja pertence a uma familia');
+      console.error('Insert families error:', familyError);
+      if (familyError.message.includes('ja pertence') || familyError.message.includes('already')) {
+        throw new Error('Você já pertence a uma família');
       }
-      throw new Error(familyError.message);
+      throw new Error('Erro ao criar família: ' + familyError.message);
     }
 
-    // Step 2: Add creator as admin member (RLS allows insert when user_id = auth.uid())
+    // Step 2: Add creator as admin member
     const { error: memberError } = await supabase
       .from('family_members')
       .insert({ family_id: familyId, user_id: user.id, role: 'admin' });
 
-    if (memberError) throw new Error(memberError.message);
+    if (memberError) {
+      console.error('Insert family_members error:', memberError);
+      throw new Error('Erro ao adicionar membro: ' + memberError.message);
+    }
 
-    // Step 3: Now we CAN read the family (user is a member now + is creator)
-    const { data: family } = await supabase
-      .from('families')
-      .select('*')
-      .eq('id', familyId)
-      .single();
+    // Step 3: Read back family (non-critical — fallback to minimal data)
+    try {
+      const { data: family } = await supabase
+        .from('families')
+        .select('*')
+        .eq('id', familyId)
+        .single();
 
-    return family ?? { id: familyId, name, invite_code: '' };
+      if (family) return family;
+    } catch (readErr) {
+      console.error('Read family after create failed (non-critical):', readErr);
+    }
+
+    return { id: familyId, name, invite_code: '' };
   },
 
   async joinFamily(inviteCode: string) {
