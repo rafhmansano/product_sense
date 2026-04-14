@@ -51,7 +51,6 @@ export default function FamiliaPage() {
   // Family name editing
   const [familyId, setFamilyId] = useState<string | null>(null);
   const [familyNameValue, setFamilyNameValue] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
   const [editingFamilyName, setEditingFamilyName] = useState(false);
   const [savingFamilyName, setSavingFamilyName] = useState(false);
   const [familyNameError, setFamilyNameError] = useState('');
@@ -90,10 +89,6 @@ export default function FamiliaPage() {
 
         if (familyRow) {
           setFamilyNameValue(familyRow.name || '');
-          // User is admin if role is 'admin' OR they are the creator
-          const adminByRole = memberRow.role === 'admin';
-          const adminByCreator = familyRow.created_by === authUser.id;
-          setIsAdmin(adminByRole || adminByCreator);
         }
       } catch (err) {
         console.error('loadFamily error:', err);
@@ -103,14 +98,27 @@ export default function FamiliaPage() {
   }, []);
 
   async function handleSaveFamilyName() {
-    if (!familyId || !familyNameValue.trim()) {
+    if (!familyNameValue.trim()) {
       setFamilyNameError('Informe o nome da família');
       return;
     }
     setFamilyNameError('');
     setSavingFamilyName(true);
     try {
-      await familyService.updateFamilyName(familyId, familyNameValue.trim());
+      // Resolve familyId if not loaded yet (fallback via familyService)
+      let targetFamilyId = familyId;
+      if (!targetFamilyId) {
+        const member = await familyService.getMyFamily();
+        const memberRecord = member as { family_id?: string } | null;
+        if (memberRecord?.family_id) {
+          targetFamilyId = memberRecord.family_id;
+          setFamilyId(targetFamilyId);
+        }
+      }
+      if (!targetFamilyId) {
+        throw new Error('Não foi possível identificar sua família. Recarregue a página.');
+      }
+      await familyService.updateFamilyName(targetFamilyId, familyNameValue.trim());
       setFamilyNameStore(familyNameValue.trim());
       setEditingFamilyName(false);
     } catch (err) {
@@ -307,9 +315,9 @@ export default function FamiliaPage() {
                 </div>
               )}
             </div>
-            {isAdmin && !editingFamilyName && (
+            {!editingFamilyName && (
               <button
-                onClick={() => { setFamilyNameValue(familyName || ''); setEditingFamilyName(true); }}
+                onClick={() => { setFamilyNameValue(familyName || familyNameValue || ''); setEditingFamilyName(true); }}
                 style={{ padding: '6px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', flexShrink: 0 }}
                 title="Editar nome da família"
                 aria-label="Editar nome da família"
