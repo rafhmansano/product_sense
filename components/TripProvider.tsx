@@ -13,10 +13,53 @@ import {
   hasMeaningfulLocalData,
   backupLocalStateToLocalStorage,
 } from '@/lib/sync';
+import type { TripData } from '@/lib/store';
+
+type SyncStatus = 'idle' | 'saving' | 'saved' | 'synced' | 'error';
+
+interface MigrationSummary {
+  flights: number;
+  hotel: boolean;
+  carRental: boolean;
+  events: number;
+  expenses: number;
+  members: number;
+  restaurants: number;
+  foodItems: number;
+}
+
+function buildSummary(data: TripData): MigrationSummary {
+  return {
+    flights: data.flights?.length ?? 0,
+    hotel: !!data.hotel,
+    carRental: !!data.carRental,
+    events: data.events?.length ?? 0,
+    expenses: data.expenses?.length ?? 0,
+    members: data.trip?.members?.length ?? 0,
+    restaurants: data.customRestaurants?.length ?? 0,
+    foodItems: data.foodItems?.length ?? 0,
+  };
+}
+
+function formatSyncTime(date: Date | null): string {
+  if (!date) return '';
+  const diffMs = Date.now() - date.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  if (diffSec < 5) return 'agora';
+  if (diffSec < 60) return `há ${diffSec}s`;
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `há ${diffMin}min`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `há ${diffHr}h`;
+  return date.toLocaleString('pt-BR');
+}
 
 export default function TripProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
-  const [syncStatus, setSyncStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
+  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
+  const [migrationSummary, setMigrationSummary] = useState<MigrationSummary | null>(null);
+  const [, forceTick] = useState(0);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSavedRef = useRef<string>('');
   const initializedRef = useRef(false);
@@ -45,14 +88,11 @@ export default function TripProvider({ children }: { children: React.ReactNode }
     }
 
     if (!isSupabaseConfigured()) {
-      // No Supabase: use localStorage-only mode
       initializedRef.current = true;
       setLoading(false);
       return;
     }
 
-    // Auth required but user not logged in — middleware handles redirect,
-    // but we still need to stop loading
     if (!user) {
       setLoading(false);
       return;
@@ -85,8 +125,7 @@ export default function TripProvider({ children }: { children: React.ReactNode }
 
         const familyId = memberData.family_id;
 
-        // 2. Get (or create) the family's trip — this is the stable
-        //    cross-device identifier we'll use for cloud sync.
+        // 2. Get (or create) the family's trip
         let trips: Array<{ id: string }> = [];
         try {
           trips = await tripService.getTrips(familyId);
@@ -108,7 +147,6 @@ export default function TripProvider({ children }: { children: React.ReactNode }
         }
 
         if (!trip?.id) {
-          // Cannot sync without a trip — fall back to localStorage-only
           console.error('No trip available for sync; using localStorage only.');
           initializedRef.current = true;
           setLoading(false);
@@ -117,33 +155,43 @@ export default function TripProvider({ children }: { children: React.ReactNode }
 
         tripIdRef.current = trip.id;
 
-        // 3. Safety net: backup the current localStorage state before
-        //    any load/migration so the user can always recover.
+        // 3. Backup localStorage as a safety net
         backupLocalStateToLocalStorage();
 
-        // 4. Load cloud data for this trip
+        // 4. Load cloud data
         const cloudData = await loadTripData(trip.id);
 
         if (cloudData) {
           // Cloud has authoritative data — hydrate from it.
           hydrateFromCloud(cloudData);
           lastSavedRef.current = JSON.stringify(cloudData);
+          setLastSyncedAt(new Date());
+          setSyncStatus('synced');
         } else {
           // Cloud is empty. If the current browser has meaningful
           // local data, push it to the cloud (one-shot migration).
-          // Otherwise start with the default (empty) state.
           const localData = getTripData();
           if (hasMeaningfulLocalData(localData)) {
             console.info('Migrating local state to cloud for trip', trip.id);
+            setSyncStatus('saving');
             const ok = await saveTripData(trip.id, localData);
             if (ok) {
               lastSavedRef.current = JSON.stringify(localData);
+              setLastSyncedAt(new Date());
+              setSyncStatus('synced');
+              // Show the one-shot migration confirmation banner
+              setMigrationSummary(buildSummary(localData));
+            } else {
+              setSyncStatus('error');
             }
           } else {
-            // Fresh browser with no data — persist the defaults so
-            // subsequent loads are consistent.
-            await saveTripData(trip.id, localData);
-            lastSavedRef.current = JSON.stringify(localData);
+            // Fresh browser with no data — persist defaults.
+            const ok = await saveTripData(trip.id, localData);
+            if (ok) {
+              lastSavedRef.current = JSON.stringify(localData);
+              setLastSyncedAt(new Date());
+              setSyncStatus('synced');
+            }
           }
         }
       } catch (err) {
@@ -176,11 +224,12 @@ export default function TripProvider({ children }: { children: React.ReactNode }
       const success = await saveTripData(tripId, data);
       if (success) {
         lastSavedRef.current = serialized;
+        setLastSyncedAt(new Date());
         setSyncStatus('saved');
-        setTimeout(() => setSyncStatus('idle'), 2000);
+        setTimeout(() => setSyncStatus('synced'), 1500);
       } else {
         setSyncStatus('error');
-        setTimeout(() => setSyncStatus('idle'), 3000);
+        setTimeout(() => setSyncStatus('synced'), 3000);
       }
     }, 1500);
   }, []);
@@ -198,8 +247,7 @@ export default function TripProvider({ children }: { children: React.ReactNode }
     return () => unsub();
   }, [loading, saveToCloud]);
 
-  // Reload from cloud on tab focus (so changes from another device
-  // show up when the user comes back to this tab).
+  // Reload from cloud on tab focus
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
 
@@ -213,6 +261,8 @@ export default function TripProvider({ children }: { children: React.ReactNode }
         if (serialized !== lastSavedRef.current) {
           hydrateFromCloud(cloudData);
           lastSavedRef.current = serialized;
+          setLastSyncedAt(new Date());
+          setSyncStatus('synced');
         }
       }
     };
@@ -220,6 +270,12 @@ export default function TripProvider({ children }: { children: React.ReactNode }
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
   }, [hydrateFromCloud]);
+
+  // Tick every 30s so "há Xmin" stays current in the badge
+  useEffect(() => {
+    const interval = setInterval(() => forceTick((n) => n + 1), 30_000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Show loading for auth + data init
   if ((loading || authLoading) && isSupabaseConfigured()) {
@@ -234,19 +290,112 @@ export default function TripProvider({ children }: { children: React.ReactNode }
     }
   }
 
+  // Persistent sync status indicator (bottom-right). Always visible
+  // after the first successful save, so the user knows at a glance
+  // whether their data is safely in the cloud.
+  const showStatus = isSupabaseConfigured() && syncStatus !== 'idle';
+  const statusConfig = (() => {
+    switch (syncStatus) {
+      case 'saving':
+        return { bg: 'var(--ocean)', label: 'Salvando...', icon: '⏳' };
+      case 'saved':
+        return { bg: '#16a34a', label: 'Salvo agora ✓', icon: '✓' };
+      case 'synced':
+        return { bg: 'rgba(22, 163, 74, 0.92)', label: `Sincronizado ${formatSyncTime(lastSyncedAt)}`, icon: '☁' };
+      case 'error':
+        return { bg: '#dc2626', label: 'Erro ao salvar', icon: '⚠' };
+      default:
+        return { bg: 'var(--ocean)', label: '', icon: '' };
+    }
+  })();
+
   return (
     <>
       {children}
-      {isSupabaseConfigured() && syncStatus !== 'idle' && (
-        <div style={{
-          position: 'fixed', bottom: '16px', right: '16px', padding: '8px 14px', borderRadius: '8px',
-          fontSize: '12px', fontFamily: 'sans-serif', zIndex: 1000,
-          background: syncStatus === 'saving' ? 'var(--ocean)' : syncStatus === 'saved' ? 'var(--green)' : 'var(--coral)',
-          color: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', transition: 'opacity 0.3s',
-        }}>
-          {syncStatus === 'saving' && 'Salvando...'}
-          {syncStatus === 'saved' && 'Salvo na nuvem ✓'}
-          {syncStatus === 'error' && 'Erro ao salvar'}
+
+      {/* One-shot migration confirmation banner */}
+      {migrationSummary && (
+        <div
+          role="status"
+          style={{
+            position: 'fixed',
+            top: '16px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            maxWidth: '560px',
+            width: 'calc(100% - 32px)',
+            zIndex: 2000,
+            background: 'white',
+            border: '2px solid #16a34a',
+            borderRadius: '14px',
+            padding: '18px 20px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+            fontFamily: 'sans-serif',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+            <div style={{ fontSize: '28px', lineHeight: 1 }}>☁✓</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: '15px', fontWeight: 700, color: '#16a34a', marginBottom: '6px' }}>
+                Dados sincronizados com a nuvem!
+              </div>
+              <div style={{ fontSize: '13px', color: 'var(--ink)', lineHeight: 1.5 }}>
+                Os seguintes dados deste navegador foram enviados para o Supabase e agora estarão disponíveis em qualquer outro dispositivo onde você fizer login:
+              </div>
+              <ul style={{ margin: '10px 0 0', padding: '0 0 0 18px', fontSize: '13px', color: 'var(--ink)', lineHeight: 1.7 }}>
+                {migrationSummary.flights > 0 && <li><strong>{migrationSummary.flights}</strong> voo(s)</li>}
+                {migrationSummary.hotel && <li><strong>1</strong> hotel</li>}
+                {migrationSummary.carRental && <li><strong>1</strong> aluguel de carro</li>}
+                {migrationSummary.events > 0 && <li><strong>{migrationSummary.events}</strong> evento(s) da agenda</li>}
+                {migrationSummary.expenses > 0 && <li><strong>{migrationSummary.expenses}</strong> despesa(s)</li>}
+                {migrationSummary.members > 0 && <li><strong>{migrationSummary.members}</strong> membro(s) da família</li>}
+                {migrationSummary.restaurants > 0 && <li><strong>{migrationSummary.restaurants}</strong> restaurante(s) personalizado(s)</li>}
+                {migrationSummary.foodItems > 0 && <li><strong>{migrationSummary.foodItems}</strong> item(ns) de alimentação</li>}
+              </ul>
+            </div>
+            <button
+              onClick={() => setMigrationSummary(null)}
+              aria-label="Fechar"
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '22px',
+                color: 'var(--ink-muted)',
+                padding: '0 4px',
+                lineHeight: 1,
+                flexShrink: 0,
+              }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Persistent sync status badge (bottom-right) */}
+      {showStatus && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '16px',
+            right: '16px',
+            padding: '8px 14px',
+            borderRadius: '999px',
+            fontSize: '12px',
+            fontFamily: 'sans-serif',
+            fontWeight: 500,
+            zIndex: 1000,
+            background: statusConfig.bg,
+            color: 'white',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+        >
+          <span>{statusConfig.icon}</span>
+          <span>{statusConfig.label}</span>
         </div>
       )}
     </>
