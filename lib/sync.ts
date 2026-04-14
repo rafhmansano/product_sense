@@ -1,76 +1,95 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 import type { TripData } from './store';
 
-export function generateTripCode(): string {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = '';
-  for (let i = 0; i < 6; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return code;
-}
+/**
+ * Cloud sync keyed by the family's trip UUID (stable across devices),
+ * not by a per-browser random code. Reads/writes the `data` JSONB
+ * column on public.trips (see MIGRATE_TRIPS_DATA_COLUMN.sql).
+ *
+ * These helpers replace the legacy `code`-based sync that was silently
+ * failing because the `trips` table never had a `code` or `data`
+ * column. User data was therefore trapped in browser localStorage.
+ */
 
-export function getTripCodeFromURL(): string | null {
-  if (typeof window === 'undefined') return null;
-  const params = new URLSearchParams(window.location.search);
-  return params.get('t');
-}
-
-export function setTripCodeInURL(code: string) {
-  if (typeof window === 'undefined') return;
-  const url = new URL(window.location.href);
-  url.searchParams.set('t', code);
-  window.history.replaceState({}, '', url.toString());
-}
-
-export function getShareURL(code: string): string {
-  if (typeof window === 'undefined') return '';
-  const url = new URL(window.location.origin);
-  url.searchParams.set('t', code);
-  return url.toString();
-}
-
-export async function loadTripFromCloud(code: string): Promise<TripData | null> {
+export async function loadTripData(tripId: string): Promise<TripData | null> {
   if (!isSupabaseConfigured() || !supabase) return null;
 
   const { data, error } = await supabase
     .from('trips')
     .select('data')
-    .eq('code', code)
-    .single();
+    .eq('id', tripId)
+    .maybeSingle();
 
-  if (error || !data) return null;
-  return data.data as TripData;
+  if (error) {
+    console.error('loadTripData error:', error.message);
+    return null;
+  }
+
+  // `data` is a JSONB column; null when the trip has never been synced.
+  const row = data as { data: TripData | null } | null;
+  return row?.data ?? null;
 }
 
-export async function saveTripToCloud(code: string, tripData: TripData): Promise<boolean> {
+export async function saveTripData(tripId: string, tripData: TripData): Promise<boolean> {
   if (!isSupabaseConfigured() || !supabase) return false;
 
   const { error } = await supabase
     .from('trips')
-    .upsert(
-      {
-        code,
-        data: tripData,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: 'code' }
+    .update({ data: tripData })
+    .eq('id', tripId);
+
+  if (error) {
+    console.error('saveTripData error:', error.message);
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Heuristic: does the given local state look like real user data we
+ * should preserve when migrating to the cloud for the first time?
+ * We only migrate if the user has actually cadastered something, so
+ * we don't clobber legitimate (empty) cloud state with a fresh
+ * browser's defaults.
+ */
+export function hasMeaningfulLocalData(state: TripData): boolean {
+  if (state.flights && state.flights.length > 0) return true;
+  if (state.hotel) return true;
+  if (state.carRental) return true;
+  if (state.events && state.events.length > 0) return true;
+  if (state.expenses && state.expenses.length > 0) return true;
+  if (state.customRestaurants && state.customRestaurants.length > 0) return true;
+  if (state.foodItems && state.foodItems.length > 0) return true;
+  if (state.trip?.members && state.trip.members.length > 0) return true;
+  if (state.trip?.startDate || state.trip?.endDate) return true;
+  if (state.trip?.origin || state.trip?.originCode) return true;
+  return false;
+}
+
+/**
+ * Safety net: snapshot the current localStorage Zustand state under a
+ * secondary key before any potentially destructive operation. Lets the
+ * user recover manually if something goes wrong during migration.
+ */
+export function backupLocalStateToLocalStorage(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = window.localStorage.getItem('family-trip-storage');
+    if (!raw) return;
+    const timestamp = new Date().toISOString();
+    window.localStorage.setItem(
+      `family-trip-storage-backup-${timestamp}`,
+      raw
     );
-
-  return !error;
-}
-
-export async function createTripInCloud(code: string, tripData: TripData): Promise<boolean> {
-  if (!isSupabaseConfigured() || !supabase) return false;
-
-  const { error } = await supabase
-    .from('trips')
-    .insert({
-      code,
-      data: tripData,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    });
-
-  return !error;
+    // Keep only the 3 most recent backups
+    const keys = Object.keys(window.localStorage)
+      .filter((k) => k.startsWith('family-trip-storage-backup-'))
+      .sort();
+    while (keys.length > 3) {
+      const oldest = keys.shift();
+      if (oldest) window.localStorage.removeItem(oldest);
+    }
+  } catch (err) {
+    console.warn('backupLocalStateToLocalStorage failed:', err);
+  }
 }

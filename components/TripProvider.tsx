@@ -1,19 +1,17 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import { familyService } from '@/services/family.service';
 import { tripService } from '@/services/trip.service';
 import {
-  generateTripCode,
-  getTripCodeFromURL,
-  setTripCodeInURL,
-  loadTripFromCloud,
-  saveTripToCloud,
-  createTripInCloud,
+  loadTripData,
+  saveTripData,
+  hasMeaningfulLocalData,
+  backupLocalStateToLocalStorage,
 } from '@/lib/sync';
 
 export default function TripProvider({ children }: { children: React.ReactNode }) {
@@ -22,14 +20,12 @@ export default function TripProvider({ children }: { children: React.ReactNode }
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSavedRef = useRef<string>('');
   const initializedRef = useRef(false);
-  const router = useRouter();
+  const tripIdRef = useRef<string | null>(null);
   const pathname = usePathname();
 
   const { user, loading: authLoading } = useAuth();
 
   const {
-    tripCode,
-    setTripCode,
     setFamilyName,
     setFamilyInviteCode,
     hydrateFromCloud,
@@ -43,13 +39,13 @@ export default function TripProvider({ children }: { children: React.ReactNode }
 
     // Skip for public routes
     const publicPaths = ['/login', '/cadastro', '/compartilhado', '/onboarding'];
-    if (publicPaths.some(p => pathname.startsWith(p))) {
+    if (publicPaths.some((p) => pathname.startsWith(p))) {
       setLoading(false);
       return;
     }
 
     if (!isSupabaseConfigured()) {
-      // No Supabase: use legacy localStorage mode
+      // No Supabase: use localStorage-only mode
       initializedRef.current = true;
       setLoading(false);
       return;
@@ -64,12 +60,11 @@ export default function TripProvider({ children }: { children: React.ReactNode }
 
     async function init() {
       try {
-        // Check if user has a family
+        // 1. Load family membership
         let memberData = null;
         try {
           memberData = await familyService.getMyFamily();
         } catch (err) {
-          // Query error (RLS, network, etc.) — do NOT redirect to onboarding
           console.error('Failed to check family membership:', err);
           initializedRef.current = true;
           setLoading(false);
@@ -77,12 +72,10 @@ export default function TripProvider({ children }: { children: React.ReactNode }
         }
 
         if (!memberData) {
-          // Confirmed: user has no family — redirect to onboarding
           window.location.href = '/onboarding';
           return;
         }
 
-        // Store family name + invite code for display / sharing
         if (memberData.family?.name) {
           setFamilyName(memberData.family.name);
         }
@@ -92,44 +85,66 @@ export default function TripProvider({ children }: { children: React.ReactNode }
 
         const familyId = memberData.family_id;
 
-        // Get trips for this family
-        let trips: { id: string }[] = [];
+        // 2. Get (or create) the family's trip — this is the stable
+        //    cross-device identifier we'll use for cloud sync.
+        let trips: Array<{ id: string }> = [];
         try {
           trips = await tripService.getTrips(familyId);
-        } catch {
-          // Non-critical — continue with empty trips
+        } catch (err) {
+          console.error('getTrips failed:', err);
         }
-        if (trips.length === 0) {
+
+        let trip = trips[0] ?? null;
+        if (!trip) {
           try {
-            await tripService.createTrip(familyId, {
+            trip = await tripService.createTrip(familyId, {
               name: 'Orlando 2026',
               destination: 'Orlando, FL',
               destination_code: 'MCO',
-              origin: 'Sao Paulo, SP',
-              origin_code: 'GRU',
             });
-          } catch {
-            // Non-critical
+          } catch (err) {
+            console.error('createTrip failed:', err);
           }
         }
 
-        // For now, use the legacy sync (single JSONB blob in trips table)
-        // This keeps backward compatibility while the full relational migration happens
-        const urlCode = getTripCodeFromURL();
-        if (urlCode) {
-          const cloudData = await loadTripFromCloud(urlCode);
-          if (cloudData) {
-            hydrateFromCloud(cloudData);
-            setTripCode(urlCode);
-            lastSavedRef.current = JSON.stringify(cloudData);
-          }
+        if (!trip?.id) {
+          // Cannot sync without a trip — fall back to localStorage-only
+          console.error('No trip available for sync; using localStorage only.');
+          initializedRef.current = true;
+          setLoading(false);
+          return;
+        }
+
+        tripIdRef.current = trip.id;
+
+        // 3. Safety net: backup the current localStorage state before
+        //    any load/migration so the user can always recover.
+        backupLocalStateToLocalStorage();
+
+        // 4. Load cloud data for this trip
+        const cloudData = await loadTripData(trip.id);
+
+        if (cloudData) {
+          // Cloud has authoritative data — hydrate from it.
+          hydrateFromCloud(cloudData);
+          lastSavedRef.current = JSON.stringify(cloudData);
         } else {
-          const code = generateTripCode();
-          const data = getTripData();
-          await createTripInCloud(code, data);
-          setTripCode(code);
-          setTripCodeInURL(code);
-          lastSavedRef.current = JSON.stringify(data);
+          // Cloud is empty. If the current browser has meaningful
+          // local data, push it to the cloud (one-shot migration).
+          // Otherwise start with the default (empty) state.
+          const localData = getTripData();
+          if (hasMeaningfulLocalData(localData)) {
+            console.info('Migrating local state to cloud for trip', trip.id);
+            const ok = await saveTripData(trip.id, localData);
+            if (ok) {
+              lastSavedRef.current = JSON.stringify(localData);
+            }
+          } else {
+            // Fresh browser with no data — persist the defaults so
+            // subsequent loads are consistent.
+            await saveTripData(trip.id, localData);
+            lastSavedRef.current = JSON.stringify(localData);
+          }
         }
       } catch (err) {
         console.error('TripProvider init error:', err);
@@ -144,8 +159,8 @@ export default function TripProvider({ children }: { children: React.ReactNode }
 
   // Auto-save on store changes (debounced)
   const saveToCloud = useCallback(() => {
-    const code = useAppStore.getState().tripCode;
-    if (!code || !isSupabaseConfigured()) return;
+    const tripId = tripIdRef.current;
+    if (!tripId || !isSupabaseConfigured()) return;
 
     const data = useAppStore.getState().getTripData();
     const serialized = JSON.stringify(data);
@@ -158,7 +173,7 @@ export default function TripProvider({ children }: { children: React.ReactNode }
 
     setSyncStatus('saving');
     saveTimeoutRef.current = setTimeout(async () => {
-      const success = await saveTripToCloud(code, data);
+      const success = await saveTripData(tripId, data);
       if (success) {
         lastSavedRef.current = serialized;
         setSyncStatus('saved');
@@ -183,15 +198,16 @@ export default function TripProvider({ children }: { children: React.ReactNode }
     return () => unsub();
   }, [loading, saveToCloud]);
 
-  // Reload from cloud on tab focus
+  // Reload from cloud on tab focus (so changes from another device
+  // show up when the user comes back to this tab).
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
 
     const handleFocus = async () => {
-      const code = useAppStore.getState().tripCode;
-      if (!code) return;
+      const tripId = tripIdRef.current;
+      if (!tripId) return;
 
-      const cloudData = await loadTripFromCloud(code);
+      const cloudData = await loadTripData(tripId);
       if (cloudData) {
         const serialized = JSON.stringify(cloudData);
         if (serialized !== lastSavedRef.current) {
@@ -208,7 +224,7 @@ export default function TripProvider({ children }: { children: React.ReactNode }
   // Show loading for auth + data init
   if ((loading || authLoading) && isSupabaseConfigured()) {
     const publicPaths = ['/login', '/cadastro', '/compartilhado', '/onboarding'];
-    if (!publicPaths.some(p => pathname.startsWith(p))) {
+    if (!publicPaths.some((p) => pathname.startsWith(p))) {
       return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--background)', gap: '16px' }}>
           <div style={{ fontSize: '40px' }}>✈️</div>
