@@ -47,8 +47,10 @@ interface AppState extends TripData {
   // Cloud sync
   tripCode: string | null;
   familyName: string | null;
+  familyInviteCode: string | null;
   setTripCode: (code: string) => void;
   setFamilyName: (name: string) => void;
+  setFamilyInviteCode: (code: string | null) => void;
   hydrateFromCloud: (data: TripData) => void;
   getTripData: () => TripData;
   // Trip
@@ -127,9 +129,11 @@ export const useAppStore = create<AppState>()(
       foodItems: [],
       tripCode: null,
       familyName: null,
+      familyInviteCode: null,
 
       setTripCode: (code) => set({ tripCode: code }),
       setFamilyName: (name) => set({ familyName: name }),
+      setFamilyInviteCode: (code) => set({ familyInviteCode: code }),
 
       hydrateFromCloud: (data) =>
         set({

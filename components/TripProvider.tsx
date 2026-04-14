@@ -31,6 +31,7 @@ export default function TripProvider({ children }: { children: React.ReactNode }
     tripCode,
     setTripCode,
     setFamilyName,
+    setFamilyInviteCode,
     hydrateFromCloud,
     getTripData,
   } = useAppStore();
@@ -81,9 +82,12 @@ export default function TripProvider({ children }: { children: React.ReactNode }
           return;
         }
 
-        // Store family name for display in navigation
+        // Store family name + invite code for display / sharing
         if (memberData.family?.name) {
           setFamilyName(memberData.family.name);
+        }
+        if (memberData.family?.invite_code) {
+          setFamilyInviteCode(memberData.family.invite_code);
         }
 
         const familyId = memberData.family_id;

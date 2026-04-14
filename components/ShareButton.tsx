@@ -2,24 +2,27 @@
 
 import { useState } from 'react';
 import { useAppStore } from '@/lib/store';
-import { getShareURL } from '@/lib/sync';
 import { isSupabaseConfigured } from '@/lib/supabase';
 
 export default function ShareButton() {
-  const tripCode = useAppStore((s) => s.tripCode);
+  const familyInviteCode = useAppStore((s) => s.familyInviteCode);
+  const familyName = useAppStore((s) => s.familyName);
   const [copied, setCopied] = useState(false);
 
-  if (!isSupabaseConfigured() || !tripCode) return null;
+  if (!isSupabaseConfigured() || !familyInviteCode) return null;
 
-  const shareUrl = getShareURL(tripCode);
+  const shareUrl =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}/onboarding?code=${familyInviteCode}`
+      : '';
 
   async function handleShare() {
     // Try native share first (mobile)
-    if (navigator.share) {
+    if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
           title: 'Family Trip Manager — Orlando 2026',
-          text: 'Acesse nossa viagem:',
+          text: `Entre na família${familyName ? ` "${familyName}"` : ''} no Family Trip Manager! Código: ${familyInviteCode}`,
           url: shareUrl,
         });
         return;
@@ -67,7 +70,7 @@ export default function ShareButton() {
       }}
     >
       <span style={{ fontSize: '16px' }}>{copied ? '✓' : '🔗'}</span>
-      {copied ? 'Link copiado!' : 'Compartilhar viagem'}
+      {copied ? 'Link copiado!' : 'Convidar para família'}
     </button>
   );
 }
