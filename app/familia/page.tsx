@@ -57,6 +57,7 @@ export default function FamiliaPage() {
 
   const familyName = useAppStore((s) => s.familyName);
   const setFamilyNameStore = useAppStore((s) => s.setFamilyName);
+  const setFamilyInviteCodeStore = useAppStore((s) => s.setFamilyInviteCode);
 
   useEffect(() => {
     if (!isSupabaseConfigured() || !supabase) return;
@@ -83,12 +84,16 @@ export default function FamiliaPage() {
         // Load family details separately
         const { data: familyRow } = await supabase
           .from('families')
-          .select('name, created_by')
+          .select('name, created_by, invite_code')
           .eq('id', memberRow.family_id)
           .maybeSingle();
 
         if (familyRow) {
           setFamilyNameValue(familyRow.name || '');
+          const frow = familyRow as { name?: string; invite_code?: string };
+          if (frow.invite_code) {
+            setFamilyInviteCodeStore(frow.invite_code);
+          }
         }
       } catch (err) {
         console.error('loadFamily error:', err);
@@ -143,18 +148,32 @@ export default function FamiliaPage() {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (!authUser) return;
 
-      const { data: memberData } = await supabase
-        .from('family_members')
-        .select('family_id, family:families(invite_code)')
-        .eq('user_id', authUser.id)
-        .single();
-
-      if (memberData?.family) {
-        const family = memberData.family as unknown as Record<string, string>;
-        setInviteCode(family.invite_code || null);
+      // Step 1: resolve family_id (no nested join — avoids RLS recursion)
+      let targetFamilyId = familyId;
+      if (!targetFamilyId) {
+        const { data: memberRow } = await supabase
+          .from('family_members')
+          .select('family_id')
+          .eq('user_id', authUser.id)
+          .maybeSingle();
+        targetFamilyId = memberRow?.family_id ?? null;
+        if (targetFamilyId) setFamilyId(targetFamilyId);
       }
-    } catch {
-      // ignore
+      if (!targetFamilyId) return;
+
+      // Step 2: fetch invite_code from families (separate query)
+      const { data: familyRow } = await supabase
+        .from('families')
+        .select('invite_code')
+        .eq('id', targetFamilyId)
+        .maybeSingle();
+
+      if (familyRow?.invite_code) {
+        setInviteCode(familyRow.invite_code);
+        setFamilyInviteCodeStore(familyRow.invite_code);
+      }
+    } catch (err) {
+      console.error('loadInviteCode error:', err);
     } finally {
       setLoadingCode(false);
     }

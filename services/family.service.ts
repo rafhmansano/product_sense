@@ -7,18 +7,35 @@ export const familyService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 
-    const { data, error } = await supabase
+    // Query 1: membership row (no nested join — avoids triggering the
+    // families SELECT policy from within family_members, which was the
+    // source of "infinite recursion detected in policy" errors).
+    const { data: memberRow, error: memberErr } = await supabase
       .from('family_members')
-      .select('*, family:families(*)')
+      .select('*')
       .eq('user_id', user.id)
       .maybeSingle();
 
-    if (error) {
-      console.error('getMyFamily error:', error.message);
-      throw new Error(error.message);
+    if (memberErr) {
+      console.error('getMyFamily member query error:', memberErr.message);
+      throw new Error(memberErr.message);
+    }
+    if (!memberRow) return null;
+
+    // Query 2: family details (separate request, no join)
+    const { data: familyRow, error: familyErr } = await supabase
+      .from('families')
+      .select('*')
+      .eq('id', memberRow.family_id)
+      .maybeSingle();
+
+    if (familyErr) {
+      console.error('getMyFamily family query error:', familyErr.message);
+      // Non-fatal: return membership with null family
+      return { ...memberRow, family: null };
     }
 
-    return data;
+    return { ...memberRow, family: familyRow };
   },
 
   async createFamily(name: string) {
