@@ -87,37 +87,30 @@ export const familyService = {
 
   async joinFamily(inviteCode: string) {
     if (!supabase) throw new Error('Supabase not configured');
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
 
-    const { data: family, error: lookupError } = await supabase
-      .from('families')
-      .select('id, name, invite_code')
-      .eq('invite_code', inviteCode.toUpperCase())
-      .single();
+    // Use a SECURITY DEFINER RPC so the invite-code lookup bypasses RLS
+    // (a new user is not yet a member, so a direct SELECT on families is
+    // blocked by the "Members see own family" policy — chicken-and-egg).
+    const { data, error } = await supabase.rpc('join_family_by_invite_code', {
+      p_code: inviteCode.toUpperCase().trim(),
+    });
 
-    if (lookupError || !family) {
+    if (error) {
+      console.error('joinFamily RPC error:', error);
+      throw new Error(error.message || 'Erro ao entrar na família');
+    }
+
+    const result = data as { id?: string; name?: string; invite_code?: string; error?: string } | null;
+
+    if (result?.error) {
+      throw new Error(result.error);
+    }
+
+    if (!result?.id) {
       throw new Error('Codigo de convite invalido');
     }
 
-    // Check if already a member
-    const { data: existing } = await supabase
-      .from('family_members')
-      .select('id')
-      .eq('family_id', family.id)
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (existing) {
-      throw new Error('Voce ja pertence a esta familia');
-    }
-
-    const { error: joinError } = await supabase
-      .from('family_members')
-      .insert({ family_id: family.id, user_id: user.id, role: 'member' });
-
-    if (joinError) throw new Error(joinError.message);
-    return family;
+    return { id: result.id, name: result.name ?? '', invite_code: result.invite_code ?? '' };
   },
 
   async getInviteCode(familyId: string) {
