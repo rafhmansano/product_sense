@@ -158,18 +158,73 @@ export default function TripProvider({ children }: { children: React.ReactNode }
         // 3. Backup localStorage as a safety net
         backupLocalStateToLocalStorage();
 
+        // 3b. Force-upload escape hatch: if the user (or /restaurar)
+        //     set this flag, skip the cloud load entirely and push the
+        //     current local state to the cloud, then clear the flag.
+        //     This is how data recovery overrides a stale/empty cloud.
+        const forceUpload =
+          typeof window !== 'undefined' &&
+          window.localStorage.getItem('force-upload-to-cloud') === 'true';
+
+        if (forceUpload) {
+          console.warn('force-upload-to-cloud flag detected — pushing local state to cloud');
+          setSyncStatus('saving');
+          const localData = getTripData();
+          const ok = await saveTripData(trip.id, localData);
+          if (ok) {
+            lastSavedRef.current = JSON.stringify(localData);
+            setLastSyncedAt(new Date());
+            setSyncStatus('synced');
+            setMigrationSummary(buildSummary(localData));
+            window.localStorage.removeItem('force-upload-to-cloud');
+          } else {
+            setSyncStatus('error');
+          }
+          initializedRef.current = true;
+          setLoading(false);
+          return;
+        }
+
         // 4. Load cloud data
         const cloudData = await loadTripData(trip.id);
 
         if (cloudData) {
-          // Cloud has authoritative data — hydrate from it.
-          hydrateFromCloud(cloudData);
-          lastSavedRef.current = JSON.stringify(cloudData);
-          setLastSyncedAt(new Date());
-          setSyncStatus('synced');
+          // Cloud has data. Safety check: if the CURRENT localStorage
+          // has meaningful data but the cloud doesn't (e.g. a previous
+          // buggy deploy wrote empty defaults to the cloud), prefer
+          // local and push it up. This prevents hydrateFromCloud from
+          // clobbering real user data with stale/empty cloud state.
+          const localData = getTripData();
+          const localHasData = hasMeaningfulLocalData(localData);
+          const cloudHasData = hasMeaningfulLocalData(cloudData);
+
+          if (localHasData && !cloudHasData) {
+            console.warn(
+              'Local has meaningful data but cloud does not — preferring local and re-uploading to cloud to heal stale cloud state.'
+            );
+            setSyncStatus('saving');
+            const ok = await saveTripData(trip.id, localData);
+            if (ok) {
+              lastSavedRef.current = JSON.stringify(localData);
+              setLastSyncedAt(new Date());
+              setSyncStatus('synced');
+              setMigrationSummary(buildSummary(localData));
+            } else {
+              setSyncStatus('error');
+            }
+          } else {
+            // Normal path: cloud is authoritative
+            hydrateFromCloud(cloudData);
+            lastSavedRef.current = JSON.stringify(cloudData);
+            setLastSyncedAt(new Date());
+            setSyncStatus('synced');
+          }
         } else {
           // Cloud is empty. If the current browser has meaningful
           // local data, push it to the cloud (one-shot migration).
+          // IMPORTANT: do NOT save defaults to cloud on a fresh browser.
+          // Doing so would clobber the real data when the original
+          // browser later tries to load from cloud.
           const localData = getTripData();
           if (hasMeaningfulLocalData(localData)) {
             console.info('Migrating local state to cloud for trip', trip.id);
@@ -179,19 +234,15 @@ export default function TripProvider({ children }: { children: React.ReactNode }
               lastSavedRef.current = JSON.stringify(localData);
               setLastSyncedAt(new Date());
               setSyncStatus('synced');
-              // Show the one-shot migration confirmation banner
               setMigrationSummary(buildSummary(localData));
             } else {
               setSyncStatus('error');
             }
           } else {
-            // Fresh browser with no data — persist defaults.
-            const ok = await saveTripData(trip.id, localData);
-            if (ok) {
-              lastSavedRef.current = JSON.stringify(localData);
-              setLastSyncedAt(new Date());
-              setSyncStatus('synced');
-            }
+            // Fresh browser with no data — leave cloud null. The next
+            // time any browser with real data opens, its init will
+            // detect cloud=null + local has data → migrate.
+            setSyncStatus('idle');
           }
         }
       } catch (err) {
