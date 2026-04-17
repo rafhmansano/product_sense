@@ -35,46 +35,54 @@ export async function migrateFromLocalStorage(tripId: string) {
       await supabase.from('flights').insert(flights);
     }
 
-    // Migrate hotel
-    if (state.hotel?.name) {
-      await supabase.from('accommodations').insert({
+    // Migrate hotels (supports both old single hotel and new hotels array)
+    const hotelsToMigrate = state.hotels?.length > 0
+      ? state.hotels
+      : state.hotel?.name ? [state.hotel] : [];
+    if (hotelsToMigrate.length > 0) {
+      const accommodations = hotelsToMigrate.map((h: Record<string, unknown>) => ({
         trip_id: tripId,
-        name: state.hotel.name,
-        address: state.hotel.address,
-        maps_url: state.hotel.mapsUrl,
-        reservation_code: state.hotel.reservationCode,
-        contact_phone: state.hotel.contactPhone,
-        contact_email: state.hotel.contactEmail,
-        room_type: state.hotel.roomType,
-        parking: state.hotel.parking,
-        breakfast: state.hotel.breakfast,
-        wifi: state.hotel.wifi,
-        pool: state.hotel.pool,
-        shuttle: state.hotel.shuttle,
-        crib: state.hotel.crib,
-        cancellation_policy: state.hotel.cancellationPolicy,
-        distance_to_parks: state.hotel.distanceToParks,
-        notes: state.hotel.notes,
-      });
+        name: h.name,
+        address: h.address,
+        maps_url: h.mapsUrl,
+        reservation_code: h.reservationCode,
+        contact_phone: h.contactPhone,
+        contact_email: h.contactEmail,
+        room_type: h.roomType,
+        parking: h.parking,
+        breakfast: h.breakfast,
+        wifi: h.wifi,
+        pool: h.pool,
+        shuttle: h.shuttle,
+        crib: h.crib,
+        cancellation_policy: h.cancellationPolicy,
+        distance_to_parks: h.distanceToParks,
+        notes: h.notes,
+      }));
+      await supabase.from('accommodations').insert(accommodations);
     }
 
-    // Migrate car rental
-    if (state.carRental?.company) {
-      await supabase.from('car_rentals').insert({
+    // Migrate car rentals (supports both old single carRental and new carRentals array)
+    const carsToMigrate = state.carRentals?.length > 0
+      ? state.carRentals
+      : state.carRental?.company ? [state.carRental] : [];
+    if (carsToMigrate.length > 0) {
+      const cars = carsToMigrate.map((c: Record<string, unknown>) => ({
         trip_id: tripId,
-        company: state.carRental.company,
-        vehicle_category: state.carRental.vehicleCategory,
-        reservation_code: state.carRental.reservationCode,
-        pickup_location: state.carRental.pickupLocation,
-        return_location: state.carRental.returnLocation,
-        insurance: state.carRental.insurance,
-        child_seat: state.carRental.childSeat,
-        gps: state.carRental.gps,
-        fuel_policy: state.carRental.fuelPolicy,
-        total_price: state.carRental.totalPrice,
-        payment_method: state.carRental.paymentMethod,
-        notes: state.carRental.notes,
-      });
+        company: c.company,
+        vehicle_category: c.vehicleCategory,
+        reservation_code: c.reservationCode,
+        pickup_location: c.pickupLocation,
+        return_location: c.returnLocation,
+        insurance: c.insurance,
+        child_seat: c.childSeat,
+        gps: c.gps,
+        fuel_policy: c.fuelPolicy,
+        total_price: c.totalPrice,
+        payment_method: c.paymentMethod,
+        notes: c.notes,
+      }));
+      await supabase.from('car_rentals').insert(cars);
     }
 
     // Migrate events

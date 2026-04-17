@@ -54,8 +54,8 @@ export async function saveTripData(tripId: string, tripData: TripData): Promise<
  */
 export function hasMeaningfulLocalData(state: TripData): boolean {
   if (state.flights && state.flights.length > 0) return true;
-  if (state.hotel) return true;
-  if (state.carRental) return true;
+  if (state.hotels && state.hotels.length > 0) return true;
+  if (state.carRentals && state.carRentals.length > 0) return true;
   if (state.events && state.events.length > 0) return true;
   if (state.expenses && state.expenses.length > 0) return true;
   if (state.customRestaurants && state.customRestaurants.length > 0) return true;

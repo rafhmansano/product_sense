@@ -14,6 +14,7 @@ import {
   ChecklistItem,
   CustomRestaurant,
   FoodItem,
+  FileAttachment,
   EXPENSE_TO_BUDGET,
 } from '@/types';
 import {
@@ -28,8 +29,8 @@ import {
 export interface TripData {
   trip: Trip;
   flights: Flight[];
-  hotel: Hotel | null;
-  carRental: CarRental | null;
+  hotels: Hotel[];
+  carRentals: CarRental[];
   events: AgendaEvent[];
   budgetCategories: BudgetCategory[];
   expenses: Expense[];
@@ -59,12 +60,20 @@ interface AppState extends TripData {
   addFlight: (flight: Flight) => void;
   updateFlight: (id: string, data: Partial<Flight>) => void;
   deleteFlight: (id: string) => void;
-  // Hotel
-  setHotel: (hotel: Hotel) => void;
-  updateHotel: (data: Partial<Hotel>) => void;
-  // Car
-  setCarRental: (car: CarRental) => void;
-  updateCarRental: (data: Partial<CarRental>) => void;
+  addFlightAttachment: (flightId: string, attachment: FileAttachment) => void;
+  removeFlightAttachment: (flightId: string, attachmentId: string) => void;
+  // Hotels (multiple)
+  addHotel: (hotel: Hotel) => void;
+  updateHotel: (id: string, data: Partial<Hotel>) => void;
+  deleteHotel: (id: string) => void;
+  addHotelAttachment: (hotelId: string, attachment: FileAttachment) => void;
+  removeHotelAttachment: (hotelId: string, attachmentId: string) => void;
+  // Car Rentals (multiple)
+  addCarRental: (car: CarRental) => void;
+  updateCarRental: (id: string, data: Partial<CarRental>) => void;
+  deleteCarRental: (id: string) => void;
+  addCarAttachment: (carId: string, attachment: FileAttachment) => void;
+  removeCarAttachment: (carId: string, attachmentId: string) => void;
   // Events
   addEvent: (event: AgendaEvent) => void;
   updateEvent: (id: string, data: Partial<AgendaEvent>) => void;
@@ -114,8 +123,8 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       trip: DEFAULT_TRIP,
       flights: [],
-      hotel: null,
-      carRental: null,
+      hotels: [],
+      carRentals: [],
       events: [],
       budgetCategories: DEFAULT_BUDGET_CATEGORIES,
       expenses: [],
@@ -138,9 +147,9 @@ export const useAppStore = create<AppState>()(
       hydrateFromCloud: (data) =>
         set({
           trip: data.trip,
-          flights: data.flights,
-          hotel: data.hotel,
-          carRental: data.carRental,
+          flights: (data.flights ?? []).map((f) => ({ attachments: [], ...f })),
+          hotels: (data.hotels ?? []).map((h) => ({ attachments: [], ...h })),
+          carRentals: (data.carRentals ?? []).map((c) => ({ attachments: [], ...c })),
           events: data.events,
           budgetCategories: data.budgetCategories,
           expenses: data.expenses,
@@ -159,8 +168,8 @@ export const useAppStore = create<AppState>()(
         return {
           trip: s.trip,
           flights: s.flights,
-          hotel: s.hotel,
-          carRental: s.carRental,
+          hotels: s.hotels,
+          carRentals: s.carRentals,
           events: s.events,
           budgetCategories: s.budgetCategories,
           expenses: s.expenses,
@@ -178,6 +187,7 @@ export const useAppStore = create<AppState>()(
       updateTrip: (data) =>
         set((state) => ({ trip: { ...state.trip, ...data } })),
 
+      // Flights
       addFlight: (flight) =>
         set((state) => ({ flights: [...state.flights, flight] })),
 
@@ -189,18 +199,85 @@ export const useAppStore = create<AppState>()(
       deleteFlight: (id) =>
         set((state) => ({ flights: state.flights.filter((f) => f.id !== id) })),
 
-      setHotel: (hotel) => set({ hotel }),
-
-      updateHotel: (data) =>
-        set((state) => ({ hotel: state.hotel ? { ...state.hotel, ...data } : null })),
-
-      setCarRental: (car) => set({ carRental: car }),
-
-      updateCarRental: (data) =>
+      addFlightAttachment: (flightId, attachment) =>
         set((state) => ({
-          carRental: state.carRental ? { ...state.carRental, ...data } : null,
+          flights: state.flights.map((f) =>
+            f.id === flightId
+              ? { ...f, attachments: [...(f.attachments ?? []), attachment] }
+              : f
+          ),
         })),
 
+      removeFlightAttachment: (flightId, attachmentId) =>
+        set((state) => ({
+          flights: state.flights.map((f) =>
+            f.id === flightId
+              ? { ...f, attachments: (f.attachments ?? []).filter((a) => a.id !== attachmentId) }
+              : f
+          ),
+        })),
+
+      // Hotels
+      addHotel: (hotel) =>
+        set((state) => ({ hotels: [...state.hotels, hotel] })),
+
+      updateHotel: (id, data) =>
+        set((state) => ({
+          hotels: state.hotels.map((h) => (h.id === id ? { ...h, ...data } : h)),
+        })),
+
+      deleteHotel: (id) =>
+        set((state) => ({ hotels: state.hotels.filter((h) => h.id !== id) })),
+
+      addHotelAttachment: (hotelId, attachment) =>
+        set((state) => ({
+          hotels: state.hotels.map((h) =>
+            h.id === hotelId
+              ? { ...h, attachments: [...(h.attachments ?? []), attachment] }
+              : h
+          ),
+        })),
+
+      removeHotelAttachment: (hotelId, attachmentId) =>
+        set((state) => ({
+          hotels: state.hotels.map((h) =>
+            h.id === hotelId
+              ? { ...h, attachments: (h.attachments ?? []).filter((a) => a.id !== attachmentId) }
+              : h
+          ),
+        })),
+
+      // Car Rentals
+      addCarRental: (car) =>
+        set((state) => ({ carRentals: [...state.carRentals, car] })),
+
+      updateCarRental: (id, data) =>
+        set((state) => ({
+          carRentals: state.carRentals.map((c) => (c.id === id ? { ...c, ...data } : c)),
+        })),
+
+      deleteCarRental: (id) =>
+        set((state) => ({ carRentals: state.carRentals.filter((c) => c.id !== id) })),
+
+      addCarAttachment: (carId, attachment) =>
+        set((state) => ({
+          carRentals: state.carRentals.map((c) =>
+            c.id === carId
+              ? { ...c, attachments: [...(c.attachments ?? []), attachment] }
+              : c
+          ),
+        })),
+
+      removeCarAttachment: (carId, attachmentId) =>
+        set((state) => ({
+          carRentals: state.carRentals.map((c) =>
+            c.id === carId
+              ? { ...c, attachments: (c.attachments ?? []).filter((a) => a.id !== attachmentId) }
+              : c
+          ),
+        })),
+
+      // Events
       addEvent: (event) =>
         set((state) => ({ events: [...state.events, event] })),
 
@@ -301,16 +378,43 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'family-trip-storage',
-      version: 2,
+      version: 3,
       migrate: (persisted: unknown, version: number) => {
         const state = persisted as Record<string, unknown>;
+
         if (version < 2) {
-          // Merge missing default documents
           const storedDocs = (state.documents as TripDocument[]) || [];
           const storedIds = new Set(storedDocs.map((d) => d.id));
           const missingDocs = DEFAULT_DOCUMENTS.filter((d) => !storedIds.has(d.id));
           state.documents = [...storedDocs, ...missingDocs];
         }
+
+        if (version < 3) {
+          // Migrate single hotel → hotels array
+          const oldHotel = state.hotel as Hotel | null | undefined;
+          if (oldHotel) {
+            state.hotels = [{ attachments: [], ...oldHotel }];
+          } else {
+            state.hotels = state.hotels ?? [];
+          }
+          delete state.hotel;
+
+          // Migrate single carRental → carRentals array
+          const oldCar = state.carRental as CarRental | null | undefined;
+          if (oldCar) {
+            state.carRentals = [{ attachments: [], ...oldCar }];
+          } else {
+            state.carRentals = state.carRentals ?? [];
+          }
+          delete state.carRental;
+
+          // Ensure flights have attachments array
+          state.flights = ((state.flights as Flight[]) ?? []).map((f) => ({
+            attachments: [],
+            ...f,
+          }));
+        }
+
         return state as unknown as AppState;
       },
     }

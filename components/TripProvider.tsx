@@ -19,8 +19,8 @@ type SyncStatus = 'idle' | 'saving' | 'saved' | 'synced' | 'error';
 
 interface MigrationSummary {
   flights: number;
-  hotel: boolean;
-  carRental: boolean;
+  hotels: number;
+  carRentals: number;
   events: number;
   expenses: number;
   members: number;
@@ -31,8 +31,8 @@ interface MigrationSummary {
 function buildSummary(data: TripData): MigrationSummary {
   return {
     flights: data.flights?.length ?? 0,
-    hotel: !!data.hotel,
-    carRental: !!data.carRental,
+    hotels: data.hotels?.length ?? 0,
+    carRentals: data.carRentals?.length ?? 0,
     events: data.events?.length ?? 0,
     expenses: data.expenses?.length ?? 0,
     members: data.trip?.members?.length ?? 0,
@@ -395,8 +395,8 @@ export default function TripProvider({ children }: { children: React.ReactNode }
               </div>
               <ul style={{ margin: '10px 0 0', padding: '0 0 0 18px', fontSize: '13px', color: 'var(--ink)', lineHeight: 1.7 }}>
                 {migrationSummary.flights > 0 && <li><strong>{migrationSummary.flights}</strong> voo(s)</li>}
-                {migrationSummary.hotel && <li><strong>1</strong> hotel</li>}
-                {migrationSummary.carRental && <li><strong>1</strong> aluguel de carro</li>}
+                {migrationSummary.hotels > 0 && <li><strong>{migrationSummary.hotels}</strong> {migrationSummary.hotels === 1 ? 'hotel' : 'hoteis'}</li>}
+                {migrationSummary.carRentals > 0 && <li><strong>{migrationSummary.carRentals}</strong> {migrationSummary.carRentals === 1 ? 'aluguel de carro' : 'alugueis de carro'}</li>}
                 {migrationSummary.events > 0 && <li><strong>{migrationSummary.events}</strong> evento(s) da agenda</li>}
                 {migrationSummary.expenses > 0 && <li><strong>{migrationSummary.expenses}</strong> despesa(s)</li>}
                 {migrationSummary.members > 0 && <li><strong>{migrationSummary.members}</strong> membro(s) da família</li>}

@@ -19,6 +19,16 @@ export interface Trip {
   members: FamilyMember[];
 }
 
+// === FILE ATTACHMENTS ===
+export interface FileAttachment {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  dataUrl: string;
+  addedAt: string;
+}
+
 // === FLIGHTS ===
 export interface Flight {
   id: string;
@@ -41,6 +51,7 @@ export interface Flight {
   boardingPass: string;
   notes: string;
   status: 'confirmado' | 'pendente' | 'cancelado';
+  attachments: FileAttachment[];
 }
 
 // === HOTEL ===
@@ -66,6 +77,7 @@ export interface Hotel {
   contactPhone: string;
   contactEmail: string;
   notes: string;
+  attachments: FileAttachment[];
 }
 
 // === CAR RENTAL ===
@@ -87,6 +99,7 @@ export interface CarRental {
   totalPrice: string;
   paymentMethod: string;
   notes: string;
+  attachments: FileAttachment[];
 }
 
 // === AGENDA / EVENTS ===
