@@ -147,9 +147,9 @@ export const useAppStore = create<AppState>()(
       hydrateFromCloud: (data) =>
         set({
           trip: data.trip,
-          flights: (data.flights ?? []).map((f) => ({ attachments: [], ...f })),
-          hotels: (data.hotels ?? []).map((h) => ({ attachments: [], ...h })),
-          carRentals: (data.carRentals ?? []).map((c) => ({ attachments: [], ...c })),
+          flights: (data.flights ?? []).map((f) => ({ ...f, attachments: f.attachments ?? [] })),
+          hotels: (data.hotels ?? []).map((h) => ({ ...h, attachments: h.attachments ?? [] })),
+          carRentals: (data.carRentals ?? []).map((c) => ({ ...c, attachments: c.attachments ?? [] })),
           events: data.events,
           budgetCategories: data.budgetCategories,
           expenses: data.expenses,
@@ -393,7 +393,7 @@ export const useAppStore = create<AppState>()(
           // Migrate single hotel → hotels array
           const oldHotel = state.hotel as Hotel | null | undefined;
           if (oldHotel) {
-            state.hotels = [{ attachments: [], ...oldHotel }];
+            state.hotels = [{ ...oldHotel, attachments: (oldHotel as Hotel).attachments ?? [] }];
           } else {
             state.hotels = state.hotels ?? [];
           }
@@ -402,7 +402,7 @@ export const useAppStore = create<AppState>()(
           // Migrate single carRental → carRentals array
           const oldCar = state.carRental as CarRental | null | undefined;
           if (oldCar) {
-            state.carRentals = [{ attachments: [], ...oldCar }];
+            state.carRentals = [{ ...oldCar, attachments: (oldCar as CarRental).attachments ?? [] }];
           } else {
             state.carRentals = state.carRentals ?? [];
           }
@@ -410,8 +410,8 @@ export const useAppStore = create<AppState>()(
 
           // Ensure flights have attachments array
           state.flights = ((state.flights as Flight[]) ?? []).map((f) => ({
-            attachments: [],
             ...f,
+            attachments: (f as Flight).attachments ?? [],
           }));
         }
 
