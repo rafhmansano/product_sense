@@ -158,7 +158,7 @@ export default function OrcamentoPage() {
               gap: '12px',
             }}
           >
-            <span style={{ fontSize: '28px' }}>💰</span> Orcamento
+            <span style={{ fontSize: '28px' }}>💰</span> Orçamento
           </h1>
           <p
             style={{
@@ -294,7 +294,7 @@ export default function OrcamentoPage() {
           padding: '24px',
         }}>
           <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', marginBottom: '20px', fontFamily: 'sans-serif' }}>
-            Categorias do Orcamento
+            Categorias do Orçamento
           </div>
 
           {/* Table Header */}
