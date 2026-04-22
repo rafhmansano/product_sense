@@ -189,7 +189,7 @@ export interface Expense {
   id: string;
   amount: number;
   currency: 'USD' | 'BRL';
-  category: ExpenseCategoryId;
+  category: BudgetCategoryId;
   description: string;
   date: string;
   budgetCategoryId: BudgetCategoryId;

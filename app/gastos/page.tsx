@@ -3,40 +3,31 @@
 import { useState, useMemo } from 'react';
 import AppShell from '@/components/AppShell';
 import { useAppStore } from '@/lib/store';
-import {
-  ExpenseCategoryId,
-  EXPENSE_CATEGORY_LABELS,
-  EXPENSE_TO_BUDGET,
-} from '@/types';
+import { BudgetCategoryId } from '@/types';
+import { DEFAULT_BUDGET_CATEGORIES } from '@/lib/data';
 
-const categoryOptions = Object.entries(EXPENSE_CATEGORY_LABELS) as [
-  ExpenseCategoryId,
-  string,
-][];
+const budgetCategoryMap = Object.fromEntries(
+  DEFAULT_BUDGET_CATEGORIES.map((c) => [c.id, c])
+) as Record<BudgetCategoryId, (typeof DEFAULT_BUDGET_CATEGORIES)[0]>;
 
 export default function GastosPage() {
   const { expenses, addExpense, deleteExpense, exchangeRate } = useAppStore();
 
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState<'USD' | 'BRL'>('USD');
-  const [category, setCategory] = useState<ExpenseCategoryId>('comida-almoco');
+  const [category, setCategory] = useState<BudgetCategoryId>('alimentacao');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [filterCategory, setFilterCategory] = useState<
-    ExpenseCategoryId | 'all'
-  >('all');
+  const [filterCategory, setFilterCategory] = useState<BudgetCategoryId | 'all'>('all');
+  const [amountError, setAmountError] = useState('');
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  // Running total in BRL
   const runningTotalBRL = useMemo(() => {
     return expenses.reduce((sum, exp) => {
-      return (
-        sum +
-        (exp.currency === 'BRL' ? exp.amount : exp.amount * exchangeRate)
-      );
+      return sum + (exp.currency === 'BRL' ? exp.amount : exp.amount * exchangeRate);
     }, 0);
   }, [expenses, exchangeRate]);
 
-  // Filtered expenses
   const filteredExpenses = useMemo(() => {
     const filtered =
       filterCategory === 'all'
@@ -47,7 +38,6 @@ export default function GastosPage() {
     );
   }, [expenses, filterCategory]);
 
-  // Group by date
   const groupedByDate = useMemo(() => {
     const groups: Record<string, typeof filteredExpenses> = {};
     for (const exp of filteredExpenses) {
@@ -59,16 +49,12 @@ export default function GastosPage() {
     );
   }, [filteredExpenses]);
 
-  // Daily totals in BRL
   function dailyTotalBRL(items: typeof expenses) {
     return items.reduce(
-      (sum, e) =>
-        sum + (e.currency === 'BRL' ? e.amount : e.amount * exchangeRate),
+      (sum, e) => sum + (e.currency === 'BRL' ? e.amount : e.amount * exchangeRate),
       0
     );
   }
-
-  const [amountError, setAmountError] = useState('');
 
   function handleAdd() {
     const parsed = parseFloat(amount);
@@ -89,7 +75,7 @@ export default function GastosPage() {
       category,
       description: description.trim(),
       date,
-      budgetCategoryId: EXPENSE_TO_BUDGET[category],
+      budgetCategoryId: category,
     });
 
     setAmount('');
@@ -262,7 +248,11 @@ export default function GastosPage() {
                   boxSizing: 'border-box',
                 }}
               />
-              {amountError && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{amountError}</span>}
+              {amountError && (
+                <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>
+                  {amountError}
+                </span>
+              )}
             </div>
 
             {/* Currency Toggle */}
@@ -331,9 +321,7 @@ export default function GastosPage() {
               <select
                 className="input-field"
                 value={category}
-                onChange={(e) =>
-                  setCategory(e.target.value as ExpenseCategoryId)
-                }
+                onChange={(e) => setCategory(e.target.value as BudgetCategoryId)}
                 style={{
                   width: '100%',
                   padding: '10px 12px',
@@ -346,9 +334,9 @@ export default function GastosPage() {
                   boxSizing: 'border-box',
                 }}
               >
-                {categoryOptions.map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
+                {DEFAULT_BUDGET_CATEGORIES.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.icon} {cat.name}
                   </option>
                 ))}
               </select>
@@ -434,7 +422,7 @@ export default function GastosPage() {
               />
             </div>
 
-            {/* Add Button */}
+            {/* Confirm Button */}
             <button
               className="btn-primary"
               onClick={handleAdd}
@@ -451,7 +439,7 @@ export default function GastosPage() {
                 whiteSpace: 'nowrap',
               }}
             >
-              + Adicionar
+              ✓ Confirmar gasto
             </button>
           </div>
         </div>
@@ -478,9 +466,7 @@ export default function GastosPage() {
           <select
             className="input-field"
             value={filterCategory}
-            onChange={(e) =>
-              setFilterCategory(e.target.value as ExpenseCategoryId | 'all')
-            }
+            onChange={(e) => setFilterCategory(e.target.value as BudgetCategoryId | 'all')}
             style={{
               padding: '8px 12px',
               border: '1px solid var(--border)',
@@ -492,9 +478,9 @@ export default function GastosPage() {
             }}
           >
             <option value="all">Todas as categorias</option>
-            {categoryOptions.map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
+            {DEFAULT_BUDGET_CATEGORIES.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.icon} {cat.name}
               </option>
             ))}
           </select>
@@ -572,123 +558,169 @@ export default function GastosPage() {
                   overflow: 'hidden',
                 }}
               >
-                {items.map((exp, idx) => (
-                  <div
-                    key={exp.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '14px 20px',
-                      borderBottom:
-                        idx < items.length - 1
-                          ? '1px solid var(--border)'
-                          : 'none',
-                      transition: 'background 0.15s',
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.background = 'rgba(0,0,0,0.015)')
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.background = 'transparent')
-                    }
-                  >
+                {items.map((exp, idx) => {
+                  const cat = budgetCategoryMap[exp.category];
+                  const isConfirming = confirmDeleteId === exp.id;
+                  return (
                     <div
+                      key={exp.id}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '16px',
-                        flex: 1,
+                        justifyContent: 'space-between',
+                        padding: '14px 20px',
+                        borderBottom:
+                          idx < items.length - 1
+                            ? '1px solid var(--border)'
+                            : 'none',
+                        transition: 'background 0.15s',
+                        background: isConfirming ? '#FFF7F7' : undefined,
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isConfirming)
+                          e.currentTarget.style.background = 'rgba(0,0,0,0.015)';
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isConfirming)
+                          e.currentTarget.style.background = 'transparent';
                       }}
                     >
-                      {/* Amount + Currency */}
                       <div
                         style={{
-                          minWidth: '100px',
-                          fontSize: '15px',
-                          fontWeight: '700',
-                          color: 'var(--navy)',
-                          fontFamily: 'sans-serif',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '16px',
+                          flex: 1,
                         }}
                       >
-                        {exp.currency === 'BRL' ? 'R$' : '$'}{' '}
-                        {exp.amount.toLocaleString(
-                          exp.currency === 'BRL' ? 'pt-BR' : 'en-US',
-                          { minimumFractionDigits: 2 }
-                        )}
-                        <span
-                          style={{
-                            fontSize: '11px',
-                            fontWeight: '500',
-                            color: 'var(--ink-subtle)',
-                            marginLeft: '4px',
-                          }}
-                        >
-                          {exp.currency}
-                        </span>
-                      </div>
-
-                      {/* Category Label */}
-                      <div
-                        style={{
-                          fontSize: '12px',
-                          fontWeight: '600',
-                          color: 'var(--ink-muted)',
-                          background: 'var(--border)',
-                          padding: '3px 10px',
-                          borderRadius: '9999px',
-                          fontFamily: 'sans-serif',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {EXPENSE_CATEGORY_LABELS[exp.category]}
-                      </div>
-
-                      {/* Description */}
-                      {exp.description && (
+                        {/* Amount + Currency */}
                         <div
                           style={{
-                            fontSize: '13px',
-                            color: 'var(--ink-muted)',
+                            minWidth: '100px',
+                            fontSize: '15px',
+                            fontWeight: '700',
+                            color: 'var(--navy)',
                             fontFamily: 'sans-serif',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                          }}
+                        >
+                          {exp.currency === 'BRL' ? 'R$' : '$'}{' '}
+                          {exp.amount.toLocaleString(
+                            exp.currency === 'BRL' ? 'pt-BR' : 'en-US',
+                            { minimumFractionDigits: 2 }
+                          )}
+                          <span
+                            style={{
+                              fontSize: '11px',
+                              fontWeight: '500',
+                              color: 'var(--ink-subtle)',
+                              marginLeft: '4px',
+                            }}
+                          >
+                            {exp.currency}
+                          </span>
+                        </div>
+
+                        {/* Category Label */}
+                        <div
+                          style={{
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            color: 'var(--ink-muted)',
+                            background: 'var(--border)',
+                            padding: '3px 10px',
+                            borderRadius: '9999px',
+                            fontFamily: 'sans-serif',
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          {exp.description}
+                          {cat ? `${cat.icon} ${cat.name}` : exp.category}
                         </div>
+
+                        {/* Description */}
+                        {exp.description && (
+                          <div
+                            style={{
+                              fontSize: '13px',
+                              color: 'var(--ink-muted)',
+                              fontFamily: 'sans-serif',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {exp.description}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Delete / Confirm actions */}
+                      {isConfirming ? (
+                        <div style={{ display: 'flex', gap: '8px', marginLeft: '12px' }}>
+                          <span style={{ fontSize: '12px', color: '#EF4444', fontFamily: 'sans-serif', alignSelf: 'center', fontWeight: '600' }}>
+                            Excluir?
+                          </span>
+                          <button
+                            onClick={() => { deleteExpense(exp.id); setConfirmDeleteId(null); }}
+                            style={{
+                              padding: '6px 14px',
+                              background: '#EF4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '8px',
+                              fontSize: '12px',
+                              fontWeight: '600',
+                              cursor: 'pointer',
+                              fontFamily: 'sans-serif',
+                            }}
+                          >
+                            Sim
+                          </button>
+                          <button
+                            onClick={() => setConfirmDeleteId(null)}
+                            style={{
+                              padding: '6px 14px',
+                              background: 'transparent',
+                              color: 'var(--ink-muted)',
+                              border: '1px solid var(--border)',
+                              borderRadius: '8px',
+                              fontSize: '12px',
+                              fontWeight: '600',
+                              cursor: 'pointer',
+                              fontFamily: 'sans-serif',
+                            }}
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmDeleteId(exp.id)}
+                          style={{
+                            padding: '6px 14px',
+                            background: 'transparent',
+                            color: '#EF4444',
+                            border: '1px solid #FCA5A5',
+                            borderRadius: '8px',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            fontFamily: 'sans-serif',
+                            marginLeft: '12px',
+                            transition: 'all 0.15s',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#FEF2F2';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                          }}
+                        >
+                          Excluir
+                        </button>
                       )}
                     </div>
-
-                    {/* Delete Button */}
-                    <button
-                      className="btn-danger"
-                      onClick={() => { if (confirm('Tem certeza que deseja excluir este gasto?')) deleteExpense(exp.id); }}
-                      style={{
-                        padding: '6px 14px',
-                        background: 'transparent',
-                        color: '#EF4444',
-                        border: '1px solid #FCA5A5',
-                        borderRadius: '8px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        fontFamily: 'sans-serif',
-                        marginLeft: '12px',
-                        transition: 'all 0.15s',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#FEF2F2';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                      }}
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           );

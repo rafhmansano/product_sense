@@ -15,7 +15,6 @@ import {
   CustomRestaurant,
   FoodItem,
   FileAttachment,
-  EXPENSE_TO_BUDGET,
 } from '@/types';
 import {
   DEFAULT_BUDGET_CATEGORIES,
@@ -308,7 +307,7 @@ export const useAppStore = create<AppState>()(
       addExpense: (expense) =>
         set((state) => ({
           expenses: [
-            { ...expense, budgetCategoryId: EXPENSE_TO_BUDGET[expense.category] },
+            { ...expense, budgetCategoryId: expense.category },
             ...state.expenses,
           ],
         })),
