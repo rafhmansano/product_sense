@@ -158,6 +158,7 @@ export type BudgetCategoryId =
   | 'seguro'
   | 'cambio'
   | 'saude'
+  | 'internet'
   | 'emergencia';
 
 export interface BudgetCategory {

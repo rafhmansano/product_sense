@@ -12,6 +12,7 @@ export const DEFAULT_BUDGET_CATEGORIES: BudgetCategory[] = [
   { id: 'seguro', name: 'Seguro Viagem', icon: '🛡️', plannedBRL: 0, plannedUSD: 0 },
   { id: 'cambio', name: 'Cambio e Taxas', icon: '💱', plannedBRL: 0, plannedUSD: 0 },
   { id: 'saude', name: 'Saude / Farmacia', icon: '💊', plannedBRL: 0, plannedUSD: 0 },
+  { id: 'internet', name: 'Internet / Chip', icon: '📶', plannedBRL: 0, plannedUSD: 0 },
   { id: 'emergencia', name: 'Emergencia (10-15%)', icon: '🆘', plannedBRL: 0, plannedUSD: 0 },
 ];
 
