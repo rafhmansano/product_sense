@@ -2,263 +2,421 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Exercise, UserStats, BadgeId, StepId } from '@/types';
-import { BADGES, calculateXpForExercise, XP_PER_LEVEL } from '@/lib/framework';
+import {
+  Trip,
+  Flight,
+  Hotel,
+  CarRental,
+  AgendaEvent,
+  BudgetCategory,
+  Expense,
+  TripDocument,
+  ChecklistItem,
+  CustomRestaurant,
+  FoodItem,
+  FileAttachment,
+  EXPENSE_TO_BUDGET,
+} from '@/types';
+import {
+  DEFAULT_BUDGET_CATEGORIES,
+  DEFAULT_DOCUMENTS,
+  DEFAULT_SUITCASE_ITEMS,
+  DEFAULT_BACKPACK_ITEMS,
+  DEFAULT_PHARMACY_ITEMS,
+  DEFAULT_GROCERY_ITEMS,
+} from '@/lib/data';
 
-interface AppState {
-  exercises: Exercise[];
-  stats: UserStats;
-  activeExerciseId: string | null;
-
-  // Exercise actions
-  createExercise: (question: string, difficulty: 'Easy' | 'Medium' | 'Hard', category: string, company?: string, tags?: string[]) => string;
-  updateExerciseStep: (exerciseId: string, stepId: StepId, content: string) => void;
-  completeExercise: (exerciseId: string, scores: Record<StepId, number>) => void;
-  deleteExercise: (exerciseId: string) => void;
-  setActiveExercise: (id: string | null) => void;
-
-  // Stats actions
-  awardBadge: (badgeId: BadgeId) => void;
-  updateStreak: () => void;
+export interface TripData {
+  trip: Trip;
+  flights: Flight[];
+  hotels: Hotel[];
+  carRentals: CarRental[];
+  events: AgendaEvent[];
+  budgetCategories: BudgetCategory[];
+  expenses: Expense[];
+  documents: TripDocument[];
+  exchangeRate: number;
+  suitcaseItems: ChecklistItem[];
+  backpackItems: ChecklistItem[];
+  pharmacyItems: ChecklistItem[];
+  groceryItems: ChecklistItem[];
+  customRestaurants: CustomRestaurant[];
+  foodItems: FoodItem[];
 }
 
-const DEFAULT_STATS: UserStats = {
-  level: 1,
-  xp: 0,
-  xpToNextLevel: XP_PER_LEVEL,
-  totalExercises: 0,
-  completedExercises: 0,
-  averageScore: 0,
-  streak: 0,
-  longestStreak: 0,
-  badges: [],
-  stepMastery: {
-    clarification: 0,
-    segmentation: 0,
-    problem: 0,
-    solutions: 0,
-    metrics: 0,
-  },
-  totalTimeSpent: 0,
+interface AppState extends TripData {
+  // Cloud sync
+  tripCode: string | null;
+  familyName: string | null;
+  familyInviteCode: string | null;
+  setTripCode: (code: string) => void;
+  setFamilyName: (name: string) => void;
+  setFamilyInviteCode: (code: string | null) => void;
+  hydrateFromCloud: (data: TripData) => void;
+  getTripData: () => TripData;
+  // Trip
+  updateTrip: (trip: Partial<Trip>) => void;
+  // Flights
+  addFlight: (flight: Flight) => void;
+  updateFlight: (id: string, data: Partial<Flight>) => void;
+  deleteFlight: (id: string) => void;
+  addFlightAttachment: (flightId: string, attachment: FileAttachment) => void;
+  removeFlightAttachment: (flightId: string, attachmentId: string) => void;
+  // Hotels (multiple)
+  addHotel: (hotel: Hotel) => void;
+  updateHotel: (id: string, data: Partial<Hotel>) => void;
+  deleteHotel: (id: string) => void;
+  addHotelAttachment: (hotelId: string, attachment: FileAttachment) => void;
+  removeHotelAttachment: (hotelId: string, attachmentId: string) => void;
+  // Car Rentals (multiple)
+  addCarRental: (car: CarRental) => void;
+  updateCarRental: (id: string, data: Partial<CarRental>) => void;
+  deleteCarRental: (id: string) => void;
+  addCarAttachment: (carId: string, attachment: FileAttachment) => void;
+  removeCarAttachment: (carId: string, attachmentId: string) => void;
+  // Events
+  addEvent: (event: AgendaEvent) => void;
+  updateEvent: (id: string, data: Partial<AgendaEvent>) => void;
+  deleteEvent: (id: string) => void;
+  toggleEventComplete: (id: string) => void;
+  // Budget
+  updateBudgetCategory: (id: string, data: Partial<BudgetCategory>) => void;
+  setExchangeRate: (rate: number) => void;
+  // Expenses
+  addExpense: (expense: Expense) => void;
+  updateExpense: (id: string, data: Partial<Expense>) => void;
+  deleteExpense: (id: string) => void;
+  // Documents
+  updateDocument: (id: string, data: Partial<TripDocument>) => void;
+  addDocument: (doc: TripDocument) => void;
+  deleteDocument: (id: string) => void;
+
+  // Checklists (suitcase, backpack, pharmacy, grocery)
+  toggleChecklistItem: (list: 'suitcaseItems' | 'backpackItems' | 'pharmacyItems' | 'groceryItems', id: string) => void;
+  addChecklistItem: (list: 'suitcaseItems' | 'backpackItems' | 'pharmacyItems' | 'groceryItems', item: ChecklistItem) => void;
+  deleteChecklistItem: (list: 'suitcaseItems' | 'backpackItems' | 'pharmacyItems' | 'groceryItems', id: string) => void;
+
+  // Custom Restaurants
+  addRestaurant: (r: CustomRestaurant) => void;
+  updateRestaurant: (id: string, data: Partial<CustomRestaurant>) => void;
+  deleteRestaurant: (id: string) => void;
+
+  // Food Items
+  addFoodItem: (item: FoodItem) => void;
+  updateFoodItem: (id: string, data: Partial<FoodItem>) => void;
+  deleteFoodItem: (id: string) => void;
+  toggleFoodItem: (id: string) => void;
+}
+
+const DEFAULT_TRIP: Trip = {
+  destination: 'Orlando, FL',
+  origin: '',
+  originCode: '',
+  destinationCode: 'MCO',
+  startDate: '',
+  endDate: '',
+  members: [],
 };
 
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
-      exercises: [],
-      stats: DEFAULT_STATS,
-      activeExerciseId: null,
+      trip: DEFAULT_TRIP,
+      flights: [],
+      hotels: [],
+      carRentals: [],
+      events: [],
+      budgetCategories: DEFAULT_BUDGET_CATEGORIES,
+      expenses: [],
+      documents: DEFAULT_DOCUMENTS,
+      exchangeRate: 5.5,
+      suitcaseItems: DEFAULT_SUITCASE_ITEMS,
+      backpackItems: DEFAULT_BACKPACK_ITEMS,
+      pharmacyItems: DEFAULT_PHARMACY_ITEMS,
+      groceryItems: DEFAULT_GROCERY_ITEMS,
+      customRestaurants: [],
+      foodItems: [],
+      tripCode: null,
+      familyName: null,
+      familyInviteCode: null,
 
-      createExercise: (question, difficulty, category, company, tags = []) => {
-        const id = `ex_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-        const exercise: Exercise = {
-          id,
-          question,
-          company,
-          difficulty,
-          category,
-          steps: [],
-          createdAt: new Date().toISOString(),
-          status: 'draft',
-          tags,
+      setTripCode: (code) => set({ tripCode: code }),
+      setFamilyName: (name) => set({ familyName: name }),
+      setFamilyInviteCode: (code) => set({ familyInviteCode: code }),
+
+      hydrateFromCloud: (data) =>
+        set({
+          trip: data.trip,
+          flights: (data.flights ?? []).map((f) => ({ ...f, attachments: f.attachments ?? [] })),
+          hotels: (data.hotels ?? []).map((h) => ({ ...h, attachments: h.attachments ?? [] })),
+          carRentals: (data.carRentals ?? []).map((c) => ({ ...c, attachments: c.attachments ?? [] })),
+          events: data.events,
+          budgetCategories: data.budgetCategories,
+          expenses: data.expenses,
+          documents: data.documents,
+          exchangeRate: data.exchangeRate,
+          suitcaseItems: data.suitcaseItems ?? DEFAULT_SUITCASE_ITEMS,
+          backpackItems: data.backpackItems ?? DEFAULT_BACKPACK_ITEMS,
+          pharmacyItems: data.pharmacyItems ?? DEFAULT_PHARMACY_ITEMS,
+          groceryItems: data.groceryItems ?? DEFAULT_GROCERY_ITEMS,
+          customRestaurants: data.customRestaurants ?? [],
+          foodItems: data.foodItems ?? [],
+        }),
+
+      getTripData: () => {
+        const s = get();
+        return {
+          trip: s.trip,
+          flights: s.flights,
+          hotels: s.hotels,
+          carRentals: s.carRentals,
+          events: s.events,
+          budgetCategories: s.budgetCategories,
+          expenses: s.expenses,
+          documents: s.documents,
+          exchangeRate: s.exchangeRate,
+          suitcaseItems: s.suitcaseItems,
+          backpackItems: s.backpackItems,
+          pharmacyItems: s.pharmacyItems,
+          groceryItems: s.groceryItems,
+          customRestaurants: s.customRestaurants,
+          foodItems: s.foodItems,
         };
-
-        set((state) => {
-          const newStats = { ...state.stats, totalExercises: state.stats.totalExercises + 1 };
-          const newBadges = [...state.stats.badges];
-
-          if (state.stats.totalExercises === 0 && !state.stats.badges.includes('first_exercise')) {
-            newBadges.push('first_exercise');
-            const badge = BADGES.find((b) => b.id === 'first_exercise');
-            newStats.xp += badge?.xpReward ?? 0;
-          }
-
-          newStats.badges = newBadges;
-          newStats.level = Math.floor(newStats.xp / XP_PER_LEVEL) + 1;
-          newStats.xpToNextLevel = XP_PER_LEVEL - (newStats.xp % XP_PER_LEVEL);
-
-          return {
-            exercises: [exercise, ...state.exercises],
-            stats: newStats,
-            activeExerciseId: id,
-          };
-        });
-
-        return id;
       },
 
-      updateExerciseStep: (exerciseId, stepId, content) => {
+      updateTrip: (data) =>
+        set((state) => ({ trip: { ...state.trip, ...data } })),
+
+      // Flights
+      addFlight: (flight) =>
+        set((state) => ({ flights: [...state.flights, flight] })),
+
+      updateFlight: (id, data) =>
         set((state) => ({
-          exercises: state.exercises.map((ex) => {
-            if (ex.id !== exerciseId) return ex;
-            const existingStepIndex = ex.steps.findIndex((s) => s.stepId === stepId);
-            const updatedStep = { stepId, content };
-            const newSteps =
-              existingStepIndex >= 0
-                ? ex.steps.map((s, i) => (i === existingStepIndex ? updatedStep : s))
-                : [...ex.steps, updatedStep];
-            return { ...ex, steps: newSteps, status: 'in_progress' as const };
-          }),
-        }));
-      },
+          flights: state.flights.map((f) => (f.id === id ? { ...f, ...data } : f)),
+        })),
 
-      completeExercise: (exerciseId, scores) => {
-        const state = get();
-        const exercise = state.exercises.find((e) => e.id === exerciseId);
-        if (!exercise) return;
+      deleteFlight: (id) =>
+        set((state) => ({ flights: state.flights.filter((f) => f.id !== id) })),
 
-        const stepIds: StepId[] = ['clarification', 'segmentation', 'problem', 'solutions', 'metrics'];
-        const totalScore = Math.round(
-          stepIds.reduce((sum, id) => sum + (scores[id] ?? 0), 0) / stepIds.length
-        );
-
-        const xpEarned = calculateXpForExercise(totalScore, exercise.difficulty, state.stats.streak);
-
-        set((state) => {
-          const completedExercises = state.stats.completedExercises + 1;
-          const allScores = state.exercises
-            .filter((e) => e.status === 'completed' && e.score !== undefined)
-            .map((e) => e.score as number);
-          allScores.push(totalScore);
-          const averageScore = Math.round(allScores.reduce((a, b) => a + b, 0) / allScores.length);
-
-          const newXp = state.stats.xp + xpEarned;
-          const newLevel = Math.floor(newXp / XP_PER_LEVEL) + 1;
-          const newXpToNext = XP_PER_LEVEL - (newXp % XP_PER_LEVEL);
-
-          const newBadges = [...state.stats.badges];
-
-          if (completedExercises === 1 && !newBadges.includes('first_completion')) {
-            newBadges.push('first_completion');
-          }
-          if (exercise.difficulty === 'Hard' && !newBadges.includes('hard_mode')) {
-            newBadges.push('hard_mode');
-          }
-          if (totalScore === 100 && !newBadges.includes('perfect_score')) {
-            newBadges.push('perfect_score');
-          }
-          if (completedExercises >= 10 && !newBadges.includes('solutions_master')) {
-            newBadges.push('solutions_master');
-          }
-          if (newLevel >= 10 && !newBadges.includes('framework_master')) {
-            newBadges.push('framework_master');
-          }
-
-          // Update step mastery
-          const newStepMastery = { ...state.stats.stepMastery };
-          stepIds.forEach((id) => {
-            if (scores[id] !== undefined) {
-              const prev = newStepMastery[id] ?? 0;
-              newStepMastery[id] = Math.round((prev + scores[id]) / 2);
-            }
-          });
-
-          return {
-            exercises: state.exercises.map((ex) =>
-              ex.id === exerciseId
-                ? {
-                    ...ex,
-                    score: totalScore,
-                    status: 'completed' as const,
-                    completedAt: new Date().toISOString(),
-                    xpEarned,
-                  }
-                : ex
-            ),
-            stats: {
-              ...state.stats,
-              xp: newXp,
-              level: newLevel,
-              xpToNextLevel: newXpToNext,
-              completedExercises,
-              averageScore,
-              badges: newBadges,
-              stepMastery: newStepMastery,
-            },
-          };
-        });
-      },
-
-      deleteExercise: (exerciseId) => {
+      addFlightAttachment: (flightId, attachment) =>
         set((state) => ({
-          exercises: state.exercises.filter((e) => e.id !== exerciseId),
-          activeExerciseId: state.activeExerciseId === exerciseId ? null : state.activeExerciseId,
-        }));
-      },
+          flights: state.flights.map((f) =>
+            f.id === flightId
+              ? { ...f, attachments: [...(f.attachments ?? []), attachment] }
+              : f
+          ),
+        })),
 
-      setActiveExercise: (id) => {
-        set({ activeExerciseId: id });
-      },
+      removeFlightAttachment: (flightId, attachmentId) =>
+        set((state) => ({
+          flights: state.flights.map((f) =>
+            f.id === flightId
+              ? { ...f, attachments: (f.attachments ?? []).filter((a) => a.id !== attachmentId) }
+              : f
+          ),
+        })),
 
-      awardBadge: (badgeId) => {
-        set((state) => {
-          if (state.stats.badges.includes(badgeId)) return state;
-          const badge = BADGES.find((b) => b.id === badgeId);
-          const newXp = state.stats.xp + (badge?.xpReward ?? 0);
-          return {
-            stats: {
-              ...state.stats,
-              badges: [...state.stats.badges, badgeId],
-              xp: newXp,
-              level: Math.floor(newXp / XP_PER_LEVEL) + 1,
-              xpToNextLevel: XP_PER_LEVEL - (newXp % XP_PER_LEVEL),
-            },
-          };
-        });
-      },
+      // Hotels
+      addHotel: (hotel) =>
+        set((state) => ({ hotels: [...state.hotels, hotel] })),
 
-      updateStreak: () => {
-        set((state) => {
-          const today = new Date().toDateString();
-          const lastPractice = state.stats.lastPracticeDate
-            ? new Date(state.stats.lastPracticeDate).toDateString()
-            : null;
-          const yesterday = new Date(Date.now() - 86400000).toDateString();
+      updateHotel: (id, data) =>
+        set((state) => ({
+          hotels: state.hotels.map((h) => (h.id === id ? { ...h, ...data } : h)),
+        })),
 
-          let newStreak = state.stats.streak;
-          if (lastPractice === today) return state;
-          if (lastPractice === yesterday) {
-            newStreak += 1;
-          } else if (lastPractice !== today) {
-            newStreak = 1;
-          }
+      deleteHotel: (id) =>
+        set((state) => ({ hotels: state.hotels.filter((h) => h.id !== id) })),
 
-          const longestStreak = Math.max(newStreak, state.stats.longestStreak);
-          const newBadges = [...state.stats.badges];
-          let bonusXp = 0;
+      addHotelAttachment: (hotelId, attachment) =>
+        set((state) => ({
+          hotels: state.hotels.map((h) =>
+            h.id === hotelId
+              ? { ...h, attachments: [...(h.attachments ?? []), attachment] }
+              : h
+          ),
+        })),
 
-          if (newStreak >= 3 && !newBadges.includes('streak_3')) {
-            newBadges.push('streak_3');
-            bonusXp += BADGES.find((b) => b.id === 'streak_3')?.xpReward ?? 0;
-          }
-          if (newStreak >= 7 && !newBadges.includes('streak_7')) {
-            newBadges.push('streak_7');
-            bonusXp += BADGES.find((b) => b.id === 'streak_7')?.xpReward ?? 0;
-          }
-          if (newStreak >= 30 && !newBadges.includes('streak_30')) {
-            newBadges.push('streak_30');
-            bonusXp += BADGES.find((b) => b.id === 'streak_30')?.xpReward ?? 0;
-          }
+      removeHotelAttachment: (hotelId, attachmentId) =>
+        set((state) => ({
+          hotels: state.hotels.map((h) =>
+            h.id === hotelId
+              ? { ...h, attachments: (h.attachments ?? []).filter((a) => a.id !== attachmentId) }
+              : h
+          ),
+        })),
 
-          const newXp = state.stats.xp + bonusXp;
+      // Car Rentals
+      addCarRental: (car) =>
+        set((state) => ({ carRentals: [...state.carRentals, car] })),
 
-          return {
-            stats: {
-              ...state.stats,
-              streak: newStreak,
-              longestStreak,
-              lastPracticeDate: new Date().toISOString(),
-              badges: newBadges,
-              xp: newXp,
-              level: Math.floor(newXp / XP_PER_LEVEL) + 1,
-              xpToNextLevel: XP_PER_LEVEL - (newXp % XP_PER_LEVEL),
-            },
-          };
-        });
-      },
+      updateCarRental: (id, data) =>
+        set((state) => ({
+          carRentals: state.carRentals.map((c) => (c.id === id ? { ...c, ...data } : c)),
+        })),
+
+      deleteCarRental: (id) =>
+        set((state) => ({ carRentals: state.carRentals.filter((c) => c.id !== id) })),
+
+      addCarAttachment: (carId, attachment) =>
+        set((state) => ({
+          carRentals: state.carRentals.map((c) =>
+            c.id === carId
+              ? { ...c, attachments: [...(c.attachments ?? []), attachment] }
+              : c
+          ),
+        })),
+
+      removeCarAttachment: (carId, attachmentId) =>
+        set((state) => ({
+          carRentals: state.carRentals.map((c) =>
+            c.id === carId
+              ? { ...c, attachments: (c.attachments ?? []).filter((a) => a.id !== attachmentId) }
+              : c
+          ),
+        })),
+
+      // Events
+      addEvent: (event) =>
+        set((state) => ({ events: [...state.events, event] })),
+
+      updateEvent: (id, data) =>
+        set((state) => ({
+          events: state.events.map((e) => (e.id === id ? { ...e, ...data } : e)),
+        })),
+
+      deleteEvent: (id) =>
+        set((state) => ({ events: state.events.filter((e) => e.id !== id) })),
+
+      toggleEventComplete: (id) =>
+        set((state) => ({
+          events: state.events.map((e) =>
+            e.id === id ? { ...e, completed: !e.completed } : e
+          ),
+        })),
+
+      updateBudgetCategory: (id, data) =>
+        set((state) => ({
+          budgetCategories: state.budgetCategories.map((c) =>
+            c.id === id ? { ...c, ...data } : c
+          ),
+        })),
+
+      setExchangeRate: (rate) => set({ exchangeRate: rate }),
+
+      addExpense: (expense) =>
+        set((state) => ({
+          expenses: [
+            { ...expense, budgetCategoryId: EXPENSE_TO_BUDGET[expense.category] },
+            ...state.expenses,
+          ],
+        })),
+
+      updateExpense: (id, data) =>
+        set((state) => ({
+          expenses: state.expenses.map((e) => (e.id === id ? { ...e, ...data } : e)),
+        })),
+
+      deleteExpense: (id) =>
+        set((state) => ({ expenses: state.expenses.filter((e) => e.id !== id) })),
+
+      updateDocument: (id, data) =>
+        set((state) => ({
+          documents: state.documents.map((d) => (d.id === id ? { ...d, ...data } : d)),
+        })),
+
+      addDocument: (doc) =>
+        set((state) => ({ documents: [...state.documents, doc] })),
+
+      deleteDocument: (id) =>
+        set((state) => ({ documents: state.documents.filter((d) => d.id !== id) })),
+
+      // Checklists
+      toggleChecklistItem: (list, id) =>
+        set((state) => ({
+          [list]: state[list].map((item: ChecklistItem) =>
+            item.id === id ? { ...item, checked: !item.checked } : item
+          ),
+        })),
+      addChecklistItem: (list, item) =>
+        set((state) => ({ [list]: [...state[list], item] })),
+      deleteChecklistItem: (list, id) =>
+        set((state) => ({
+          [list]: state[list].filter((item: ChecklistItem) => item.id !== id),
+        })),
+
+      // Custom Restaurants
+      addRestaurant: (r) =>
+        set((state) => ({ customRestaurants: [...state.customRestaurants, r] })),
+      updateRestaurant: (id, data) =>
+        set((state) => ({
+          customRestaurants: state.customRestaurants.map((r) =>
+            r.id === id ? { ...r, ...data } : r
+          ),
+        })),
+      deleteRestaurant: (id) =>
+        set((state) => ({
+          customRestaurants: state.customRestaurants.filter((r) => r.id !== id),
+        })),
+
+      // Food Items
+      addFoodItem: (item) =>
+        set((state) => ({ foodItems: [...state.foodItems, item] })),
+      updateFoodItem: (id, data) =>
+        set((state) => ({
+          foodItems: state.foodItems.map((f) => (f.id === id ? { ...f, ...data } : f)),
+        })),
+      deleteFoodItem: (id) =>
+        set((state) => ({ foodItems: state.foodItems.filter((f) => f.id !== id) })),
+      toggleFoodItem: (id) =>
+        set((state) => ({
+          foodItems: state.foodItems.map((f) =>
+            f.id === id ? { ...f, checked: !f.checked } : f
+          ),
+        })),
     }),
     {
-      name: 'product-sense-storage',
+      name: 'family-trip-storage',
+      version: 3,
+      migrate: (persisted: unknown, version: number) => {
+        const state = persisted as Record<string, unknown>;
+
+        if (version < 2) {
+          const storedDocs = (state.documents as TripDocument[]) || [];
+          const storedIds = new Set(storedDocs.map((d) => d.id));
+          const missingDocs = DEFAULT_DOCUMENTS.filter((d) => !storedIds.has(d.id));
+          state.documents = [...storedDocs, ...missingDocs];
+        }
+
+        if (version < 3) {
+          // Migrate single hotel → hotels array
+          const oldHotel = state.hotel as Hotel | null | undefined;
+          if (oldHotel) {
+            state.hotels = [{ ...oldHotel, attachments: (oldHotel as Hotel).attachments ?? [] }];
+          } else {
+            state.hotels = state.hotels ?? [];
+          }
+          delete state.hotel;
+
+          // Migrate single carRental → carRentals array
+          const oldCar = state.carRental as CarRental | null | undefined;
+          if (oldCar) {
+            state.carRentals = [{ ...oldCar, attachments: (oldCar as CarRental).attachments ?? [] }];
+          } else {
+            state.carRentals = state.carRentals ?? [];
+          }
+          delete state.carRental;
+
+          // Ensure flights have attachments array
+          state.flights = ((state.flights as Flight[]) ?? []).map((f) => ({
+            ...f,
+            attachments: (f as Flight).attachments ?? [],
+          }));
+        }
+
+        return state as unknown as AppState;
+      },
     }
   )
 );
