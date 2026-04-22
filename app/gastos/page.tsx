@@ -219,7 +219,7 @@ export default function GastosPage() {
             <div>
               <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border)' }}>
                 {(['USD', 'BRL'] as const).map((c) => (
-                  <button key={c} onClick={() => setCurrency(c)} style={{ padding: '10px 16px', fontSize: '13px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', fontFamily: 'sans-serif', background: currency === c ? 'var(--navy)' : 'white', color: currency === c ? 'white' : 'var(--ink-muted)', transition: 'all 0.15s' }}>{c}</button>
+                  <button key={c} onClick={() => setCurrency(c)} style={{ padding: '10px 16px', fontSize: '13px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', fontFamily: 'sans-serif', background: currency === c ? '#1B3A6B' : 'white', color: currency === c ? 'white' : 'var(--ink-muted)', transition: 'all 0.15s' }}>{c}</button>
                 ))}
               </div>
             </div>
@@ -249,7 +249,7 @@ export default function GastosPage() {
 
           {/* Confirm Button */}
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <button className="btn-primary" onClick={handleAdd} style={{ padding: '12px 36px', background: 'var(--navy)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif', whiteSpace: 'nowrap' }}>
+            <button className="btn-primary" onClick={handleAdd} style={{ padding: '12px 36px', background: '#1B3A6B', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif', whiteSpace: 'nowrap' }}>
               ✓ Confirmar gasto
             </button>
           </div>
@@ -312,7 +312,7 @@ export default function GastosPage() {
                           <div>
                             <div style={{ display: 'flex', borderRadius: '7px', overflow: 'hidden', border: '1px solid var(--border)' }}>
                               {(['USD', 'BRL'] as const).map((c) => (
-                                <button key={c} onClick={() => setEditCurrency(c)} style={{ padding: '7px 12px', fontSize: '12px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', fontFamily: 'sans-serif', background: editCurrency === c ? 'var(--navy)' : 'white', color: editCurrency === c ? 'white' : 'var(--ink-muted)' }}>{c}</button>
+                                <button key={c} onClick={() => setEditCurrency(c)} style={{ padding: '7px 12px', fontSize: '12px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', fontFamily: 'sans-serif', background: editCurrency === c ? '#1B3A6B' : 'white', color: editCurrency === c ? 'white' : 'var(--ink-muted)' }}>{c}</button>
                               ))}
                             </div>
                           </div>
@@ -347,7 +347,7 @@ export default function GastosPage() {
                           <div style={{ display: 'flex', gap: '8px', alignSelf: 'flex-end' }}>
                             <button
                               onClick={handleSaveEdit}
-                              style={{ padding: '7px 18px', background: 'var(--navy)', color: 'white', border: 'none', borderRadius: '7px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif', whiteSpace: 'nowrap' }}
+                              style={{ padding: '7px 18px', background: '#1B3A6B', color: 'white', border: 'none', borderRadius: '7px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif', whiteSpace: 'nowrap' }}
                             >
                               ✓ Salvar
                             </button>
