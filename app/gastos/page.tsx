@@ -378,61 +378,55 @@ export default function GastosPage() {
             </div>
           </div>
 
-          <div
-            style={{
-              display: 'flex',
-              gap: '12px',
-              alignItems: 'end',
-            }}
-          >
-            {/* Description */}
-            <div style={{ flex: 1 }}>
-              <label
-                className="label"
-                style={{
-                  display: 'block',
-                  fontSize: '12px',
-                  fontWeight: '600',
-                  color: 'var(--ink-muted)',
-                  marginBottom: '6px',
-                  fontFamily: 'sans-serif',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                }}
-              >
-                Descrição
-              </label>
-              <input
-                className="input-field"
-                type="text"
-                placeholder="Ex: Almoco no Magic Kingdom"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  border: '1px solid var(--border)',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  outline: 'none',
-                  fontFamily: 'sans-serif',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </div>
+          {/* Description */}
+          <div style={{ marginBottom: '16px' }}>
+            <label
+              className="label"
+              style={{
+                display: 'block',
+                fontSize: '12px',
+                fontWeight: '600',
+                color: 'var(--ink-muted)',
+                marginBottom: '6px',
+                fontFamily: 'sans-serif',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+              }}
+            >
+              Descrição
+            </label>
+            <input
+              className="input-field"
+              type="text"
+              placeholder="Ex: Almoco no Magic Kingdom"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1px solid var(--border)',
+                borderRadius: '8px',
+                fontSize: '14px',
+                outline: 'none',
+                fontFamily: 'sans-serif',
+                boxSizing: 'border-box',
+              }}
+            />
+          </div>
 
-            {/* Confirm Button */}
+          {/* Confirm Button */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <button
               className="btn-primary"
               onClick={handleAdd}
               style={{
-                padding: '10px 28px',
+                padding: '12px 36px',
                 background: 'var(--navy)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
-                fontSize: '14px',
+                fontSize: '15px',
                 fontWeight: '600',
                 cursor: 'pointer',
                 fontFamily: 'sans-serif',
