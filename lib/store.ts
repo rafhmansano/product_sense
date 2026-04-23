@@ -377,7 +377,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'family-trip-storage',
-      version: 3,
+      version: 4,
       migrate: (persisted: unknown, version: number) => {
         const state = persisted as Record<string, unknown>;
 
@@ -412,6 +412,23 @@ export const useAppStore = create<AppState>()(
             ...f,
             attachments: (f as Flight).attachments ?? [],
           }));
+        }
+
+        if (version < 4) {
+          // Inject missing budget categories for existing users
+          const stored = (state.budgetCategories as BudgetCategory[]) ?? [];
+          const storedIds = new Set(stored.map((c) => c.id));
+          const missing = DEFAULT_BUDGET_CATEGORIES.filter((c) => !storedIds.has(c.id));
+          if (missing.length > 0) {
+            // Insert missing categories before 'emergencia'
+            const emergenciaIdx = stored.findIndex((c) => c.id === 'emergencia');
+            if (emergenciaIdx >= 0) {
+              stored.splice(emergenciaIdx, 0, ...missing);
+              state.budgetCategories = stored;
+            } else {
+              state.budgetCategories = [...stored, ...missing];
+            }
+          }
         }
 
         return state as unknown as AppState;
