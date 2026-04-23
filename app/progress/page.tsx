@@ -12,10 +12,10 @@ const LEVEL_TITLES = [
 ];
 
 const rarityColors: Record<string, string> = {
-  common: '#6B6B6B',
-  uncommon: '#4A6FA5',
-  rare: '#7C5CBF',
-  legendary: '#B5860A',
+  common: '#6B6B7B',
+  uncommon: '#4A7BC4',
+  rare: '#8B68CC',
+  legendary: '#C4920D',
 };
 
 const rarityOrder: Record<string, number> = {
@@ -31,7 +31,6 @@ export default function ProgressPage() {
   const { level, progressPercent } = calculateLevel(stats.xp);
 
   const earnedBadges = BADGES.filter((b) => stats.badges.includes(b.id));
-  const unearnedBadges = BADGES.filter((b) => !stats.badges.includes(b.id));
 
   const sortedBadges = [...BADGES].sort(
     (a, b) => rarityOrder[a.rarity] - rarityOrder[b.rarity]
@@ -52,13 +51,11 @@ export default function ProgressPage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '1100px' }} className="animate-fade-in">
+      <div className="page-content animate-fade-in">
         {/* Header */}
-        <div style={{ marginBottom: '40px' }}>
-          <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '8px' }}>
-            Gamification
-          </div>
-          <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--navy)', margin: 0, lineHeight: 1.15 }}>
+        <div style={{ marginBottom: '36px' }}>
+          <div className="section-label">Gamification</div>
+          <h1 style={{ fontSize: '38px', fontWeight: '800', letterSpacing: '-0.04em', color: 'var(--navy)', margin: 0, lineHeight: 1.12 }}>
             Your Progress &<br />Achievements
           </h1>
         </div>
@@ -66,12 +63,13 @@ export default function ProgressPage() {
         {/* Level card */}
         <div
           style={{
-            background: 'var(--navy)',
+            background: 'var(--gradient-hero)',
             borderRadius: '20px',
             padding: '32px 36px',
-            marginBottom: '32px',
+            marginBottom: '28px',
             position: 'relative',
             overflow: 'hidden',
+            boxShadow: 'var(--shadow-navy)',
           }}
         >
           <div
@@ -80,7 +78,7 @@ export default function ProgressPage() {
               top: '-30px',
               right: '-30px',
               fontSize: '200px',
-              opacity: 0.03,
+              opacity: 0.025,
               lineHeight: 1,
               color: 'white',
               fontFamily: 'Georgia, serif',
@@ -89,13 +87,26 @@ export default function ProgressPage() {
           >
             {level}
           </div>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '-40px',
+              left: '240px',
+              width: '200px',
+              height: '200px',
+              borderRadius: '50%',
+              background: 'rgba(196,146,13,0.07)',
+              pointerEvents: 'none',
+            }}
+          />
+
           <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
             <div
               style={{
                 width: '80px',
                 height: '80px',
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, var(--copper), var(--copper-light))',
+                background: 'var(--gradient-copper)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -103,42 +114,42 @@ export default function ProgressPage() {
                 fontWeight: '800',
                 color: 'white',
                 flexShrink: 0,
-                fontFamily: 'sans-serif',
-                boxShadow: '0 4px 20px rgba(181,134,10,0.3)',
+                boxShadow: 'var(--shadow-copper)',
+                letterSpacing: '-0.03em',
               }}
             >
               {level}
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>
+              <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: '600', marginBottom: '4px' }}>
                 Current Level
               </div>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: 'white', letterSpacing: '-0.02em', marginBottom: '12px' }}>
+              <div style={{ fontSize: '24px', fontWeight: '800', color: 'white', letterSpacing: '-0.03em', marginBottom: '14px' }}>
                 {LEVEL_TITLES[Math.min(level, 10)]}
               </div>
-              <div style={{ height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden', marginBottom: '8px' }}>
+              <div style={{ height: '7px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden', marginBottom: '8px' }}>
                 <div
                   style={{
                     height: '100%',
                     width: `${progressPercent}%`,
-                    background: 'linear-gradient(90deg, var(--copper), var(--copper-light))',
+                    background: 'var(--gradient-copper)',
                     borderRadius: '9999px',
-                    transition: 'width 0.8s ease',
+                    transition: 'width 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                    boxShadow: '0 0 8px rgba(196,146,13,0.5)',
                   }}
                 />
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', fontFamily: 'sans-serif' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)' }}>
                   {stats.xp.toLocaleString()} XP total
                 </span>
-                <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', fontFamily: 'sans-serif' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.35)' }}>
                   {stats.xpToNextLevel} XP to Level {level + 1}
                 </span>
               </div>
             </div>
 
-            {/* Right stats */}
-            <div style={{ display: 'flex', gap: '24px', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '28px' }}>
+            <div style={{ display: 'flex', gap: '24px', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '32px' }}>
               <StatBlock label="Streak" value={`${stats.streak}d`} sub="current" />
               <StatBlock label="Best" value={`${stats.longestStreak}d`} sub="longest" />
               <StatBlock label="Badges" value={earnedBadges.length.toString()} sub={`of ${BADGES.length}`} />
@@ -146,21 +157,21 @@ export default function ProgressPage() {
           </div>
         </div>
 
-        {/* Two columns: stats + chart */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '32px' }}>
+        {/* Two columns */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '28px' }}>
           {/* Performance stats */}
-          <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px' }}>
-            <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', margin: '0 0 20px', fontFamily: 'sans-serif' }}>
+          <div className="content-card">
+            <h2 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--navy)', margin: '0 0 20px', letterSpacing: '-0.01em' }}>
               Performance Stats
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
               <MiniStat label="Total Exercises" value={stats.totalExercises} color="var(--navy)" />
               <MiniStat label="Completed" value={stats.completedExercises} color="var(--sage)" />
               <MiniStat label="Average Score" value={`${stats.averageScore}%`} color="var(--copper)" />
-              <MiniStat label="XP Earned" value={stats.xp.toLocaleString()} color="var(--copper-light)" />
+              <MiniStat label="XP Earned" value={stats.xp.toLocaleString()} color="var(--copper)" />
             </div>
-            <div style={{ marginTop: '20px' }}>
-              <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            <div>
+              <div style={{ fontSize: '11px', color: 'var(--ink-subtle)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '500' }}>
                 By Difficulty
               </div>
               {Object.entries(completedByDifficulty).map(([diff, count]) => {
@@ -168,28 +179,20 @@ export default function ProgressPage() {
                 const max = Math.max(...Object.values(completedByDifficulty), 1);
                 return (
                   <div key={diff} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '12px', color: colors[diff], fontFamily: 'sans-serif', fontWeight: '600', width: '50px' }}>{diff}</span>
-                    <div style={{ flex: 1, height: '8px', background: 'var(--border)', borderRadius: '9999px', overflow: 'hidden' }}>
-                      <div
-                        style={{
-                          height: '100%',
-                          width: `${(count / max) * 100}%`,
-                          background: colors[diff],
-                          borderRadius: '9999px',
-                          transition: 'width 0.5s ease',
-                        }}
-                      />
+                    <span style={{ fontSize: '12px', color: colors[diff], fontWeight: '700', width: '52px' }}>{diff}</span>
+                    <div className="progress-track" style={{ flex: 1 }}>
+                      <div className="progress-fill" style={{ width: `${(count / max) * 100}%`, background: colors[diff] }} />
                     </div>
-                    <span style={{ fontSize: '12px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', width: '20px', textAlign: 'right' }}>{count}</span>
+                    <span style={{ fontSize: '12px', color: 'var(--ink-muted)', width: '20px', textAlign: 'right', fontWeight: '600' }}>{count}</span>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* Step mastery radar */}
-          <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px' }}>
-            <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', margin: '0 0 20px', fontFamily: 'sans-serif' }}>
+          {/* Step mastery */}
+          <div className="content-card">
+            <h2 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--navy)', margin: '0 0 20px', letterSpacing: '-0.01em' }}>
               Step Mastery
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -197,32 +200,24 @@ export default function ProgressPage() {
                 const mastery = stats.stepMastery[step.id as StepId] ?? 0;
                 return (
                   <div key={step.id}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ fontSize: '14px' }}>{step.icon}</span>
-                        <span style={{ fontSize: '13px', color: 'var(--ink)', fontFamily: 'sans-serif' }}>{step.title}</span>
+                        <span style={{ fontSize: '13px', color: 'var(--ink)', fontWeight: '500' }}>{step.title}</span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '12px', fontWeight: '600', color: mastery > 0 ? step.color : 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '700', color: mastery > 0 ? step.color : 'var(--ink-subtle)' }}>
                           {mastery > 0 ? `${mastery}%` : '—'}
                         </span>
                         {mastery >= 80 && (
-                          <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '8px', background: `${step.color}15`, color: step.color, fontFamily: 'sans-serif' }}>
+                          <span style={{ fontSize: '10px', padding: '1px 7px', borderRadius: '8px', background: `${step.color}15`, color: step.color, fontWeight: '600' }}>
                             Expert
                           </span>
                         )}
                       </div>
                     </div>
-                    <div style={{ height: '6px', background: 'var(--border)', borderRadius: '9999px', overflow: 'hidden' }}>
-                      <div
-                        style={{
-                          height: '100%',
-                          width: `${mastery}%`,
-                          background: step.color,
-                          borderRadius: '9999px',
-                          transition: 'width 0.6s ease',
-                        }}
-                      />
+                    <div className="progress-track">
+                      <div className="progress-fill" style={{ width: `${mastery}%`, background: step.color }} />
                     </div>
                   </div>
                 );
@@ -231,27 +226,27 @@ export default function ProgressPage() {
           </div>
         </div>
 
-        {/* Recent XP chart */}
+        {/* XP chart */}
         {xpHistory.length > 0 && (
-          <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px', marginBottom: '32px' }}>
-            <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', margin: '0 0 24px', fontFamily: 'sans-serif' }}>
+          <div className="content-card" style={{ marginBottom: '28px' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--navy)', margin: '0 0 24px', letterSpacing: '-0.01em' }}>
               Recent XP Earned
             </h2>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', height: '120px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', height: '120px' }}>
               {xpHistory.map((h, i) => (
                 <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, gap: '4px', height: '100%', justifyContent: 'flex-end' }}>
-                  <span style={{ fontSize: '11px', color: 'var(--copper)', fontFamily: 'sans-serif', fontWeight: '600' }}>{h.xp}</span>
+                  <span style={{ fontSize: '11px', color: 'var(--copper)', fontWeight: '700' }}>{h.xp}</span>
                   <div
                     style={{
                       width: '100%',
                       height: `${(h.xp / maxXp) * 100}px`,
-                      background: 'linear-gradient(180deg, var(--copper-light), var(--copper))',
-                      borderRadius: '4px 4px 0 0',
-                      transition: 'height 0.6s ease',
+                      background: 'var(--gradient-copper)',
+                      borderRadius: '5px 5px 0 0',
+                      transition: 'height 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
                       minHeight: '4px',
                     }}
                   />
-                  <span style={{ fontSize: '10px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>{h.date}</span>
+                  <span style={{ fontSize: '10px', color: 'var(--ink-subtle)' }}>{h.date}</span>
                 </div>
               ))}
             </div>
@@ -259,17 +254,17 @@ export default function ProgressPage() {
         )}
 
         {/* Badges grid */}
-        <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '28px' }}>
+        <div className="content-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-            <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', margin: 0, fontFamily: 'sans-serif' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--navy)', margin: 0, letterSpacing: '-0.01em' }}>
               All Badges
             </h2>
-            <span style={{ fontSize: '13px', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>
+            <span style={{ fontSize: '13px', color: 'var(--ink-muted)' }}>
               {earnedBadges.length} / {BADGES.length} unlocked
             </span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
             {sortedBadges.map((badge) => {
               const earned = stats.badges.includes(badge.id as BadgeId);
               const color = rarityColors[badge.rarity];
@@ -278,32 +273,25 @@ export default function ProgressPage() {
                   key={badge.id}
                   style={{
                     padding: '20px',
-                    border: `1px solid ${earned ? `${color}30` : 'var(--border)'}`,
-                    borderRadius: '12px',
+                    border: `1px solid ${earned ? `${color}28` : 'var(--border)'}`,
+                    borderRadius: '14px',
                     background: earned ? `${color}06` : 'var(--surface-raised)',
                     opacity: earned ? 1 : 0.5,
                     position: 'relative',
-                    transition: 'opacity 0.2s ease',
+                    transition: 'all 0.2s ease',
+                    boxShadow: earned ? `0 2px 12px ${color}10` : 'none',
                   }}
                 >
                   {!earned && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '12px',
-                        right: '12px',
-                        fontSize: '12px',
-                        color: 'var(--ink-subtle)',
-                      }}
-                    >
+                    <div style={{ position: 'absolute', top: '14px', right: '14px', fontSize: '12px', color: 'var(--ink-subtle)' }}>
                       🔒
                     </div>
                   )}
                   <div style={{ fontSize: '28px', marginBottom: '10px' }}>{badge.icon}</div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: earned ? color : 'var(--ink-muted)', fontFamily: 'sans-serif', marginBottom: '4px' }}>
+                  <div style={{ fontSize: '14px', fontWeight: '700', color: earned ? color : 'var(--ink-muted)', marginBottom: '5px' }}>
                     {badge.name}
                   </div>
-                  <div style={{ fontSize: '12px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', lineHeight: 1.5, marginBottom: '10px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--ink-muted)', lineHeight: 1.55, marginBottom: '12px' }}>
                     {badge.description}
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -313,16 +301,15 @@ export default function ProgressPage() {
                         textTransform: 'uppercase',
                         letterSpacing: '0.08em',
                         color: earned ? color : 'var(--ink-subtle)',
-                        fontFamily: 'sans-serif',
-                        fontWeight: '600',
+                        fontWeight: '700',
                         padding: '2px 8px',
                         borderRadius: '8px',
-                        background: earned ? `${color}15` : 'transparent',
+                        background: earned ? `${color}14` : 'transparent',
                       }}
                     >
                       {badge.rarity}
                     </span>
-                    <span style={{ fontSize: '12px', color: earned ? 'var(--copper)' : 'var(--ink-subtle)', fontFamily: 'sans-serif', fontWeight: '500' }}>
+                    <span style={{ fontSize: '12px', color: earned ? 'var(--copper)' : 'var(--ink-subtle)', fontWeight: '600' }}>
                       +{badge.xpReward} XP
                     </span>
                   </div>
@@ -338,20 +325,21 @@ export default function ProgressPage() {
 
 function StatBlock({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ fontSize: '22px', fontWeight: '700', color: 'white', fontFamily: 'sans-serif', lineHeight: 1.1 }}>{value}</div>
-      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontFamily: 'sans-serif', marginTop: '2px' }}>{sub}</div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '600' }}>{label}</div>
+      <div style={{ fontSize: '24px', fontWeight: '800', color: 'white', letterSpacing: '-0.03em', lineHeight: 1.1 }}>{value}</div>
+      <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)' }}>{sub}</div>
     </div>
   );
 }
 
 function MiniStat({ label, value, color }: { label: string; value: string | number; color: string }) {
   return (
-    <div style={{ padding: '14px', background: 'var(--surface-raised)', borderRadius: '8px' }}>
-      <div style={{ fontSize: '11px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+    <div style={{ padding: '14px 16px', background: 'var(--surface-raised)', borderRadius: '10px', border: '1px solid var(--border)' }}>
+      <div style={{ fontSize: '11px', color: 'var(--ink-subtle)', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '500' }}>
         {label}
       </div>
-      <div style={{ fontSize: '20px', fontWeight: '700', color, fontFamily: 'sans-serif', letterSpacing: '-0.02em' }}>
+      <div style={{ fontSize: '22px', fontWeight: '800', color, letterSpacing: '-0.03em' }}>
         {value}
       </div>
     </div>

@@ -8,7 +8,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <Navigation />
       <main
         style={{
-          marginLeft: '220px',
+          marginLeft: '228px',
           flex: 1,
           minHeight: '100vh',
           overflow: 'auto',
