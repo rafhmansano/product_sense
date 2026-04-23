@@ -143,14 +143,30 @@ export const useAppStore = create<AppState>()(
       setFamilyName: (name) => set({ familyName: name }),
       setFamilyInviteCode: (code) => set({ familyInviteCode: code }),
 
-      hydrateFromCloud: (data) =>
+      hydrateFromCloud: (data) => {
+        // Merge any categories added to DEFAULT_BUDGET_CATEGORIES after the cloud snapshot was saved
+        const cloudCats = data.budgetCategories ?? DEFAULT_BUDGET_CATEGORIES;
+        const cloudIds = new Set(cloudCats.map((c) => c.id));
+        const missing = DEFAULT_BUDGET_CATEGORIES.filter((c) => !cloudIds.has(c.id));
+        let mergedCategories = cloudCats;
+        if (missing.length > 0) {
+          const cats = [...cloudCats];
+          const emergenciaIdx = cats.findIndex((c) => c.id === 'emergencia');
+          if (emergenciaIdx >= 0) {
+            cats.splice(emergenciaIdx, 0, ...missing);
+          } else {
+            cats.push(...missing);
+          }
+          mergedCategories = cats;
+        }
+
         set({
           trip: data.trip,
           flights: (data.flights ?? []).map((f) => ({ ...f, attachments: f.attachments ?? [] })),
           hotels: (data.hotels ?? []).map((h) => ({ ...h, attachments: h.attachments ?? [] })),
           carRentals: (data.carRentals ?? []).map((c) => ({ ...c, attachments: c.attachments ?? [] })),
           events: data.events,
-          budgetCategories: data.budgetCategories,
+          budgetCategories: mergedCategories,
           expenses: data.expenses,
           documents: data.documents,
           exchangeRate: data.exchangeRate,
@@ -160,7 +176,8 @@ export const useAppStore = create<AppState>()(
           groceryItems: data.groceryItems ?? DEFAULT_GROCERY_ITEMS,
           customRestaurants: data.customRestaurants ?? [],
           foodItems: data.foodItems ?? [],
-        }),
+        });
+      },
 
       getTripData: () => {
         const s = get();
