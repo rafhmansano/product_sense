@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft, Lightbulb, CheckCircle, Star, Zap, BookMarked, LayoutGrid } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import { useAppStore } from '@/lib/store';
 import { FRAMEWORK_STEPS, SCORE_RUBRICS, PRACTICE_QUESTIONS } from '@/lib/framework';
@@ -35,7 +36,6 @@ export default function ExerciseSession({ params }: { params: Promise<{ id: stri
   const [showHints, setShowHints] = useState(false);
   const [autoSaved, setAutoSaved] = useState(false);
 
-  // Load existing steps from store
   useEffect(() => {
     if (exercise) {
       const loaded: Record<StepId, string> = {
@@ -76,10 +76,10 @@ export default function ExerciseSession({ params }: { params: Promise<{ id: stri
   if (!exercise) {
     return (
       <AppShell>
-        <div style={{ padding: '60px', textAlign: 'center', fontFamily: 'sans-serif' }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px', opacity: 0.3 }}>◎</div>
+        <div style={{ padding: '60px', textAlign: 'center' }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px', opacity: 0.2 }}>◎</div>
           <p style={{ color: 'var(--ink-muted)', marginBottom: '24px' }}>Exercise not found.</p>
-          <Link href="/practice" style={{ color: 'var(--copper)', textDecoration: 'none' }}>
+          <Link href="/practice" style={{ color: 'var(--copper)', textDecoration: 'none', fontWeight: '500' }}>
             ← Back to Practice
           </Link>
         </div>
@@ -93,16 +93,7 @@ export default function ExerciseSession({ params }: { params: Promise<{ id: stri
   const allStepsWritten = STEP_ORDER.every((s) => content[s].trim().length > 50);
   const hints = PRACTICE_QUESTIONS.find((q) => q.question === exercise.question)?.hints ?? [];
 
-  // Scoring mode
   const handleScoreChange = (stepId: StepId, criteriaIndex: number, points: number) => {
-    const rubric = SCORE_RUBRICS.find((r) => r.stepId === stepId)!;
-    const prevScores = STEP_ORDER.reduce((acc, s) => {
-      acc[s] = scores[s];
-      return acc;
-    }, {} as Record<StepId, number>);
-
-    // Recalculate step score from all criteria
-    // We store per-criteria scores locally — simplified: just set aggregate
     const stepScore = Math.min(100, Math.round(points));
     setScores((prev) => ({ ...prev, [stepId]: stepScore }));
   };
@@ -124,45 +115,50 @@ export default function ExerciseSession({ params }: { params: Promise<{ id: stri
         {/* Top bar */}
         <div
           style={{
-            padding: '16px 32px',
+            padding: '14px 28px',
             background: 'white',
             borderBottom: '1px solid var(--border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexShrink: 0,
+            boxShadow: 'var(--shadow-xs)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <Link href="/practice" style={{ color: 'var(--ink-muted)', textDecoration: 'none', fontSize: '13px', fontFamily: 'sans-serif' }}>
-              ← Practice
+            <Link
+              href="/practice"
+              style={{ color: 'var(--ink-muted)', textDecoration: 'none', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: '500' }}
+            >
+              <ArrowLeft size={14} />
+              Practice
             </Link>
             <div style={{ width: '1px', height: '16px', background: 'var(--border)' }} />
             <div>
               <div
                 style={{
                   fontSize: '13px',
-                  fontWeight: '500',
+                  fontWeight: '600',
                   color: 'var(--navy)',
-                  fontFamily: 'sans-serif',
                   maxWidth: '480px',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
+                  letterSpacing: '-0.01em',
                 }}
               >
                 {exercise.question}
               </div>
-              <div style={{ fontSize: '11px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>
+              <div style={{ fontSize: '11px', color: 'var(--ink-subtle)' }}>
                 {exercise.difficulty} · {exercise.category}
                 {exercise.company ? ` · ${exercise.company}` : ''}
               </div>
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {autoSaved && (
-              <span style={{ fontSize: '12px', color: 'var(--sage)', fontFamily: 'sans-serif' }}>
-                ✓ Saved
+              <span style={{ fontSize: '12px', color: 'var(--sage)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: '500' }}>
+                <CheckCircle size={12} /> Saved
               </span>
             )}
             {mode === 'write' && (
@@ -170,34 +166,31 @@ export default function ExerciseSession({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={() => setShowHints(!showHints)}
                   style={{
-                    padding: '6px 14px',
+                    padding: '7px 14px',
                     border: '1px solid var(--border)',
-                    borderRadius: '6px',
+                    borderRadius: '8px',
                     background: showHints ? 'var(--copper)' : 'white',
                     color: showHints ? 'white' : 'var(--ink-muted)',
                     cursor: 'pointer',
                     fontSize: '12px',
-                    fontFamily: 'sans-serif',
+                    fontWeight: '500',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    transition: 'all 0.15s ease',
                   }}
                 >
+                  <Lightbulb size={12} />
                   Hints {hints.length > 0 ? `(${hints.length})` : ''}
                 </button>
                 {allStepsWritten && (
                   <button
                     onClick={() => setMode('score')}
-                    style={{
-                      padding: '6px 16px',
-                      border: 'none',
-                      borderRadius: '6px',
-                      background: 'var(--navy)',
-                      color: 'white',
-                      cursor: 'pointer',
-                      fontSize: '12px',
-                      fontFamily: 'sans-serif',
-                      fontWeight: '600',
-                    }}
+                    className="btn-primary"
+                    style={{ fontSize: '12px', padding: '7px 16px' }}
                   >
-                    Score My Answer →
+                    <Star size={12} />
+                    Score My Answer
                   </button>
                 )}
               </div>
@@ -206,34 +199,29 @@ export default function ExerciseSession({ params }: { params: Promise<{ id: stri
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button
                   onClick={() => setMode('write')}
-                  style={{
-                    padding: '6px 14px',
-                    border: '1px solid var(--border)',
-                    borderRadius: '6px',
-                    background: 'white',
-                    color: 'var(--ink-muted)',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    fontFamily: 'sans-serif',
-                  }}
+                  className="btn-secondary"
+                  style={{ fontSize: '12px', padding: '7px 14px' }}
                 >
                   ← Back to Writing
                 </button>
                 <button
                   onClick={handleComplete}
                   style={{
-                    padding: '6px 16px',
+                    padding: '7px 16px',
                     border: 'none',
-                    borderRadius: '6px',
+                    borderRadius: '8px',
                     background: 'var(--sage)',
                     color: 'white',
                     cursor: 'pointer',
                     fontSize: '12px',
-                    fontFamily: 'sans-serif',
                     fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
                   }}
                 >
-                  Complete Exercise ★
+                  <CheckCircle size={12} />
+                  Complete Exercise
                 </button>
               </div>
             )}
@@ -248,7 +236,7 @@ export default function ExerciseSession({ params }: { params: Promise<{ id: stri
               width: '200px',
               background: 'var(--surface-raised)',
               borderRight: '1px solid var(--border)',
-              padding: '20px 0',
+              padding: '16px 0',
               flexShrink: 0,
               overflowY: 'auto',
             }}
@@ -265,22 +253,23 @@ export default function ExerciseSession({ params }: { params: Promise<{ id: stri
                     display: 'flex',
                     flexDirection: 'column',
                     width: '100%',
-                    padding: '12px 20px',
+                    padding: '11px 18px',
                     border: 'none',
                     background: isActive ? 'white' : 'transparent',
                     borderLeft: isActive ? `3px solid ${s.color}` : '3px solid transparent',
                     cursor: 'pointer',
                     textAlign: 'left',
                     transition: 'all 0.15s ease',
+                    boxShadow: isActive ? 'var(--shadow-xs)' : 'none',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: '16px' }}>{s.icon}</span>
                     {hasContent && mode === 'write' && (
-                      <span style={{ fontSize: '10px', color: s.color }}>●</span>
+                      <span style={{ fontSize: '8px', color: s.color }}>●</span>
                     )}
                     {mode === 'score' && isScored && (
-                      <span style={{ fontSize: '11px', color: s.color, fontFamily: 'sans-serif', fontWeight: '600' }}>
+                      <span style={{ fontSize: '11px', color: s.color, fontWeight: '700' }}>
                         {scores[s.id as StepId]}%
                       </span>
                     )}
@@ -289,7 +278,6 @@ export default function ExerciseSession({ params }: { params: Promise<{ id: stri
                     style={{
                       fontSize: '12px',
                       color: isActive ? 'var(--navy)' : 'var(--ink-muted)',
-                      fontFamily: 'sans-serif',
                       fontWeight: isActive ? '600' : '400',
                       marginTop: '4px',
                     }}
@@ -301,22 +289,20 @@ export default function ExerciseSession({ params }: { params: Promise<{ id: stri
             })}
 
             {/* Progress indicator */}
-            <div style={{ padding: '16px 20px', borderTop: '1px solid var(--border)', marginTop: '8px' }}>
-              <div style={{ fontSize: '11px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '8px' }}>
+            <div style={{ padding: '16px 18px', borderTop: '1px solid var(--border)', marginTop: '8px' }}>
+              <div style={{ fontSize: '11px', color: 'var(--ink-subtle)', marginBottom: '8px', fontWeight: '500' }}>
                 Progress
               </div>
-              <div style={{ height: '4px', background: 'var(--border)', borderRadius: '9999px', overflow: 'hidden' }}>
+              <div className="progress-track">
                 <div
+                  className="progress-fill"
                   style={{
-                    height: '100%',
                     width: `${(STEP_ORDER.filter((s) => content[s].trim().length > 50).length / STEP_ORDER.length) * 100}%`,
                     background: 'var(--sage)',
-                    borderRadius: '9999px',
-                    transition: 'width 0.3s ease',
                   }}
                 />
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginTop: '5px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--ink-subtle)', marginTop: '5px' }}>
                 {STEP_ORDER.filter((s) => content[s].trim().length > 50).length} / {STEP_ORDER.length} steps
               </div>
             </div>
@@ -403,34 +389,36 @@ function WriteMode({
           marginBottom: '24px',
           padding: '20px 24px',
           background: `${step.color}08`,
-          border: `1px solid ${step.color}20`,
-          borderRadius: '12px',
+          border: `1px solid ${step.color}18`,
+          borderRadius: '14px',
+          boxShadow: `0 2px 12px ${step.color}08`,
         }}
       >
         <div
           style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
+            width: '44px',
+            height: '44px',
+            borderRadius: '12px',
             background: step.color,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '18px',
+            fontSize: '20px',
             flexShrink: 0,
             color: 'white',
+            boxShadow: `0 3px 12px ${step.color}40`,
           }}
         >
           {step.icon}
         </div>
         <div>
-          <div style={{ fontSize: '11px', color: step.color, fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '600' }}>
+          <div style={{ fontSize: '11px', color: step.color, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: '700', marginBottom: '4px' }}>
             Step {step.number} — {step.subtitle}
           </div>
-          <h2 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--navy)', margin: '4px 0 8px', letterSpacing: '-0.02em' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--navy)', margin: '0 0 8px', letterSpacing: '-0.025em' }}>
             {step.title}
           </h2>
-          <p style={{ fontSize: '13px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', lineHeight: 1.6, margin: 0 }}>
+          <p style={{ fontSize: '13px', color: 'var(--ink-muted)', lineHeight: 1.65, margin: 0 }}>
             {step.description}
           </p>
         </div>
@@ -443,17 +431,18 @@ function WriteMode({
           style={{
             padding: '16px 20px',
             background: 'white',
-            border: '1px solid var(--border)',
-            borderRadius: '10px',
+            border: '1px solid var(--copper)25',
+            borderRadius: '12px',
             marginBottom: '20px',
+            boxShadow: '0 2px 12px var(--copper-glow)',
           }}
         >
-          <div style={{ fontSize: '11px', color: 'var(--copper)', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '600', marginBottom: '10px' }}>
-            Hints
+          <div style={{ fontSize: '11px', color: 'var(--copper)', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: '700', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <Lightbulb size={12} /> Hints
           </div>
           <ul style={{ margin: 0, padding: '0 0 0 16px' }}>
             {hints.map((hint, i) => (
-              <li key={i} style={{ fontSize: '13px', color: 'var(--ink)', fontFamily: 'sans-serif', lineHeight: 1.6, marginBottom: '6px' }}>
+              <li key={i} style={{ fontSize: '13px', color: 'var(--ink)', lineHeight: 1.65, marginBottom: '6px' }}>
                 {hint}
               </li>
             ))}
@@ -467,15 +456,16 @@ function WriteMode({
           padding: '12px 16px',
           background: 'white',
           border: '1px solid var(--border)',
-          borderRadius: '8px',
+          borderRadius: '10px',
           marginBottom: '20px',
           display: 'flex',
           flexWrap: 'wrap',
-          gap: '8px',
+          gap: '7px',
           alignItems: 'center',
+          boxShadow: 'var(--shadow-xs)',
         }}
       >
-        <span style={{ fontSize: '11px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', flexShrink: 0 }}>
+        <span style={{ fontSize: '11px', color: 'var(--ink-subtle)', flexShrink: 0, fontWeight: '500' }}>
           Consider:
         </span>
         {step.keyQuestions.slice(0, 3).map((q, i) => (
@@ -487,7 +477,7 @@ function WriteMode({
               borderRadius: '12px',
               fontSize: '12px',
               color: 'var(--ink)',
-              fontFamily: 'sans-serif',
+              border: `1px solid ${step.color}18`,
             }}
           >
             {q}
@@ -505,40 +495,39 @@ function WriteMode({
           minHeight: '320px',
           padding: '20px',
           border: '1px solid var(--border)',
-          borderRadius: '12px',
+          borderRadius: '14px',
           fontSize: '15px',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          fontFamily: 'var(--font-sans)',
           color: 'var(--ink)',
           background: 'white',
           outline: 'none',
-          lineHeight: 1.7,
-          transition: 'border-color 0.15s',
+          lineHeight: 1.75,
+          transition: 'border-color 0.15s, box-shadow 0.15s',
+          boxShadow: 'var(--shadow-xs)',
         }}
-        onFocus={(e) => (e.target.style.borderColor = step.color)}
-        onBlur={(e) => (e.target.style.borderColor = 'var(--border)')}
+        onFocus={(e) => {
+          e.target.style.borderColor = step.color;
+          e.target.style.boxShadow = `0 0 0 3px ${step.color}20`;
+        }}
+        onBlur={(e) => {
+          e.target.style.borderColor = 'var(--border)';
+          e.target.style.boxShadow = 'var(--shadow-xs)';
+        }}
       />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
-        <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>
+        <div style={{ fontSize: '12px', color: 'var(--ink-subtle)' }}>
           {content.length} characters · {content.split(/\s+/).filter(Boolean).length} words
           {content.trim().length < 50 && content.length > 0 && (
-            <span style={{ color: 'var(--rust)', marginLeft: '8px' }}>Write more to proceed</span>
+            <span style={{ color: 'var(--rust)', marginLeft: '8px', fontWeight: '500' }}>Write more to proceed</span>
           )}
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           {currentStepIndex > 0 && (
             <button
               onClick={onPrev}
-              style={{
-                padding: '8px 18px',
-                border: '1px solid var(--border)',
-                borderRadius: '8px',
-                background: 'white',
-                color: 'var(--ink-muted)',
-                cursor: 'pointer',
-                fontSize: '13px',
-                fontFamily: 'sans-serif',
-              }}
+              className="btn-secondary"
+              style={{ fontSize: '13px', padding: '8px 18px' }}
             >
               ← Prev
             </button>
@@ -555,8 +544,8 @@ function WriteMode({
                 color: 'white',
                 cursor: content.trim().length >= 20 ? 'pointer' : 'not-allowed',
                 fontSize: '13px',
-                fontFamily: 'sans-serif',
                 fontWeight: '600',
+                transition: 'all 0.15s ease',
               }}
             >
               Next Step →
@@ -565,19 +554,11 @@ function WriteMode({
             allDone && (
               <button
                 onClick={onGoToScore}
-                style={{
-                  padding: '8px 20px',
-                  border: 'none',
-                  borderRadius: '8px',
-                  background: 'var(--navy)',
-                  color: 'white',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  fontFamily: 'sans-serif',
-                  fontWeight: '600',
-                }}
+                className="btn-primary"
+                style={{ fontSize: '13px', padding: '8px 20px' }}
               >
-                Score My Answer ★
+                <Star size={13} />
+                Score My Answer
               </button>
             )
           )}
@@ -607,48 +588,39 @@ function ScoreMode({
   return (
     <div className="animate-fade-in" style={{ maxWidth: '780px' }}>
       <div style={{ marginBottom: '24px' }}>
-        <div style={{ fontSize: '11px', color: step.color, fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '600', marginBottom: '6px' }}>
+        <div style={{ fontSize: '11px', color: step.color, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: '700', marginBottom: '6px' }}>
           Self-Evaluation — {step.title}
         </div>
-        <h2 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--navy)', margin: 0 }}>
+        <h2 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--navy)', margin: 0, letterSpacing: '-0.03em' }}>
           How well did you cover this step?
         </h2>
       </div>
 
       {/* Your answer */}
-      <div
-        style={{
-          padding: '20px',
-          background: 'white',
-          border: '1px solid var(--border)',
-          borderRadius: '12px',
-          marginBottom: '24px',
-        }}
-      >
-        <div style={{ fontSize: '11px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>
+      <div className="content-card" style={{ marginBottom: '20px' }}>
+        <div style={{ fontSize: '11px', color: 'var(--ink-subtle)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '600', marginBottom: '12px' }}>
           Your Answer
         </div>
         <div
           style={{
             fontSize: '14px',
             color: 'var(--ink)',
-            fontFamily: 'sans-serif',
-            lineHeight: 1.7,
+            lineHeight: 1.75,
             maxHeight: '200px',
             overflow: 'auto',
             whiteSpace: 'pre-wrap',
           }}
         >
-          {content || <span style={{ color: 'var(--ink-subtle)' }}>No answer written for this step.</span>}
+          {content || <span style={{ color: 'var(--ink-subtle)', fontStyle: 'italic' }}>No answer written for this step.</span>}
         </div>
       </div>
 
       {/* Rubric criteria */}
-      <div style={{ marginBottom: '24px' }}>
-        <div style={{ fontSize: '13px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', marginBottom: '16px' }}>
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ fontSize: '13px', color: 'var(--ink-muted)', marginBottom: '14px', fontWeight: '500' }}>
           Evaluate yourself against these criteria:
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {rubric.criteria.map((c, i) => (
             <div
               key={i}
@@ -656,19 +628,20 @@ function ScoreMode({
                 padding: '16px',
                 background: 'white',
                 border: '1px solid var(--border)',
-                borderRadius: '10px',
+                borderRadius: '12px',
+                boxShadow: 'var(--shadow-xs)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--navy)', fontFamily: 'sans-serif', marginBottom: '4px' }}>
+                  <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--navy)', marginBottom: '4px', letterSpacing: '-0.01em' }}>
                     {c.label}
                   </div>
-                  <div style={{ fontSize: '13px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', lineHeight: 1.5 }}>
+                  <div style={{ fontSize: '13px', color: 'var(--ink-muted)', lineHeight: 1.55 }}>
                     {c.description}
                   </div>
                 </div>
-                <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', flexShrink: 0, marginLeft: '12px' }}>
+                <div style={{ fontSize: '11px', color: 'var(--ink-subtle)', flexShrink: 0, marginLeft: '12px', fontWeight: '500' }}>
                   max {c.maxPoints}pts
                 </div>
               </div>
@@ -678,26 +651,17 @@ function ScoreMode({
       </div>
 
       {/* Score slider */}
-      <div
-        style={{
-          padding: '24px',
-          background: 'white',
-          border: '1px solid var(--border)',
-          borderRadius: '12px',
-          marginBottom: '20px',
-        }}
-      >
+      <div className="content-card" style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--navy)', fontFamily: 'sans-serif' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--navy)', letterSpacing: '-0.01em' }}>
             Your Score for {step.title}
           </span>
           <span
             style={{
-              fontSize: '24px',
-              fontWeight: '700',
+              fontSize: '26px',
+              fontWeight: '800',
               color: score >= 80 ? 'var(--sage)' : score >= 60 ? 'var(--copper)' : score > 0 ? 'var(--rust)' : 'var(--ink-subtle)',
-              fontFamily: 'sans-serif',
-              letterSpacing: '-0.02em',
+              letterSpacing: '-0.03em',
             }}
           >
             {score}%
@@ -718,17 +682,16 @@ function ScoreMode({
           }}
         />
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
-          <span style={{ fontSize: '11px', color: 'var(--rust)', fontFamily: 'sans-serif' }}>Needs work</span>
-          <span style={{ fontSize: '11px', color: 'var(--copper)', fontFamily: 'sans-serif' }}>Good</span>
-          <span style={{ fontSize: '11px', color: 'var(--sage)', fontFamily: 'sans-serif' }}>Excellent</span>
+          <span style={{ fontSize: '11px', color: 'var(--rust)', fontWeight: '500' }}>Needs work</span>
+          <span style={{ fontSize: '11px', color: 'var(--copper)', fontWeight: '500' }}>Good</span>
+          <span style={{ fontSize: '11px', color: 'var(--sage)', fontWeight: '500' }}>Excellent</span>
         </div>
 
-        {/* Quick score buttons */}
         <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
           {[
             { label: 'Missed it', value: 25, color: 'var(--rust)' },
             { label: 'Partial', value: 50, color: 'var(--copper)' },
-            { label: 'Good', value: 75, color: '#4A6FA5' },
+            { label: 'Good', value: 75, color: '#4A7BC4' },
             { label: 'Excellent', value: 100, color: 'var(--sage)' },
           ].map((b) => (
             <button
@@ -738,13 +701,12 @@ function ScoreMode({
                 flex: 1,
                 padding: '8px',
                 border: `1px solid ${score === b.value ? b.color : 'var(--border)'}`,
-                borderRadius: '8px',
-                background: score === b.value ? `${b.color}15` : 'white',
+                borderRadius: '9px',
+                background: score === b.value ? `${b.color}14` : 'var(--surface-raised)',
                 color: score === b.value ? b.color : 'var(--ink-muted)',
                 cursor: 'pointer',
                 fontSize: '12px',
-                fontFamily: 'sans-serif',
-                fontWeight: score === b.value ? '600' : '400',
+                fontWeight: score === b.value ? '700' : '400',
                 transition: 'all 0.15s ease',
               }}
             >
@@ -759,15 +721,16 @@ function ScoreMode({
           onClick={onNext}
           style={{
             width: '100%',
-            padding: '12px',
+            padding: '13px',
             border: 'none',
-            borderRadius: '10px',
+            borderRadius: '11px',
             background: step.color,
             color: 'white',
             cursor: 'pointer',
             fontSize: '14px',
-            fontFamily: 'sans-serif',
-            fontWeight: '600',
+            fontWeight: '700',
+            transition: 'all 0.15s ease',
+            boxShadow: `0 4px 16px ${step.color}40`,
           }}
         >
           Score Next Step →
@@ -792,31 +755,32 @@ function ResultsView({
 
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '900px' }} className="animate-fade-in">
+      <div className="page-content animate-fade-in" style={{ maxWidth: '900px' }}>
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
           <div
             style={{
-              width: '80px',
-              height: '80px',
+              width: '88px',
+              height: '88px',
               borderRadius: '50%',
-              background: `${scoreColor}15`,
+              background: `${scoreColor}12`,
               border: `3px solid ${scoreColor}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 20px',
-              fontSize: '32px',
-              fontWeight: '700',
+              fontSize: '28px',
+              fontWeight: '800',
               color: scoreColor,
-              fontFamily: 'sans-serif',
+              letterSpacing: '-0.03em',
+              boxShadow: `0 4px 20px ${scoreColor}25`,
             }}
           >
             {totalScore}
           </div>
-          <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'var(--navy)', letterSpacing: '-0.02em', margin: '0 0 8px' }}>
+          <h1 style={{ fontSize: '30px', fontWeight: '800', color: 'var(--navy)', letterSpacing: '-0.03em', margin: '0 0 8px' }}>
             Exercise Complete!
           </h1>
-          <p style={{ fontSize: '16px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', margin: '0 0 16px' }}>
+          <p style={{ fontSize: '16px', color: 'var(--ink-muted)', margin: '0 0 20px' }}>
             {totalScore >= 80 ? 'Outstanding work — you nailed this framework!' :
               totalScore >= 60 ? 'Good effort — keep practicing to sharpen your thinking.' :
                 'Keep going — every exercise builds the habit.'}
@@ -827,66 +791,45 @@ function ResultsView({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '8px 20px',
-                background: 'linear-gradient(135deg, var(--copper), var(--copper-light))',
-                borderRadius: '24px',
+                padding: '10px 24px',
+                background: 'var(--gradient-copper)',
+                borderRadius: '28px',
                 color: 'white',
-                fontFamily: 'sans-serif',
-                fontSize: '14px',
-                fontWeight: '600',
+                fontSize: '15px',
+                fontWeight: '700',
+                boxShadow: 'var(--shadow-copper)',
               }}
             >
+              <Star size={15} />
               +{xpEarned} XP earned
             </div>
           )}
         </div>
 
         {/* Score breakdown */}
-        <div
-          style={{
-            background: 'white',
-            border: '1px solid var(--border)',
-            borderRadius: '16px',
-            padding: '28px',
-            marginBottom: '24px',
-          }}
-        >
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', margin: '0 0 20px', fontFamily: 'sans-serif' }}>
+        <div className="content-card" style={{ marginBottom: '20px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--navy)', margin: '0 0 20px', letterSpacing: '-0.01em' }}>
             Score by Step
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             {FRAMEWORK_STEPS.map((step) => {
               const s = scores[step.id as StepId] ?? exercise.score ?? 0;
+              const sc = s >= 80 ? 'var(--sage)' : s >= 60 ? 'var(--copper)' : 'var(--rust)';
               return (
                 <div key={step.id}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <span style={{ fontSize: '16px' }}>{step.icon}</span>
-                      <span style={{ fontSize: '14px', color: 'var(--navy)', fontFamily: 'sans-serif', fontWeight: '500' }}>
+                      <span style={{ fontSize: '14px', color: 'var(--navy)', fontWeight: '500' }}>
                         {step.title}
                       </span>
                     </div>
-                    <span
-                      style={{
-                        fontSize: '14px',
-                        fontWeight: '700',
-                        color: s >= 80 ? 'var(--sage)' : s >= 60 ? 'var(--copper)' : 'var(--rust)',
-                        fontFamily: 'sans-serif',
-                      }}
-                    >
+                    <span style={{ fontSize: '14px', fontWeight: '800', color: sc, letterSpacing: '-0.02em' }}>
                       {s}%
                     </span>
                   </div>
-                  <div style={{ height: '6px', background: 'var(--border)', borderRadius: '9999px', overflow: 'hidden' }}>
-                    <div
-                      style={{
-                        height: '100%',
-                        width: `${s}%`,
-                        background: s >= 80 ? 'var(--sage)' : s >= 60 ? 'var(--copper)' : 'var(--rust)',
-                        borderRadius: '9999px',
-                        transition: 'width 0.8s ease',
-                      }}
-                    />
+                  <div className="progress-track">
+                    <div className="progress-fill" style={{ width: `${s}%`, background: sc }} />
                   </div>
                 </div>
               );
@@ -895,16 +838,8 @@ function ResultsView({
         </div>
 
         {/* Review your answers */}
-        <div
-          style={{
-            background: 'white',
-            border: '1px solid var(--border)',
-            borderRadius: '16px',
-            padding: '28px',
-            marginBottom: '32px',
-          }}
-        >
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', margin: '0 0 20px', fontFamily: 'sans-serif' }}>
+        <div className="content-card" style={{ marginBottom: '28px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--navy)', margin: '0 0 20px', letterSpacing: '-0.01em' }}>
             Your Answers
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -914,7 +849,7 @@ function ResultsView({
                 <div key={step.id} style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                     <span style={{ fontSize: '14px' }}>{step.icon}</span>
-                    <span style={{ fontSize: '13px', fontWeight: '600', color: step.color, fontFamily: 'sans-serif' }}>
+                    <span style={{ fontSize: '13px', fontWeight: '600', color: step.color }}>
                       {step.title}
                     </span>
                   </div>
@@ -922,10 +857,10 @@ function ResultsView({
                     style={{
                       fontSize: '13px',
                       color: stepContent ? 'var(--ink)' : 'var(--ink-subtle)',
-                      fontFamily: 'sans-serif',
-                      lineHeight: 1.6,
+                      lineHeight: 1.7,
                       margin: 0,
                       whiteSpace: 'pre-wrap',
+                      fontStyle: stepContent ? 'normal' : 'italic',
                     }}
                   >
                     {stepContent || 'No answer written.'}
@@ -937,57 +872,30 @@ function ResultsView({
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'flex', gap: '14px' }}>
+        <div style={{ display: 'flex', gap: '12px' }}>
           <button
             onClick={() => router.push('/practice')}
-            style={{
-              flex: 1,
-              padding: '14px',
-              border: 'none',
-              borderRadius: '10px',
-              background: 'var(--navy)',
-              color: 'white',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontFamily: 'sans-serif',
-              fontWeight: '600',
-            }}
+            className="btn-primary"
+            style={{ flex: 1, justifyContent: 'center', padding: '14px' }}
           >
-            ◈ New Exercise
+            <Zap size={15} />
+            New Exercise
           </button>
           <button
             onClick={() => router.push('/library')}
-            style={{
-              flex: 1,
-              padding: '14px',
-              border: '1px solid var(--border)',
-              borderRadius: '10px',
-              background: 'white',
-              color: 'var(--navy)',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontFamily: 'sans-serif',
-              fontWeight: '600',
-            }}
+            className="btn-secondary"
+            style={{ flex: 1, justifyContent: 'center', padding: '14px' }}
           >
-            ◇ View Library
+            <BookMarked size={15} />
+            View Library
           </button>
           <button
             onClick={() => router.push('/')}
-            style={{
-              flex: 1,
-              padding: '14px',
-              border: '1px solid var(--border)',
-              borderRadius: '10px',
-              background: 'white',
-              color: 'var(--navy)',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontFamily: 'sans-serif',
-              fontWeight: '600',
-            }}
+            className="btn-secondary"
+            style={{ flex: 1, justifyContent: 'center', padding: '14px' }}
           >
-            ◎ Dashboard
+            <LayoutGrid size={15} />
+            Dashboard
           </button>
         </div>
       </div>
