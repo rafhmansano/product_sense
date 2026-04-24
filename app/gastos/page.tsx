@@ -157,6 +157,7 @@ export default function GastosPage() {
             padding: '20px 24px',
             marginBottom: '24px',
             display: 'flex',
+            flexWrap: 'wrap',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
@@ -350,13 +351,14 @@ export default function GastosPage() {
                   return (
                     <div
                       key={exp.id}
+                      className="list-row"
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderBottom, transition: 'background 0.15s', background: isConfirming ? '#FFF7F7' : undefined }}
                       onMouseEnter={(e) => { if (!isConfirming) e.currentTarget.style.background = 'rgba(0,0,0,0.015)'; }}
                       onMouseLeave={(e) => { if (!isConfirming) e.currentTarget.style.background = 'transparent'; }}
                     >
                       {/* Expense info */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, minWidth: 0 }}>
-                        <div style={{ minWidth: '100px', fontSize: '15px', fontWeight: '700', color: 'var(--blue)' }}>
+                      <div className="list-row-info" style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0, flexWrap: 'wrap' }}>
+                        <div style={{ fontSize: '15px', fontWeight: '700', color: 'var(--blue)', flexShrink: 0 }}>
                           {exp.currency === 'BRL' ? 'R$' : '$'}{' '}
                           {exp.amount.toLocaleString(exp.currency === 'BRL' ? 'pt-BR' : 'en-US', { minimumFractionDigits: 2 })}
                           <span style={{ fontSize: '11px', fontWeight: '500', color: 'var(--ink-subtle)', marginLeft: '4px' }}>{exp.currency}</span>
@@ -379,7 +381,7 @@ export default function GastosPage() {
                           <button onClick={() => setConfirmDeleteId(null)} style={{ padding: '6px 14px', background: 'transparent', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Cancelar</button>
                         </div>
                       ) : (
-                        <div style={{ display: 'flex', gap: '8px', marginLeft: '12px', flexShrink: 0 }}>
+                        <div className="list-row-actions" style={{ display: 'flex', gap: '8px', marginLeft: '12px', flexShrink: 0 }}>
                           <button
                             onClick={() => handleStartEdit(exp)}
                             style={{ padding: '6px 14px', background: 'transparent', color: 'var(--blue)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.15s' }}

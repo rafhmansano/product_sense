@@ -152,6 +152,7 @@ export default function OrcamentoPage() {
 
         {/* Top row: Exchange Rate + Donut */}
         <div
+          className="flex-row-wrap"
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
@@ -272,6 +273,9 @@ export default function OrcamentoPage() {
           <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--blue)', marginBottom: '20px' }}>
             Categorias do Orçamento
           </div>
+
+          {/* Scrollable table — preserves columns on mobile */}
+          <div className="mobile-scroll-x">
 
           {/* Table Header */}
           <div
@@ -532,6 +536,7 @@ export default function OrcamentoPage() {
                 : '0%'}
             </div>
           </div>
+          </div>{/* end mobile-scroll-x */}
         </div>
       </div>
     </AppShell>

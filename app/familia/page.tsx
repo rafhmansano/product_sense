@@ -283,7 +283,7 @@ export default function FamiliaPage() {
 
   return (
     <AppShell>
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '52px 40px' }}>
+    <div className="animate-fade-in" style={{ maxWidth: '600px', margin: '0 auto', padding: '52px 40px' }}>
       {/* Page header */}
       <div style={{ marginBottom: '44px' }}>
         <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>

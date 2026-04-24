@@ -337,11 +337,51 @@ h3 {
 
 /* ─── Mobile ─────────────────────────────────────────── */
 @media (max-width: 800px) {
-  .main-content > div { padding: 24px 20px !important; }
-  .page-container { padding: 24px 20px !important; }
-  .dashboard-two-col { grid-template-columns: 1fr !important; }
-  .quick-cards-grid  { grid-template-columns: repeat(2, 1fr) !important; }
-  .card { padding: 18px 20px !important; border-radius: var(--radius-md) !important; }
+  /* Prevent horizontal scroll at the root */
+  html, body { overflow-x: hidden; max-width: 100%; }
+
+  /* Outer page wrapper */
+  .main-content > div {
+    padding: 20px 16px !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* All cards get tighter padding */
+  .card { padding: 16px !important; border-radius: var(--radius-md) !important; }
+
+  /* Typography */
+  h1 { font-size: 26px !important; letter-spacing: -0.02em !important; line-height: 1.15 !important; }
+  h2 { font-size: 18px !important; }
+
+  /* Collapse ALL inline-style CSS grids to single column */
   div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
-  h1 { font-size: 28px !important; letter-spacing: -0.02em !important; }
+
+  /* Known class-based grids */
+  .dashboard-two-col,
+  .quick-cards-grid { grid-template-columns: 1fr !important; }
+
+  /* Scrollable table containers (budget table etc.) */
+  .mobile-scroll-x {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-scroll-x > * { min-width: 560px; }
+
+  /* Expense / flight / hotel list rows: allow wrapping */
+  .list-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .list-row-info { min-width: 0 !important; flex-basis: 100% !important; }
+  .list-row-actions { flex-shrink: 0 !important; margin-left: 0 !important; }
+
+  /* Hide non-essential columns on tiny screens */
+  .mobile-hide { display: none !important; }
+
+  /* Make wide flex rows wrap */
+  .flex-row-wrap { flex-wrap: wrap !important; gap: 8px !important; }
+
+  /* Input / select boxes always full width */
+  .input-field { width: 100% !important; box-sizing: border-box !important; }
 }
