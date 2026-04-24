@@ -55,27 +55,27 @@ export default function LoginPage() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)', padding: '20px' }}>
       <div style={{ width: '100%', maxWidth: '400px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ fontSize: '40px', marginBottom: '12px' }}>✈️</div>
-          <h1 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--ink)', margin: '0 0 8px' }}>Family Trip Manager</h1>
-          <p style={{ fontSize: '14px', color: 'var(--ink-muted)' }}>Entre para gerenciar sua viagem em família</p>
+        <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px', lineHeight: 1 }}>✈️</div>
+          <h1 style={{ fontSize: '28px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 8px' }}>Family Trip Manager</h1>
+          <p style={{ fontSize: '15px', color: 'var(--ink-muted)', margin: 0 }}>Entre para gerenciar sua viagem em família</p>
         </div>
 
-        <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '16px', padding: '28px' }}>
+        <div className="card" style={{ padding: '32px' }}>
           <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
               <label className="label">Email</label>
-              <input className="input-field" type="email" value={email} onChange={(e) => { setEmail(e.target.value); setFieldErrors((p) => ({ ...p, email: undefined })); }} placeholder="seu@email.com" style={fieldErrors.email ? { borderColor: '#dc2626' } : {}} />
-              {fieldErrors.email && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{fieldErrors.email}</span>}
+              <input className="input-field" type="email" value={email} onChange={(e) => { setEmail(e.target.value); setFieldErrors((p) => ({ ...p, email: undefined })); }} placeholder="seu@email.com" style={fieldErrors.email ? { borderColor: 'var(--red)' } : {}} />
+              {fieldErrors.email && <span style={{ fontSize: '12px', color: 'var(--red)', marginTop: '4px', display: 'block' }}>{fieldErrors.email}</span>}
             </div>
             <div>
               <label className="label">Senha</label>
-              <input className="input-field" type="password" value={password} onChange={(e) => { setPassword(e.target.value); setFieldErrors((p) => ({ ...p, password: undefined })); }} placeholder="Sua senha" style={fieldErrors.password ? { borderColor: '#dc2626' } : {}} />
-              {fieldErrors.password && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{fieldErrors.password}</span>}
+              <input className="input-field" type="password" value={password} onChange={(e) => { setPassword(e.target.value); setFieldErrors((p) => ({ ...p, password: undefined })); }} placeholder="Sua senha" style={fieldErrors.password ? { borderColor: 'var(--red)' } : {}} />
+              {fieldErrors.password && <span style={{ fontSize: '12px', color: 'var(--red)', marginTop: '4px', display: 'block' }}>{fieldErrors.password}</span>}
             </div>
 
             {error && (
-              <div style={{ padding: '10px 14px', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', fontSize: '13px', color: '#dc2626' }}>
+              <div style={{ padding: '12px 16px', background: 'var(--red-light)', border: '0.5px solid rgba(255,59,48,0.3)', borderRadius: '10px', fontSize: '14px', color: 'var(--red)' }}>
                 {error}
               </div>
             )}
@@ -83,7 +83,8 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              style={{ padding: '12px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1 }}
+              className="btn-primary"
+              style={{ width: '100%', justifyContent: 'center', padding: '12px 20px', fontSize: '15px', borderRadius: '12px', opacity: loading ? 0.7 : 1, cursor: loading ? 'wait' : 'pointer' }}
             >
               {loading ? 'Entrando...' : 'Entrar'}
             </button>
@@ -105,7 +106,7 @@ export default function LoginPage() {
 
         <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: 'var(--ink-muted)' }}>
           Não tem conta?{' '}
-          <Link href="/cadastro" style={{ color: 'var(--ocean)', textDecoration: 'none', fontWeight: '600' }}>
+          <Link href="/cadastro" style={{ color: 'var(--blue)', textDecoration: 'none', fontWeight: '500', fontWeight: '600' }}>
             Criar conta
           </Link>
         </p>

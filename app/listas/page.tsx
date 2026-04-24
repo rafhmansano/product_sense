@@ -9,12 +9,11 @@ export default function ListasPage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '900px' }} className="animate-fade-in">
+      <div style={{ padding: '52px 56px', maxWidth: '900px' }} className="animate-fade-in">
         {/* Header */}
         <div style={{ marginBottom: '24px' }}>
-          <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--ink)', margin: 0, lineHeight: 1.15, display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '32px' }}>🛒</span> Listas de Compras
-          </h1>
+          <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>Compras</h1>
+            <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>Listas de compras para a viagem</p>
           <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '10px', lineHeight: 1.6 }}>
             Itens de farmacia e mercado para comprar em Orlando.
           </p>

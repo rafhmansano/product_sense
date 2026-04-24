@@ -48,7 +48,7 @@ export default function SharedTripPage() {
         <p style={{ fontSize: '14px', color: 'var(--ink-muted)', textAlign: 'center' }}>
           O codigo <strong>{shareCode}</strong> nao corresponde a nenhuma viagem.
         </p>
-        <Link href="/login" style={{ padding: '12px 24px', background: 'var(--ocean)', color: 'white', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600', marginTop: '12px' }}>
+        <Link href="/login" style={{ padding: '12px 24px', background: 'var(--blue)', color: 'white', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600', marginTop: '12px' }}>
           Fazer login
         </Link>
       </div>
@@ -79,10 +79,10 @@ export default function SharedTripPage() {
             Para editar esta viagem, faca login e entre na familia com o codigo de convite.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/login" style={{ padding: '12px 24px', background: 'var(--ocean)', color: 'white', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
+            <Link href="/login" style={{ padding: '12px 24px', background: 'var(--blue)', color: 'white', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
               Fazer login
             </Link>
-            <Link href="/cadastro" style={{ padding: '12px 24px', background: 'white', color: 'var(--ocean)', border: '1px solid var(--border)', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
+            <Link href="/cadastro" style={{ padding: '12px 24px', background: 'white', color: 'var(--blue)', border: '1px solid var(--border)', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
               Criar conta
             </Link>
           </div>

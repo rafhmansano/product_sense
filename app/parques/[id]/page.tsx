@@ -78,7 +78,7 @@ export default function ParkDetailPage({
 
   return (
     <AppShell>
-      <div className="animate-fade-in" style={{ padding: '32px 40px', maxWidth: '960px' }}>
+      <div className="animate-fade-in" style={{ padding: '52px 56px', maxWidth: '960px' }}>
         {/* Back link */}
         <Link
           href="/parques"
@@ -93,7 +93,7 @@ export default function ParkDetailPage({
             transition: 'color 0.15s',
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.color = 'var(--ocean)';
+            (e.currentTarget as HTMLElement).style.color = 'var(--blue)';
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLElement).style.color = 'var(--ink-muted)';
@@ -182,7 +182,7 @@ export default function ParkDetailPage({
             style={{
               padding: '8px 16px',
               borderRadius: '10px',
-              background: 'var(--sky)',
+              background: 'var(--background)',
               border: '1px solid var(--border)',
               fontSize: '13px',
               color: 'var(--ink-muted)',
@@ -262,7 +262,7 @@ export default function ParkDetailPage({
                       style={{
                         margin: '6px 0 0',
                         fontSize: '12px',
-                        color: 'var(--sunset)',
+                        color: 'var(--orange)',
                         fontWeight: 500,
                         display: 'flex',
                         alignItems: 'center',

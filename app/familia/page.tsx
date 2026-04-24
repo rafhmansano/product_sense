@@ -283,19 +283,20 @@ export default function FamiliaPage() {
 
   return (
     <AppShell>
-    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--ink)', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span>👨‍👩‍👦</span> Família
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '52px 40px' }}>
+      {/* Page header */}
+      <div style={{ marginBottom: '44px' }}>
+        <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>
+          Família
         </h1>
-        <p style={{ fontSize: '14px', color: 'var(--ink-muted)', margin: 0 }}>
-          Gerencie os membros da viagem e convide outras pessoas
+        <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>
+          Gerencie os viajantes e convites
         </p>
       </div>
 
       {/* Family name */}
       {isSupabaseConfigured() && (familyName || familyNameValue) && (
-        <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>
+        <div className="card" style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', marginBottom: '4px' }}>
@@ -309,20 +310,21 @@ export default function FamiliaPage() {
                     value={familyNameValue}
                     onChange={(e) => { setFamilyNameValue(e.target.value); setFamilyNameError(''); }}
                     autoFocus
-                    style={familyNameError ? { borderColor: '#dc2626' } : {}}
+                    style={familyNameError ? { borderColor: 'var(--red)' } : {}}
                   />
-                  {familyNameError && <span style={{ fontSize: '12px', color: '#dc2626' }}>{familyNameError}</span>}
+                  {familyNameError && <span style={{ fontSize: '12px', color: 'var(--red)' }}>{familyNameError}</span>}
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <button
+                      className="btn-primary"
                       onClick={handleSaveFamilyName}
                       disabled={savingFamilyName}
-                      style={{ padding: '8px 16px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: savingFamilyName ? 'wait' : 'pointer', opacity: savingFamilyName ? 0.7 : 1 }}
+                      style={{ opacity: savingFamilyName ? 0.7 : 1, cursor: savingFamilyName ? 'wait' : 'pointer' }}
                     >
                       {savingFamilyName ? 'Salvando...' : 'Salvar'}
                     </button>
                     <button
+                      className="btn-secondary"
                       onClick={() => { setEditingFamilyName(false); setFamilyNameValue(familyName || ''); setFamilyNameError(''); }}
-                      style={{ padding: '8px 16px', background: 'white', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', cursor: 'pointer' }}
                     >
                       Cancelar
                     </button>
@@ -349,14 +351,14 @@ export default function FamiliaPage() {
       )}
 
       {/* Members list */}
-      <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>
+      <div className="card" style={{ marginBottom: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '600', letterSpacing: '-0.015em', color: 'var(--ink)', margin: 0 }}>
             Viajantes ({trip.members.length})
           </h2>
           <button
+            className="btn-primary"
             onClick={() => { resetForm(); setShowAddForm(true); }}
-            style={{ padding: '6px 14px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}
           >
             + Adicionar
           </button>
@@ -373,7 +375,6 @@ export default function FamiliaPage() {
                 padding: '12px 14px',
                 background: 'var(--background)',
                 borderRadius: '12px',
-                border: '1px solid var(--border)',
               }}
             >
               <div style={{ fontSize: '28px', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', borderRadius: '50%', border: '1px solid var(--border)', flexShrink: 0 }}>
@@ -420,8 +421,8 @@ export default function FamiliaPage() {
 
       {/* Add/Edit form */}
       {showAddForm && (
-        <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 16px' }}>
+        <div className="card" style={{ marginBottom: '16px' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '600', letterSpacing: '-0.015em', color: 'var(--ink)', margin: '0 0 16px' }}>
             {editingId !== null ? 'Editar viajante' : 'Novo viajante'}
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -434,9 +435,9 @@ export default function FamiliaPage() {
                 onChange={(e) => { setName(e.target.value); setNameError(''); }}
                 placeholder="Nome do viajante"
                 autoFocus
-                style={nameError ? { borderColor: '#dc2626' } : {}}
+                style={nameError ? { borderColor: 'var(--red)' } : {}}
               />
-              {nameError && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{nameError}</span>}
+              {nameError && <span style={{ fontSize: '12px', color: 'var(--red)', marginTop: '4px', display: 'block' }}>{nameError}</span>}
             </div>
             <div>
               <label className="label">Papel na família</label>
@@ -485,14 +486,15 @@ export default function FamiliaPage() {
             </div>
             <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
               <button
+                className="btn-primary"
                 onClick={editingId !== null ? handleSaveEdit : handleAddMember}
-                style={{ flex: 1, padding: '12px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }}
+                style={{ flex: 1 }}
               >
                 {editingId !== null ? 'Salvar' : 'Adicionar'}
               </button>
               <button
+                className="btn-secondary"
                 onClick={resetForm}
-                style={{ padding: '12px 20px', background: 'white', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '14px', cursor: 'pointer' }}
               >
                 Cancelar
               </button>
@@ -503,8 +505,8 @@ export default function FamiliaPage() {
 
       {/* Invite section */}
       {isSupabaseConfigured() && user && (
-        <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 6px' }}>
+        <div className="card" style={{ marginBottom: '16px' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '600', letterSpacing: '-0.015em', color: 'var(--ink)', margin: '0 0 6px' }}>
             Convidar para o app
           </h2>
           <p style={{ fontSize: '13px', color: 'var(--ink-muted)', margin: '0 0 16px' }}>
@@ -513,9 +515,10 @@ export default function FamiliaPage() {
 
           {!inviteCode ? (
             <button
+              className="btn-primary"
               onClick={loadInviteCode}
               disabled={loadingCode}
-              style={{ padding: '12px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '14px', fontWeight: '600', cursor: loadingCode ? 'wait' : 'pointer', width: '100%', opacity: loadingCode ? 0.7 : 1 }}
+              style={{ width: '100%', opacity: loadingCode ? 0.7 : 1, cursor: loadingCode ? 'wait' : 'pointer' }}
             >
               {loadingCode ? 'Carregando...' : 'Ver codigo de convite'}
             </button>
@@ -578,16 +581,11 @@ export default function FamiliaPage() {
                     style={{ flex: 1 }}
                   />
                   <button
+                    className="btn-primary"
                     onClick={handleEmailInvite}
                     disabled={!emailTo.trim()}
                     style={{
-                      padding: '10px 16px',
-                      background: emailTo.trim() ? 'var(--ocean)' : 'var(--border)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '10px',
-                      fontSize: '13px',
-                      fontWeight: '600',
+                      opacity: emailTo.trim() ? 1 : 0.5,
                       cursor: emailTo.trim() ? 'pointer' : 'default',
                       whiteSpace: 'nowrap',
                     }}
@@ -601,8 +599,8 @@ export default function FamiliaPage() {
         </div>
       )}
 
-      {/* Info card */}
-      <div style={{ padding: '16px 18px', background: 'rgba(59, 130, 246, 0.06)', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.12)' }}>
+      {/* Info hint box */}
+      <div style={{ padding: '16px 18px', background: 'var(--blue-xlight)', borderRadius: 'var(--radius-md)', border: '0.5px solid rgba(0,113,227,0.12)' }}>
         <div style={{ fontSize: '13px', color: 'var(--ocean)', lineHeight: 1.5 }}>
           <strong>Dica:</strong> Cadastre todos os viajantes com idade e altura para facilitar a verificação de restrições de atrações nos parques. Use o convite para que outros membros da familia possam acessar e editar a viagem.
         </div>

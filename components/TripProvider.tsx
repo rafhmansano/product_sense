@@ -354,7 +354,7 @@ export default function TripProvider({ children }: { children: React.ReactNode }
       case 'synced':
         return { bg: 'rgba(22, 163, 74, 0.92)', label: `Sincronizado ${formatSyncTime(lastSyncedAt)}`, icon: '☁' };
       case 'error':
-        return { bg: '#dc2626', label: 'Erro ao salvar', icon: '⚠' };
+        return { bg: 'var(--red)', label: 'Erro ao salvar', icon: '⚠' };
       default:
         return { bg: 'var(--ocean)', label: '', icon: '' };
     }

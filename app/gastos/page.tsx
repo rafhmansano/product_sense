@@ -138,28 +138,13 @@ export default function GastosPage() {
   return (
     <AppShell>
       <div
-        style={{ padding: '40px 48px', maxWidth: '900px' }}
+        style={{ padding: '52px 56px', maxWidth: '900px' }}
         className="animate-fade-in"
       >
         {/* Header */}
-        <div style={{ marginBottom: '32px' }}>
-          <h1
-            style={{
-              fontSize: '32px',
-              fontWeight: '700',
-              letterSpacing: '-0.03em',
-              color: 'var(--navy)',
-              margin: 0,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-            }}
-          >
-            <span style={{ fontSize: '28px' }}>🧾</span> Gastos
-          </h1>
-          <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '8px' }}>
-            Registre e acompanhe todos os gastos da viagem.
-          </p>
+        <div style={{ marginBottom: '44px' }}>
+          <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>Gastos</h1>
+          <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>Controle de despesas da viagem</p>
         </div>
 
         {/* Running Total */}
@@ -180,7 +165,7 @@ export default function GastosPage() {
             <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', fontWeight: '600', marginBottom: '4px' }}>
               Total gasto (convertido em BRL)
             </div>
-            <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--navy)', letterSpacing: '-0.02em' }}>
+            <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--blue)', letterSpacing: '-0.02em' }}>
               R$ {runningTotalBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </div>
           </div>
@@ -192,7 +177,7 @@ export default function GastosPage() {
 
         {/* Add Form */}
         <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', marginBottom: '20px' }}>
+          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--blue)', marginBottom: '20px' }}>
             Adicionar gasto
           </div>
 
@@ -209,16 +194,16 @@ export default function GastosPage() {
                 value={amount}
                 onChange={(e) => { setAmount(e.target.value); setAmountError(''); }}
                 onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-                style={{ width: '100%', padding: '10px 12px', border: `1px solid ${amountError ? '#dc2626' : 'var(--border)'}`, borderRadius: '8px', fontSize: '15px', fontWeight: '600', outline: 'none', boxSizing: 'border-box' }}
+                style={{ width: '100%', padding: '10px 12px', border: `1px solid ${amountError ? 'var(--red)' : 'var(--border)'}`, borderRadius: '8px', fontSize: '15px', fontWeight: '600', outline: 'none', boxSizing: 'border-box' }}
               />
-              {amountError && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{amountError}</span>}
+              {amountError && <span style={{ fontSize: '12px', color: 'var(--red)', marginTop: '4px', display: 'block' }}>{amountError}</span>}
             </div>
 
             {/* Currency Toggle */}
             <div>
               <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border)' }}>
                 {(['USD', 'BRL'] as const).map((c) => (
-                  <button key={c} onClick={() => setCurrency(c)} style={{ padding: '10px 16px', fontSize: '13px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', background: currency === c ? '#1B3A6B' : 'white', color: currency === c ? 'white' : 'var(--ink-muted)', transition: 'all 0.15s' }}>{c}</button>
+                  <button key={c} onClick={() => setCurrency(c)} style={{ padding: '10px 16px', fontSize: '13px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', background: currency === c ? 'var(--blue-dark)' : 'white', color: currency === c ? 'white' : 'var(--ink-muted)', transition: 'all 0.15s' }}>{c}</button>
                 ))}
               </div>
             </div>
@@ -248,7 +233,7 @@ export default function GastosPage() {
 
           {/* Confirm Button */}
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <button className="btn-primary" onClick={handleAdd} style={{ padding: '12px 36px', background: '#1B3A6B', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+            <button className="btn-primary" onClick={handleAdd} style={{ padding: '12px 36px', background: 'var(--blue-dark)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' }}>
               ✓ Confirmar gasto
             </button>
           </div>
@@ -278,7 +263,7 @@ export default function GastosPage() {
           return (
             <div key={dateKey} style={{ marginBottom: '24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', padding: '0 4px' }}>
-                <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--navy)', textTransform: 'capitalize' }}>{formatDate(dateKey)}</div>
+                <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--blue)', textTransform: 'capitalize' }}>{formatDate(dateKey)}</div>
                 <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--ink-muted)' }}>Total: R$ {dayTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
               </div>
 
@@ -303,15 +288,15 @@ export default function GastosPage() {
                               value={editAmount}
                               onChange={(e) => { setEditAmount(e.target.value); setEditAmountError(''); }}
                               autoFocus
-                              style={{ ...inputStyle, width: '100%', fontWeight: '600', border: `1px solid ${editAmountError ? '#dc2626' : 'var(--border)'}` }}
+                              style={{ ...inputStyle, width: '100%', fontWeight: '600', border: `1px solid ${editAmountError ? 'var(--red)' : 'var(--border)'}` }}
                             />
-                            {editAmountError && <span style={{ fontSize: '11px', color: '#dc2626' }}>{editAmountError}</span>}
+                            {editAmountError && <span style={{ fontSize: '11px', color: 'var(--red)' }}>{editAmountError}</span>}
                           </div>
 
                           <div>
                             <div style={{ display: 'flex', borderRadius: '7px', overflow: 'hidden', border: '1px solid var(--border)' }}>
                               {(['USD', 'BRL'] as const).map((c) => (
-                                <button key={c} onClick={() => setEditCurrency(c)} style={{ padding: '7px 12px', fontSize: '12px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', background: editCurrency === c ? '#1B3A6B' : 'white', color: editCurrency === c ? 'white' : 'var(--ink-muted)' }}>{c}</button>
+                                <button key={c} onClick={() => setEditCurrency(c)} style={{ padding: '7px 12px', fontSize: '12px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', background: editCurrency === c ? 'var(--blue-dark)' : 'white', color: editCurrency === c ? 'white' : 'var(--ink-muted)' }}>{c}</button>
                               ))}
                             </div>
                           </div>
@@ -346,7 +331,7 @@ export default function GastosPage() {
                           <div style={{ display: 'flex', gap: '8px', alignSelf: 'flex-end' }}>
                             <button
                               onClick={handleSaveEdit}
-                              style={{ padding: '7px 18px', background: '#1B3A6B', color: 'white', border: 'none', borderRadius: '7px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                              style={{ padding: '7px 18px', background: 'var(--blue-dark)', color: 'white', border: 'none', borderRadius: '7px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' }}
                             >
                               ✓ Salvar
                             </button>
@@ -371,7 +356,7 @@ export default function GastosPage() {
                     >
                       {/* Expense info */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, minWidth: 0 }}>
-                        <div style={{ minWidth: '100px', fontSize: '15px', fontWeight: '700', color: 'var(--navy)' }}>
+                        <div style={{ minWidth: '100px', fontSize: '15px', fontWeight: '700', color: 'var(--blue)' }}>
                           {exp.currency === 'BRL' ? 'R$' : '$'}{' '}
                           {exp.amount.toLocaleString(exp.currency === 'BRL' ? 'pt-BR' : 'en-US', { minimumFractionDigits: 2 })}
                           <span style={{ fontSize: '11px', fontWeight: '500', color: 'var(--ink-subtle)', marginLeft: '4px' }}>{exp.currency}</span>
@@ -397,7 +382,7 @@ export default function GastosPage() {
                         <div style={{ display: 'flex', gap: '8px', marginLeft: '12px', flexShrink: 0 }}>
                           <button
                             onClick={() => handleStartEdit(exp)}
-                            style={{ padding: '6px 14px', background: 'transparent', color: 'var(--navy)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.15s' }}
+                            style={{ padding: '6px 14px', background: 'transparent', color: 'var(--blue)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.15s' }}
                             onMouseEnter={(e) => { e.currentTarget.style.background = '#F0F4FF'; }}
                             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                           >

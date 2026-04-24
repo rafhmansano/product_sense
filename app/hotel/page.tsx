@@ -124,7 +124,7 @@ function AttachmentsSection({
       </div>
 
       {error && (
-        <p style={{ fontSize: '12px', color: '#dc2626', margin: '0 0 8px' }}>{error}</p>
+        <p style={{ fontSize: '12px', color: 'var(--red)', margin: '0 0 8px' }}>{error}</p>
       )}
 
       {attachments.length === 0 ? (
@@ -502,19 +502,14 @@ export default function HotelPage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '32px 40px', maxWidth: '1100px' }} className="animate-fade-in">
+      <div style={{ padding: '52px 56px', maxWidth: '1100px' }} className="animate-fade-in">
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '32px' }}>🏨</span>
-            <div>
-              <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'var(--ocean)', margin: 0 }}>Hotel</h1>
-              {hotels.length > 0 && (
-                <p style={{ fontSize: '13px', color: 'var(--ink-muted)', margin: '2px 0 0' }}>
-                  {hotels.length} {hotels.length === 1 ? 'hospedagem cadastrada' : 'hospedagens cadastradas'}
-                </p>
-              )}
-            </div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '44px', gap: '16px' }}>
+          <div>
+            <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>Hotel</h1>
+            <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>
+              {hotels.length > 0 ? `${hotels.length} ${hotels.length === 1 ? 'hospedagem cadastrada' : 'hospedagens cadastradas'}` : 'Hospedagem da viagem'}
+            </p>
           </div>
           {!showForm && (
             <button className="btn-primary" onClick={handleAddNew}>

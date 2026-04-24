@@ -6,7 +6,7 @@ import ChecklistPage from '@/components/ChecklistPage';
 export default function MochilaPage() {
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '900px' }}>
+      <div style={{ padding: '52px 56px', maxWidth: '900px' }}>
         <ChecklistPage
           listKey="backpackItems"
           title="Mochila do Parque"

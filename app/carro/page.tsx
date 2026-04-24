@@ -145,7 +145,7 @@ function AttachmentsSection({
       </div>
 
       {error && (
-        <p style={{ fontSize: '12px', color: '#dc2626', margin: '0 0 8px' }}>{error}</p>
+        <p style={{ fontSize: '12px', color: 'var(--red)', margin: '0 0 8px' }}>{error}</p>
       )}
 
       {attachments.length === 0 ? (
@@ -370,14 +370,12 @@ export default function CarroPage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '900px' }} className="animate-fade-in">
+      <div style={{ padding: '52px 56px', maxWidth: '900px' }} className="animate-fade-in">
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
           <div>
-            <h1 style={{ fontSize: '32px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--ocean)', margin: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '36px' }}>🚗</span>
-              Aluguel de Carro
-            </h1>
+            <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>Carro</h1>
+            <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>Aluguel de veículo</p>
             {carRentals.length > 0 && (
               <p style={{ fontSize: '13px', color: 'var(--ink-muted)', margin: '4px 0 0 48px' }}>
                 {carRentals.length} {carRentals.length === 1 ? 'aluguel cadastrado' : 'alugueis cadastrados'}

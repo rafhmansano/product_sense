@@ -111,23 +111,9 @@ function ParkCard({ park }: { park: (typeof PARKS_DATA)[number] }) {
 export default function ParquesPage() {
   return (
     <AppShell>
-      <div className="animate-fade-in" style={{ padding: '32px 40px', maxWidth: '1200px' }}>
-        <div style={{ marginBottom: '32px' }}>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: '28px',
-              fontWeight: 800,
-              color: 'var(--ink)',
-              letterSpacing: '-0.03em',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-            }}
-          >
-            <span style={{ fontSize: '32px' }}>🏰</span>
-            Guia dos Parques
-          </h1>
+      <div className="animate-fade-in" style={{ padding: '52px 56px', maxWidth: '1200px' }}>
+        <div style={{ marginBottom: '44px' }}>
+          <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>Parques</h1>
           <p
             style={{
               margin: '8px 0 0',

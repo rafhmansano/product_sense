@@ -37,38 +37,34 @@ function QuickCard({
   href: string;
 }) {
   return (
-    <Link href={href} style={{ textDecoration: 'none' }}>
+    <Link href={href} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
       <div
         className="card"
         style={{
-          padding: '18px',
-          borderRadius: '16px',
-          background: 'var(--surface)',
-          border: '1px solid var(--border)',
           cursor: 'pointer',
-          transition: 'transform 0.2s, box-shadow 0.2s',
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-2px)';
-          e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)';
+          e.currentTarget.style.transform = 'translateY(-3px)';
+          e.currentTarget.style.boxShadow = 'var(--shadow-md)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.boxShadow = 'none';
+          e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
         }}
       >
-        <div style={{ fontSize: '28px', marginBottom: '8px' }}>{emoji}</div>
-        <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', marginBottom: '4px' }}>
+        <div style={{ fontSize: '32px', marginBottom: '12px', lineHeight: 1 }}>{emoji}</div>
+        <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-subtle)', marginBottom: '6px', fontWeight: '500' }}>
           {label}
         </div>
-        <div style={{ fontSize: '16px', fontWeight: '700', color, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', flex: 1 }}>
+        <div style={{ fontSize: '17px', fontWeight: '600', color, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', flex: 1, letterSpacing: '-0.01em' }}>
           {value}
         </div>
         {sub && (
-          <div style={{ fontSize: '12px', color: 'var(--ink-muted)', marginTop: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', marginTop: '6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {sub}
           </div>
         )}
@@ -283,17 +279,19 @@ export default function Dashboard() {
   return (
     <AppShell>
       <OnboardingTour />
-      <div className="animate-fade-in dashboard-content" style={{ padding: '40px 48px', maxWidth: '1100px' }}>
+      <div className="animate-fade-in dashboard-content" style={{ padding: '52px 56px', maxWidth: '1100px' }}>
         {/* Header */}
-        <div style={{ marginBottom: '12px' }}>
-          <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'var(--ink-subtle)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            ✈️ {trip.originCode} → {trip.destinationCode} · {trip.destination}
-          </div>
-          <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--ink)', margin: 0, lineHeight: 1.15 }}>
+        <div style={{ marginBottom: '40px' }}>
+          {(trip.originCode || trip.destination) && (
+            <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>
+              ✈️ {trip.originCode} → {trip.destinationCode} · {trip.destination}
+            </div>
+          )}
+          <h1 style={{ fontSize: '52px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--ink)', margin: 0, lineHeight: 1.08 }}>
             Family Trip Manager
           </h1>
-          <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '8px', lineHeight: 1.5 }}>
-            Tudo sobre a viagem da família em um só lugar. 🌴
+          <p style={{ fontSize: '19px', color: 'var(--ink-muted)', marginTop: '10px', lineHeight: 1.5, margin: '10px 0 0' }}>
+            Tudo sobre a viagem da família em um só lugar.
           </p>
         </div>
 
@@ -301,8 +299,8 @@ export default function Dashboard() {
         {hasTodayItems ? (
           <div
             style={{
-              background: 'linear-gradient(135deg, #1A2744, #2E4A8C)',
-              borderRadius: '20px',
+              background: 'linear-gradient(145deg, #1a2f4a 0%, #0071E3 100%)',
+              borderRadius: '24px',
               padding: '28px 32px',
               marginBottom: '32px',
               color: 'white',
@@ -361,8 +359,8 @@ export default function Dashboard() {
           /* Countdown Banner — shown when no events today */
           <div
             style={{
-              background: 'linear-gradient(135deg, var(--ocean), var(--sky))',
-              borderRadius: '20px',
+              background: 'linear-gradient(145deg, #1a2f4a 0%, #0071E3 100%)',
+              borderRadius: '24px',
               padding: '32px 36px',
               marginBottom: '32px',
               color: 'white',
@@ -378,7 +376,7 @@ export default function Dashboard() {
                 <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.85, marginBottom: '4px' }}>
                   {daysLeft > 0 ? 'Contagem regressiva' : daysLeft === 0 ? 'Hoje é o dia!' : 'Viagem em andamento'}
                 </div>
-                <div style={{ fontSize: '56px', fontWeight: '800', letterSpacing: '-0.04em', lineHeight: 1.1 }}>
+                <div style={{ fontSize: '80px', fontWeight: '800', letterSpacing: '-0.04em', lineHeight: 1.1 }}>
                   {daysLeft > 0 ? daysLeft : daysLeft === 0 ? '🎉' : Math.abs(daysLeft)}
                   {daysLeft > 0 && (
                     <span style={{ fontSize: '22px', fontWeight: '500', marginLeft: '8px', opacity: 0.85 }}>
@@ -416,7 +414,7 @@ export default function Dashboard() {
 
         {/* Quick Info Cards */}
         <div
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '12px', marginBottom: '32px' }}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '14px', marginBottom: '40px' }}
           className="stagger-children quick-cards-grid"
         >
           <QuickCard emoji="✈️" label="Voos" value={flightStatus} sub={flightSub} color="var(--ocean)" href="/voos" />
@@ -441,39 +439,39 @@ export default function Dashboard() {
         </div>
 
         {/* Two column: Upcoming Events + Budget/Documents */}
-        <div className="dashboard-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '32px' }}>
+        <div className="dashboard-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
           {/* Next Events */}
-          <div className="card" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
+          <div className="card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>
-                📅 Próximos Eventos
+              <h2 style={{ fontSize: '17px', fontWeight: '600', color: 'var(--ink)', margin: 0, letterSpacing: '-0.01em' }}>
+                Próximos Eventos
               </h2>
-              <Link href="/agenda" style={{ fontSize: '12px', color: 'var(--ocean)', textDecoration: 'none' }}>
+              <Link href="/agenda" style={{ fontSize: '13px', color: 'var(--blue)', textDecoration: 'none', fontWeight: '500' }}>
                 Ver agenda →
               </Link>
             </div>
             {upcomingEvents.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '28px 0' }}>
-                <div style={{ fontSize: '36px', marginBottom: '10px', opacity: 0.3 }}>🗓️</div>
-                <p style={{ color: 'var(--ink-muted)', fontSize: '14px', margin: '0 0 14px' }}>
+              <div style={{ textAlign: 'center', padding: '32px 0' }}>
+                <div style={{ fontSize: '40px', marginBottom: '12px', opacity: 0.25 }}>🗓️</div>
+                <p style={{ color: 'var(--ink-muted)', fontSize: '15px', margin: '0 0 16px' }}>
                   Nenhum evento próximo.
                 </p>
-                <Link href="/agenda" className="btn-primary" style={{ display: 'inline-block', padding: '8px 20px', background: 'var(--ocean)', color: 'white', borderRadius: '8px', textDecoration: 'none', fontSize: '13px' }}>
+                <Link href="/agenda" className="btn-primary btn-sm" style={{ textDecoration: 'none' }}>
                   Adicionar evento
                 </Link>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {upcomingEvents.map((ev) => (
-                  <div key={ev.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 14px', border: '1px solid var(--border)', borderRadius: '10px', background: 'var(--background)' }}>
-                    <div style={{ fontSize: '22px', flexShrink: 0 }}>{EVENT_EMOJIS[ev.type] || '📌'}</div>
+                  <div key={ev.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 14px', borderRadius: '12px', background: 'var(--background)' }}>
+                    <div style={{ fontSize: '20px', flexShrink: 0 }}>{EVENT_EMOJIS[ev.type] || '📌'}</div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div style={{ fontSize: '14px', fontWeight: '500', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {ev.title}
                       </div>
                       <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', marginTop: '2px' }}>
                         {new Date(ev.date + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' })}
-                        {ev.time && ` as ${ev.time}`}
+                        {ev.time && ` às ${ev.time}`}
                       </div>
                     </div>
                   </div>
@@ -483,22 +481,21 @@ export default function Dashboard() {
           </div>
 
           {/* Budget + Documents Column */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Budget Progress */}
-            <div className="card" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
+            <div className="card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>💸 Orçamento Geral</h2>
-                <Link href="/orcamento" style={{ fontSize: '12px', color: 'var(--ocean)', textDecoration: 'none' }}>
+                <h2 style={{ fontSize: '17px', fontWeight: '600', color: 'var(--ink)', margin: 0, letterSpacing: '-0.01em' }}>Orçamento</h2>
+                <Link href="/orcamento" style={{ fontSize: '13px', color: 'var(--blue)', textDecoration: 'none', fontWeight: '500' }}>
                   Detalhes →
                 </Link>
               </div>
-              <div style={{ marginBottom: '12px' }}>
+              <div style={{ marginBottom: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span style={{ fontSize: '13px', color: 'var(--ink-muted)' }}>Gasto</span>
-                  <span style={{ fontSize: '13px', color: 'var(--ink)' }}>
+                  <span style={{ fontSize: '13px', color: 'var(--ink)', fontWeight: '500' }}>
                     R$ {totalSpentBRL.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                    {' / '}
-                    R$ {totalPlannedBRL.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                    <span style={{ color: 'var(--ink-subtle)' }}> / R$ {totalPlannedBRL.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
                   </span>
                 </div>
                 <ProgressBar
@@ -506,12 +503,12 @@ export default function Dashboard() {
                   max={totalPlannedBRL}
                   color={
                     totalPlannedBRL > 0 && totalSpentBRL / totalPlannedBRL > 0.9
-                      ? 'var(--coral)'
+                      ? 'var(--red)'
                       : totalPlannedBRL > 0 && totalSpentBRL / totalPlannedBRL > 0.7
-                      ? 'var(--sunset)'
+                      ? 'var(--orange)'
                       : 'var(--green)'
                   }
-                  height={10}
+                  height={8}
                 />
               </div>
               {totalPlannedBRL > 0 && (
@@ -525,27 +522,29 @@ export default function Dashboard() {
             </div>
 
             {/* Documents Status */}
-            <div className="card" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
+            <div className="card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>📋 Documentos</h2>
-                <Link href="/documentos" style={{ fontSize: '12px', color: 'var(--ocean)', textDecoration: 'none' }}>
+                <h2 style={{ fontSize: '17px', fontWeight: '600', color: 'var(--ink)', margin: 0, letterSpacing: '-0.01em' }}>Documentos</h2>
+                <Link href="/documentos" style={{ fontSize: '13px', color: 'var(--blue)', textDecoration: 'none', fontWeight: '500' }}>
                   Ver todos →
                 </Link>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <div style={{
-                  width: '56px', height: '56px', borderRadius: '50%',
-                  background: docsCompleted === docsTotal && docsTotal > 0 ? 'linear-gradient(135deg, var(--green), #34d399)' : 'linear-gradient(135deg, var(--sky), var(--ocean))',
+                  width: '52px', height: '52px', borderRadius: '50%',
+                  background: docsCompleted === docsTotal && docsTotal > 0
+                    ? 'linear-gradient(135deg, #34C759, #30D158)'
+                    : 'linear-gradient(135deg, #0071E3, #0051D0)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'white', fontSize: '16px', fontWeight: '700', flexShrink: 0,
+                  color: 'white', fontSize: '14px', fontWeight: '700', flexShrink: 0,
                 }}>
                   {docsTotal > 0 ? `${Math.round((docsCompleted / docsTotal) * 100)}%` : '—'}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)', marginBottom: '6px' }}>
+                  <div style={{ fontSize: '14px', fontWeight: '500', color: 'var(--ink)', marginBottom: '8px' }}>
                     {docsCompleted} de {docsTotal} concluídos
                   </div>
-                  <ProgressBar value={docsCompleted} max={docsTotal} color={docsCompleted === docsTotal && docsTotal > 0 ? 'var(--green)' : 'var(--sky)'} height={6} />
+                  <ProgressBar value={docsCompleted} max={docsTotal} color={docsCompleted === docsTotal && docsTotal > 0 ? 'var(--green)' : 'var(--blue)'} height={6} />
                   <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', marginTop: '4px' }}>
                     {documents.filter((d) => d.status === 'pendente').length > 0 && (
                       <>{documents.filter((d) => d.status === 'pendente').length} pendente(s)</>
@@ -565,25 +564,23 @@ export default function Dashboard() {
         </div>
 
         {/* Family Members */}
-        <div className="card" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', marginBottom: '32px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 16px' }}>
-            👨‍👩‍👦 Viajantes
+        <div className="card" style={{ marginBottom: '20px' }}>
+          <h2 style={{ fontSize: '17px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 16px', letterSpacing: '-0.01em' }}>
+            Viajantes
           </h2>
-          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             {trip.members.map((member, i) => {
               const ROLE_EMOJI_MAP: Record<string, string> = { pai: '👨', mae: '👩', bebe: '👶', crianca: '👦', adolescente: '🧑', avo: '👴', 'avó': '👵', tio: '👨', tia: '👩', outro: '👤' };
               const ROLE_LABEL_MAP: Record<string, string> = { pai: 'Pai', mae: 'Mãe', bebe: 'Bebê', crianca: 'Criança', adolescente: 'Adolescente', avo: 'Avô', 'avó': 'Avó', tio: 'Tio', tia: 'Tia', outro: 'Outro' };
               const roleEmoji = ROLE_EMOJI_MAP[member.role] || '👤';
               const roleLabel = ROLE_LABEL_MAP[member.role] || member.role;
               return (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 16px', background: 'var(--background)', borderRadius: '12px', border: '1px solid var(--border)' }}>
-                  <span style={{ fontSize: '24px' }}>{roleEmoji}</span>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 16px', background: 'var(--background)', borderRadius: '12px' }}>
+                  <span style={{ fontSize: '22px' }}>{roleEmoji}</span>
                   <div>
-                    <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)' }}>{member.name || roleLabel}</div>
+                    <div style={{ fontSize: '14px', fontWeight: '500', color: 'var(--ink)' }}>{member.name || roleLabel}</div>
                     <div style={{ fontSize: '11px', color: 'var(--ink-subtle)' }}>
-                      {roleLabel}
-                      {member.age !== undefined && ` · ${member.age} anos`}
-                      {member.heightCm !== undefined && ` · ${member.heightCm}cm`}
+                      {roleLabel}{member.age !== undefined && ` · ${member.age} anos`}{member.heightCm !== undefined && ` · ${member.heightCm}cm`}
                     </div>
                   </div>
                 </div>
@@ -593,15 +590,15 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Link href="/agenda" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--ocean)', color: 'white', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <Link href="/agenda" className="btn-primary" style={{ textDecoration: 'none' }}>
             📅 Ver Agenda
           </Link>
-          <Link href="/orcamento" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--surface)', color: 'var(--ink)', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600', border: '1px solid var(--border)' }}>
-            💰 Gerenciar Gastos
+          <Link href="/orcamento" className="btn-secondary" style={{ textDecoration: 'none' }}>
+            💰 Orçamento
           </Link>
-          <Link href="/parques" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--surface)', color: 'var(--ink)', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600', border: '1px solid var(--border)' }}>
-            🎢 Guia dos Parques
+          <Link href="/parques" className="btn-secondary" style={{ textDecoration: 'none' }}>
+            🎢 Parques
           </Link>
         </div>
       </div>

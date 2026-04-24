@@ -148,9 +148,9 @@ function OnboardingContent() {
                 <label className="label">Nome da familia</label>
                 <input className="input-field" type="text" value={familyName} onChange={(e) => setFamilyName(e.target.value)} placeholder="Ex: Familia Santos" autoFocus />
               </div>
-              {error && <div style={{ padding: '10px 14px', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', fontSize: '13px', color: '#dc2626' }}>{error}</div>}
+              {error && <div style={{ padding: '10px 14px', background: 'var(--red-light)', border: '0.5px solid rgba(255,59,48,0.3)', borderRadius: '10px', fontSize: '13px', color: 'var(--red)' }}>{error}</div>}
               <div style={{ display: 'flex', gap: '8px' }}>
-                <button onClick={handleCreateFamily} disabled={loading} style={{ flex: 1, padding: '12px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1 }}>
+                <button onClick={handleCreateFamily} disabled={loading} style={{ flex: 1, padding: '12px', background: 'var(--blue)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1 }}>
                   {loading ? 'Criando...' : 'Criar familia'}
                 </button>
                 <button onClick={() => { setMode('choose'); setError(''); }} style={{ padding: '12px 20px', background: 'white', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '14px', cursor: 'pointer' }}>
@@ -170,13 +170,13 @@ function OnboardingContent() {
                 <input className="input-field" type="text" value={inviteCode} onChange={(e) => setInviteCode(e.target.value.toUpperCase())} placeholder="Ex: AB12CD34" style={{ textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '18px', textAlign: 'center' }} autoFocus />
               </div>
               {codeFromUrl && (
-                <div style={{ padding: '10px 14px', background: 'rgba(59, 130, 246, 0.06)', border: '1px solid rgba(59, 130, 246, 0.15)', borderRadius: '8px', fontSize: '13px', color: 'var(--ocean)' }}>
+                <div style={{ padding: '10px 14px', background: 'rgba(59, 130, 246, 0.06)', border: '1px solid rgba(59, 130, 246, 0.15)', borderRadius: '8px', fontSize: '13px', color: 'var(--blue)' }}>
                   Codigo preenchido automaticamente a partir do link de convite
                 </div>
               )}
-              {error && <div style={{ padding: '10px 14px', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', fontSize: '13px', color: '#dc2626' }}>{error}</div>}
+              {error && <div style={{ padding: '10px 14px', background: 'var(--red-light)', border: '0.5px solid rgba(255,59,48,0.3)', borderRadius: '10px', fontSize: '13px', color: 'var(--red)' }}>{error}</div>}
               <div style={{ display: 'flex', gap: '8px' }}>
-                <button onClick={handleJoinFamily} disabled={loading} style={{ flex: 1, padding: '12px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1 }}>
+                <button onClick={handleJoinFamily} disabled={loading} style={{ flex: 1, padding: '12px', background: 'var(--blue)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1 }}>
                   {loading ? 'Entrando...' : 'Entrar na familia'}
                 </button>
                 <button onClick={() => { setMode('choose'); setError(''); }} style={{ padding: '12px 20px', background: 'white', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '14px', cursor: 'pointer' }}>

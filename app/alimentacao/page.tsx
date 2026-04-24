@@ -55,13 +55,13 @@ export default function AlimentacaoPage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '1100px' }} className="animate-fade-in">
+      <div style={{ padding: '52px 56px', maxWidth: '1100px' }} className="animate-fade-in">
         {/* Header */}
         <div style={{ marginBottom: '40px' }}>
-          <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--ink)', margin: 0, lineHeight: 1.15, display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '32px' }}>🍽️</span> Alimentacao
+          <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>
+            Alimentação
           </h1>
-          <p style={{ fontSize: '16px', color: 'var(--ink-muted)', marginTop: '12px', maxWidth: '600px', lineHeight: 1.6 }}>
+          <p style={{ {fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>
             Restaurantes, comidas nos parques, supermercados e dicas para economizar.
           </p>
         </div>
@@ -239,7 +239,7 @@ export default function AlimentacaoPage() {
                     <td style={{ padding: '12px', fontSize: '13px', color: 'var(--ink-muted)' }}>{r.location}</td>
                     <td style={{ padding: '12px', fontSize: '13px', color: 'var(--ink)' }}>{r.highlight}</td>
                     <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px' }}>
-                      {r.kidFriendly ? <span style={{ color: '#16a34a' }}>&#10003;</span> : <span style={{ color: '#dc2626' }}>&#10007;</span>}
+                      {r.kidFriendly ? <span style={{ color: '#16a34a' }}>&#10003;</span> : <span style={{ color: 'var(--red)' }}>&#10007;</span>}
                     </td>
                   </tr>
                 ))}

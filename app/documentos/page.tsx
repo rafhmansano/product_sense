@@ -14,7 +14,7 @@ const STATUS_CYCLE: Record<string, TripDocument['status']> = {
 const STATUS_CONFIG: Record<string, { label: string; bg: string; color: string; icon: string }> = {
   'concluido': { label: 'Concluído', bg: '#dcfce7', color: '#16a34a', icon: '\u2713' },
   'pendente': { label: 'Pendente', bg: '#fef9c3', color: '#ca8a04', icon: '\u26A0' },
-  'nao-iniciado': { label: 'Não Iniciado', bg: '#fee2e2', color: '#dc2626', icon: '\u2717' },
+  'nao-iniciado': { label: 'Não Iniciado', bg: '#fee2e2', color: 'var(--red)', icon: '\u2717' },
 };
 
 function StatusBadge({ status, onClick }: { status: TripDocument['status']; onClick: () => void }) {
@@ -86,33 +86,11 @@ export default function DocumentosPage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '1100px' }} className="animate-fade-in">
+      <div style={{ padding: '52px 56px', maxWidth: '1100px' }} className="animate-fade-in">
         {/* Header */}
-        <div style={{ marginBottom: '40px' }}>
-          <h1
-            style={{
-              fontSize: '36px',
-              fontWeight: '700',
-              letterSpacing: '-0.03em',
-              color: 'var(--navy)',
-              margin: 0,
-              lineHeight: 1.15,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-            }}
-          >
-            <span style={{ fontSize: '32px' }}>📋</span> Documentos e Checklist
-          </h1>
-          <p
-            style={{
-              fontSize: '16px',
-              color: 'var(--ink-muted)',
-              marginTop: '12px',
-              maxWidth: '600px',
-              lineHeight: 1.6,
-            }}
-          >
+        <div style={{ marginBottom: '44px' }}>
+          <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>Documentos</h1>
+          <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>
             Controle todos os documentos necessários para a viagem. Clique no status para atualizar o progresso.
           </p>
         </div>
@@ -129,10 +107,10 @@ export default function DocumentosPage() {
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--navy)' }}>
+            <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--blue)' }}>
               Progresso Geral
             </span>
-            <span style={{ fontSize: '14px', fontWeight: '600', color: progressPercent === 100 ? '#16a34a' : 'var(--navy)' }}>
+            <span style={{ fontSize: '14px', fontWeight: '600', color: progressPercent === 100 ? '#16a34a' : 'var(--blue)' }}>
               {concluidos}/{total} ({progressPercent}%)
             </span>
           </div>
@@ -143,7 +121,7 @@ export default function DocumentosPage() {
                 width: `${progressPercent}%`,
                 background: progressPercent === 100
                   ? 'linear-gradient(90deg, #16a34a, #22c55e)'
-                  : 'linear-gradient(90deg, var(--navy), #4A6FA5)',
+                  : 'linear-gradient(90deg, var(--blue), #4A6FA5)',
                 borderRadius: '9999px',
                 transition: 'width 0.6s ease',
               }}
@@ -163,7 +141,7 @@ export default function DocumentosPage() {
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--navy)', margin: 0 }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--blue)', margin: 0 }}>
               Lista de Documentos
             </h2>
             <button
@@ -171,7 +149,7 @@ export default function DocumentosPage() {
               onClick={() => setShowForm(!showForm)}
               style={{
                 padding: '8px 20px',
-                background: 'var(--navy)',
+                background: 'var(--blue)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
@@ -269,7 +247,7 @@ export default function DocumentosPage() {
                 style={{
                   alignSelf: 'flex-start',
                   padding: '10px 24px',
-                  background: 'var(--navy)',
+                  background: 'var(--blue)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '8px',
@@ -300,12 +278,12 @@ export default function DocumentosPage() {
                   borderRadius: '10px',
                   transition: 'border-color 0.15s',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--navy)')}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--blue)')}
                 onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '15px', fontWeight: '500', color: 'var(--navy)' }}>
+                    <span style={{ fontSize: '15px', fontWeight: '500', color: 'var(--blue)' }}>
                       {doc.name}
                     </span>
                     <span
@@ -336,7 +314,7 @@ export default function DocumentosPage() {
                   style={{
                     padding: '6px 12px',
                     background: 'transparent',
-                    color: '#dc2626',
+                    color: 'var(--red)',
                     border: '1px solid #fecaca',
                     borderRadius: '6px',
                     fontSize: '12px',
@@ -346,7 +324,7 @@ export default function DocumentosPage() {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = '#fee2e2';
-                    e.currentTarget.style.borderColor = '#dc2626';
+                    e.currentTarget.style.borderColor = 'var(--red)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'transparent';

@@ -118,31 +118,13 @@ export default function AgendaPage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '900px' }} className="animate-fade-in">
+      <div style={{ padding: '52px 56px', maxWidth: '900px' }} className="animate-fade-in">
         {/* Header */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            marginBottom: '32px',
-          }}
-        >
-          <h1
-            style={{
-              fontSize: '32px',
-              fontWeight: '700',
-              letterSpacing: '-0.03em',
-              color: 'var(--ocean)',
-              margin: 0,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-            }}
-          >
-            <span style={{ fontSize: '36px' }}>📅</span>
-            Agenda
-          </h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '44px', gap: '16px' }}>
+          <div>
+            <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>Agenda</h1>
+            <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>Programação da viagem</p>
+          </div>
           {!showForm && (
             <button
               className="btn-primary"

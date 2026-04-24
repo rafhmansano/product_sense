@@ -116,7 +116,7 @@ export default function OrcamentoPage() {
             x="70"
             y="66"
             textAnchor="middle"
-            style={{ fontSize: '20px', fontWeight: '700', fill: 'var(--navy)' }}
+            style={{ fontSize: '20px', fontWeight: '700', fill: 'var(--blue)' }}
           >
             {spentPercent.toFixed(0)}%
           </text>
@@ -131,10 +131,10 @@ export default function OrcamentoPage() {
         </svg>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '13px', color: 'var(--ink-muted)' }}>
-            Gasto: <strong style={{ color: 'var(--navy)' }}>R$ {totalSpentBRL.toFixed(2)}</strong>
+            Gasto: <strong style={{ color: 'var(--blue)' }}>R$ {totalSpentBRL.toFixed(2)}</strong>
           </div>
           <div style={{ fontSize: '13px', color: 'var(--ink-muted)' }}>
-            Planejado: <strong style={{ color: 'var(--navy)' }}>R$ {totalPlannedAll.toFixed(2)}</strong>
+            Planejado: <strong style={{ color: 'var(--blue)' }}>R$ {totalPlannedAll.toFixed(2)}</strong>
           </div>
         </div>
       </div>
@@ -143,32 +143,11 @@ export default function OrcamentoPage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '1100px' }} className="animate-fade-in">
+      <div style={{ padding: '52px 56px', maxWidth: '1100px' }} className="animate-fade-in">
         {/* Header */}
-        <div style={{ marginBottom: '32px' }}>
-          <h1
-            style={{
-              fontSize: '32px',
-              fontWeight: '700',
-              letterSpacing: '-0.03em',
-              color: 'var(--navy)',
-              margin: 0,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-            }}
-          >
-            <span style={{ fontSize: '28px' }}>💰</span> Orçamento
-          </h1>
-          <p
-            style={{
-              fontSize: '15px',
-              color: 'var(--ink-muted)',
-              marginTop: '8px',
-            }}
-          >
-            Planejamento e acompanhamento do orcamento da viagem.
-          </p>
+        <div style={{ marginBottom: '44px' }}>
+          <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>Orçamento</h1>
+          <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>Planejamento financeiro da viagem</p>
         </div>
 
         {/* Top row: Exchange Rate + Donut */}
@@ -187,7 +166,7 @@ export default function OrcamentoPage() {
             borderRadius: '12px',
             padding: '24px',
           }}>
-            <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--navy)', marginBottom: '16px' }}>
+            <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--blue)', marginBottom: '16px' }}>
               Taxa de Cambio (USD → BRL)
             </div>
             {editingRate ? (
@@ -217,7 +196,7 @@ export default function OrcamentoPage() {
                   onClick={handleRateSave}
                   style={{
                     padding: '8px 16px',
-                    background: 'var(--navy)',
+                    background: 'var(--blue)',
                     color: 'white',
                     border: 'none',
                     borderRadius: '8px',
@@ -234,7 +213,7 @@ export default function OrcamentoPage() {
                   style={{
                     padding: '8px 16px',
                     background: 'white',
-                    color: 'var(--navy)',
+                    color: 'var(--blue)',
                     border: '1px solid var(--border)',
                     borderRadius: '8px',
                     fontSize: '13px',
@@ -256,7 +235,7 @@ export default function OrcamentoPage() {
                   style={{
                     fontSize: '32px',
                     fontWeight: '700',
-                    color: 'var(--navy)',
+                    color: 'var(--blue)',
                     letterSpacing: '-0.02em',
                   }}
                 >
@@ -290,7 +269,7 @@ export default function OrcamentoPage() {
           borderRadius: '12px',
           padding: '24px',
         }}>
-          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', marginBottom: '20px' }}>
+          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--blue)', marginBottom: '20px' }}>
             Categorias do Orçamento
           </div>
 
@@ -356,7 +335,7 @@ export default function OrcamentoPage() {
                     style={{
                       fontSize: '14px',
                       fontWeight: '500',
-                      color: 'var(--navy)',
+                      color: 'var(--blue)',
                     }}
                   >
                     {cat.name}
@@ -505,7 +484,7 @@ export default function OrcamentoPage() {
               style={{
                 fontSize: '14px',
                 fontWeight: '700',
-                color: 'var(--navy)',
+                color: 'var(--blue)',
               }}
             >
               Total
@@ -514,7 +493,7 @@ export default function OrcamentoPage() {
               style={{
                 fontSize: '13px',
                 fontWeight: '700',
-                color: 'var(--navy)',
+                color: 'var(--blue)',
               }}
             >
               R$ {totalPlannedBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
@@ -523,7 +502,7 @@ export default function OrcamentoPage() {
               style={{
                 fontSize: '13px',
                 fontWeight: '700',
-                color: 'var(--navy)',
+                color: 'var(--blue)',
               }}
             >
               $ {totalPlannedUSD.toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -532,7 +511,7 @@ export default function OrcamentoPage() {
               style={{
                 fontSize: '13px',
                 fontWeight: '700',
-                color: totalSpentBRL > totalPlannedAll ? '#EF4444' : 'var(--navy)',
+                color: totalSpentBRL > totalPlannedAll ? '#EF4444' : 'var(--blue)',
               }}
             >
               R$ {totalSpentBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}

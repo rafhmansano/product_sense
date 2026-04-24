@@ -15,34 +15,12 @@ export default function DicasPage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '40px 48px', maxWidth: '1100px' }} className="animate-fade-in">
+      <div style={{ padding: '52px 56px', maxWidth: '1100px' }} className="animate-fade-in">
         {/* Header */}
-        <div style={{ marginBottom: '40px' }}>
-          <h1
-            style={{
-              fontSize: '36px',
-              fontWeight: '700',
-              letterSpacing: '-0.03em',
-              color: 'var(--navy)',
-              margin: 0,
-              lineHeight: 1.15,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-            }}
-          >
-            <span style={{ fontSize: '32px' }}>💡</span> Dicas Gerais
-          </h1>
-          <p
-            style={{
-              fontSize: '16px',
-              color: 'var(--ink-muted)',
-              marginTop: '12px',
-              maxWidth: '600px',
-              lineHeight: 1.6,
-            }}
-          >
-            Dicas essenciais organizadas por categoria para aproveitar ao maximo sua viagem em familia para Orlando.
+        <div style={{ marginBottom: '44px' }}>
+          <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>Dicas</h1>
+          <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>
+            Dicas essenciais para aproveitar ao máximo a viagem em família para Orlando.
           </p>
         </div>
 
@@ -88,7 +66,7 @@ export default function DicasPage() {
                       flex: 1,
                       fontSize: '18px',
                       fontWeight: '600',
-                      color: 'var(--navy)',
+                      color: 'var(--blue)',
                     }}
                   >
                     {category.category}
@@ -135,7 +113,7 @@ export default function DicasPage() {
                           padding: '10px 14px',
                           background: '#f8fafc',
                           borderRadius: '8px',
-                          borderLeft: '3px solid var(--navy)',
+                          borderLeft: '3px solid var(--blue)',
                         }}
                       >
                         <span
@@ -143,7 +121,7 @@ export default function DicasPage() {
                             width: '6px',
                             height: '6px',
                             borderRadius: '50%',
-                            background: 'var(--navy)',
+                            background: 'var(--blue)',
                             flexShrink: 0,
                             marginTop: '7px',
                           }}

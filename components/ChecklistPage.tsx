@@ -54,27 +54,27 @@ export default function ChecklistPage({
   return (
     <div className="animate-fade-in">
       {/* Header */}
-      <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--ink)', margin: 0, lineHeight: 1.15, display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ fontSize: '32px' }}>{emoji}</span> {title}
+      <div style={{ marginBottom: '44px' }}>
+        <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>
+          {title}
         </h1>
-        <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '10px', lineHeight: 1.6 }}>
+        <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>
           {description}
         </p>
       </div>
 
       {/* Progress */}
-      <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px', marginBottom: '20px' }}>
+      <div className="card" style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)' }}>
             {checkedItems} de {totalItems} itens prontos
           </span>
-          <span style={{ fontSize: '14px', fontWeight: '700', color: pct === 100 ? 'var(--green)' : 'var(--ocean)' }}>
+          <span style={{ fontSize: '14px', fontWeight: '700', color: pct === 100 ? 'var(--green)' : 'var(--blue)' }}>
             {pct}%
           </span>
         </div>
         <div style={{ height: '8px', background: 'var(--border)', borderRadius: '9999px', overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${pct}%`, background: pct === 100 ? 'var(--green)' : 'var(--sky)', borderRadius: '9999px', transition: 'width 0.5s ease' }} />
+          <div style={{ height: '100%', width: `${pct}%`, background: pct === 100 ? 'var(--green)' : 'var(--blue)', borderRadius: '9999px', transition: 'width 0.5s ease' }} />
         </div>
       </div>
 
@@ -83,12 +83,12 @@ export default function ChecklistPage({
         <button
           onClick={() => setShowForm(true)}
           className="btn-primary"
-          style={{ marginBottom: '20px', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}
+          style={{ marginBottom: '20px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
         >
           + Adicionar item
         </button>
       ) : (
-        <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px', marginBottom: '20px' }}>
+        <div className="card" style={{ marginBottom: '20px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <input
               type="text"
@@ -108,10 +108,10 @@ export default function ChecklistPage({
               className="input-field"
             />
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={handleAdd} className="btn-primary" style={{ padding: '8px 20px', background: 'var(--ocean)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>
+              <button onClick={handleAdd} className="btn-primary">
                 Adicionar
               </button>
-              <button onClick={() => { setShowForm(false); setNewItem(''); setNewCategory(''); }} className="btn-secondary" style={{ padding: '8px 20px', background: 'white', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', cursor: 'pointer' }}>
+              <button onClick={() => { setShowForm(false); setNewItem(''); setNewCategory(''); }} className="btn-secondary">
                 Cancelar
               </button>
             </div>
@@ -123,7 +123,7 @@ export default function ChecklistPage({
       {grouped.map((group) => {
         const groupChecked = group.items.filter((i) => i.checked).length;
         return (
-          <div key={group.category} className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px', marginBottom: '16px' }}>
+          <div key={group.category} className="card" style={{ marginBottom: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
               <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>
                 {group.category}

@@ -126,7 +126,7 @@ function AttachmentsSection({
       </div>
 
       {error && (
-        <p style={{ fontSize: '12px', color: '#dc2626', margin: '0 0 8px' }}>{error}</p>
+        <p style={{ fontSize: '12px', color: 'var(--red)', margin: '0 0 8px' }}>{error}</p>
       )}
 
       {attachments.length === 0 ? (
@@ -240,12 +240,12 @@ export default function VoosPage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '32px 40px', maxWidth: '1100px' }} className="animate-fade-in">
+      <div style={{ padding: '52px 56px', maxWidth: '1100px' }} className="animate-fade-in">
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '32px' }}>✈️</span>
-            <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'var(--ocean)', margin: 0 }}>Voos</h1>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '44px', gap: '16px' }}>
+          <div>
+            <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>Voos</h1>
+            <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>Gerencie os voos da viagem</p>
           </div>
           {!showForm && (
             <button className="btn-primary" onClick={() => setShowForm(true)}>
@@ -257,7 +257,7 @@ export default function VoosPage() {
         {/* Form */}
         {showForm && (
           <div className="card animate-fade-in" style={{ marginBottom: '32px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: '600', color: 'var(--ocean)', margin: '0 0 20px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', letterSpacing: '-0.015em', color: 'var(--ink)', margin: '0 0 24px' }}>
               {editingId ? 'Editar Voo' : 'Novo Voo'}
             </h2>
 
@@ -282,13 +282,13 @@ export default function VoosPage() {
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginBottom: '16px' }}>
               <div>
                 <label className="label">Companhia Aérea</label>
-                <input className="input-field" placeholder="Ex: LATAM, GOL, American Airlines" value={form.airline} onChange={(e) => handleChange('airline', e.target.value)} style={formErrors.airline ? { borderColor: '#dc2626' } : {}} />
-                {formErrors.airline && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{formErrors.airline}</span>}
+                <input className="input-field" placeholder="Ex: LATAM, GOL, American Airlines" value={form.airline} onChange={(e) => handleChange('airline', e.target.value)} style={formErrors.airline ? { borderColor: 'var(--red)' } : {}} />
+                {formErrors.airline && <span style={{ fontSize: '12px', color: 'var(--red)', marginTop: '4px', display: 'block' }}>{formErrors.airline}</span>}
               </div>
               <div>
                 <label className="label">Número do Voo</label>
-                <input className="input-field" placeholder="Ex: LA8180" value={form.flightNumber} onChange={(e) => handleChange('flightNumber', e.target.value)} style={formErrors.flightNumber ? { borderColor: '#dc2626' } : {}} />
-                {formErrors.flightNumber && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{formErrors.flightNumber}</span>}
+                <input className="input-field" placeholder="Ex: LA8180" value={form.flightNumber} onChange={(e) => handleChange('flightNumber', e.target.value)} style={formErrors.flightNumber ? { borderColor: 'var(--red)' } : {}} />
+                {formErrors.flightNumber && <span style={{ fontSize: '12px', color: 'var(--red)', marginTop: '4px', display: 'block' }}>{formErrors.flightNumber}</span>}
               </div>
             </div>
 
@@ -317,8 +317,8 @@ export default function VoosPage() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
               <div>
                 <label className="label">Data de Partida</label>
-                <input type="date" className="input-field" value={form.departureDate} onChange={(e) => handleChange('departureDate', e.target.value)} style={formErrors.departureDate ? { borderColor: '#dc2626' } : {}} />
-                {formErrors.departureDate && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{formErrors.departureDate}</span>}
+                <input type="date" className="input-field" value={form.departureDate} onChange={(e) => handleChange('departureDate', e.target.value)} style={formErrors.departureDate ? { borderColor: 'var(--red)' } : {}} />
+                {formErrors.departureDate && <span style={{ fontSize: '12px', color: 'var(--red)', marginTop: '4px', display: 'block' }}>{formErrors.departureDate}</span>}
               </div>
               <div>
                 <label className="label">Horario de Partida</label>
@@ -444,7 +444,7 @@ function FlightSection({
 }) {
   return (
     <div style={{ marginBottom: '32px' }}>
-      <h2 style={{ fontSize: '18px', fontWeight: '600', color: 'var(--ocean)', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <h2 style={{ fontSize: '20px', fontWeight: '600', letterSpacing: '-0.015em', color: 'var(--ink)', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
         <span>{icon}</span> {title}
       </h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
