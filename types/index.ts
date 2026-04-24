@@ -240,6 +240,7 @@ export interface TripDocument {
   status: DocStatus;
   expiryDate?: string;
   notes: string;
+  attachments?: FileAttachment[];
 }
 
 // === PARKS ===

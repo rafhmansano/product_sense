@@ -58,6 +58,25 @@ const FIELD_TYPES: Partial<Record<keyof Omit<CarRental, 'id' | 'attachments'>, s
   returnTime: 'time',
 };
 
+function openAttachment(att: FileAttachment) {
+  try {
+    const [header, b64] = att.dataUrl.split(',');
+    const mime = header.match(/:(.*?);/)?.[1] || att.type;
+    const bytes = atob(b64);
+    const arr = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+    const blob = new Blob([arr], { type: mime });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  } catch {
+    const link = document.createElement('a');
+    link.href = att.dataUrl;
+    link.download = att.name;
+    link.click();
+  }
+}
+
 function readFileAsDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -166,16 +185,16 @@ function AttachmentsSection({
                 width: '100px',
               }}
             >
-              {att.type.startsWith('image/') ? (
-                <a href={att.dataUrl} target="_blank" rel="noopener noreferrer">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
+              <div onClick={() => openAttachment(att)} style={{ cursor: 'pointer' }} title={`${att.name} — clique para abrir`}>
+                {att.type.startsWith('image/') ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={att.dataUrl} alt={att.name} style={{ width: '100%', height: '70px', objectFit: 'cover', display: 'block' }} />
-                </a>
-              ) : (
-                <a href={att.dataUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '70px', textDecoration: 'none' }}>
-                  <span style={{ fontSize: '32px' }}>📄</span>
-                </a>
-              )}
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '70px', background: '#f1f5f9' }}>
+                    <span style={{ fontSize: '32px' }}>{att.type === 'application/pdf' ? '📄' : '📝'}</span>
+                  </div>
+                )}
+              </div>
               <div style={{ padding: '6px 8px' }}>
                 <div style={{ fontSize: '11px', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{att.name}</div>
                 <div style={{ fontSize: '10px', color: 'var(--ink-subtle)' }}>{formatSize(att.size)}</div>

@@ -89,6 +89,8 @@ interface AppState extends TripData {
   updateDocument: (id: string, data: Partial<TripDocument>) => void;
   addDocument: (doc: TripDocument) => void;
   deleteDocument: (id: string) => void;
+  addDocumentAttachment: (docId: string, attachment: FileAttachment) => void;
+  removeDocumentAttachment: (docId: string, attachmentId: string) => void;
 
   // Checklists (suitcase, backpack, pharmacy, grocery)
   toggleChecklistItem: (list: 'suitcaseItems' | 'backpackItems' | 'pharmacyItems' | 'groceryItems', id: string) => void;
@@ -347,6 +349,22 @@ export const useAppStore = create<AppState>()(
 
       deleteDocument: (id) =>
         set((state) => ({ documents: state.documents.filter((d) => d.id !== id) })),
+
+      addDocumentAttachment: (docId, attachment) =>
+        set((state) => ({
+          documents: state.documents.map((d) =>
+            d.id === docId ? { ...d, attachments: [...(d.attachments ?? []), attachment] } : d
+          ),
+        })),
+
+      removeDocumentAttachment: (docId, attachmentId) =>
+        set((state) => ({
+          documents: state.documents.map((d) =>
+            d.id === docId
+              ? { ...d, attachments: (d.attachments ?? []).filter((a) => a.id !== attachmentId) }
+              : d
+          ),
+        })),
 
       // Checklists
       toggleChecklistItem: (list, id) =>
