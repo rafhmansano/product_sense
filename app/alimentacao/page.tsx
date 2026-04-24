@@ -61,7 +61,7 @@ export default function AlimentacaoPage() {
           <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--ink)', margin: '0 0 6px' }}>
             Alimentação
           </h1>
-          <p style={{ {fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>
+          <p style={{ fontSize: '17px', color: 'var(--ink-muted)', margin: 0 }}>
             Restaurantes, comidas nos parques, supermercados e dicas para economizar.
           </p>
         </div>
