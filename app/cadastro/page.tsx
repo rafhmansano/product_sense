@@ -130,7 +130,7 @@ export default function CadastroPage() {
         </div>
         <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: 'var(--ink-muted)' }}>
           Já tem conta?{' '}
-          <Link href="/login" style={{ color: 'var(--blue)', textDecoration: 'none', fontWeight: '500', fontWeight: '600' }}>
+          <Link href="/login" style={{ color: 'var(--blue)', textDecoration: 'none', fontWeight: '600' }}>
             Fazer login
           </Link>
         </p>
