@@ -130,10 +130,10 @@ export default function OrcamentoPage() {
           </text>
         </svg>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '13px', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>
+          <div style={{ fontSize: '13px', color: 'var(--ink-muted)' }}>
             Gasto: <strong style={{ color: 'var(--navy)' }}>R$ {totalSpentBRL.toFixed(2)}</strong>
           </div>
-          <div style={{ fontSize: '13px', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>
+          <div style={{ fontSize: '13px', color: 'var(--ink-muted)' }}>
             Planejado: <strong style={{ color: 'var(--navy)' }}>R$ {totalPlannedAll.toFixed(2)}</strong>
           </div>
         </div>
@@ -165,7 +165,6 @@ export default function OrcamentoPage() {
               fontSize: '15px',
               color: 'var(--ink-muted)',
               marginTop: '8px',
-              fontFamily: 'sans-serif',
             }}
           >
             Planejamento e acompanhamento do orcamento da viagem.
@@ -188,12 +187,12 @@ export default function OrcamentoPage() {
             borderRadius: '12px',
             padding: '24px',
           }}>
-            <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--navy)', marginBottom: '16px', fontFamily: 'sans-serif' }}>
+            <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--navy)', marginBottom: '16px' }}>
               Taxa de Cambio (USD → BRL)
             </div>
             {editingRate ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '14px', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>1 USD =</span>
+                <span style={{ fontSize: '14px', color: 'var(--ink-muted)' }}>1 USD =</span>
                 <input
                   className="input-field"
                   type="number"
@@ -212,7 +211,7 @@ export default function OrcamentoPage() {
                     outline: 'none',
                   }}
                 />
-                <span style={{ fontSize: '14px', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>BRL</span>
+                <span style={{ fontSize: '14px', color: 'var(--ink-muted)' }}>BRL</span>
                 <button
                   className="btn-primary"
                   onClick={handleRateSave}
@@ -225,7 +224,6 @@ export default function OrcamentoPage() {
                     fontSize: '13px',
                     fontWeight: '600',
                     cursor: 'pointer',
-                    fontFamily: 'sans-serif',
                   }}
                 >
                   Salvar
@@ -241,7 +239,6 @@ export default function OrcamentoPage() {
                     borderRadius: '8px',
                     fontSize: '13px',
                     cursor: 'pointer',
-                    fontFamily: 'sans-serif',
                   }}
                 >
                   Cancelar
@@ -265,7 +262,7 @@ export default function OrcamentoPage() {
                 >
                   1 USD = R$ {exchangeRate.toFixed(2)}
                 </div>
-                <span style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>
+                <span style={{ fontSize: '12px', color: 'var(--ink-subtle)' }}>
                   (clique para editar)
                 </span>
               </div>
@@ -293,7 +290,7 @@ export default function OrcamentoPage() {
           borderRadius: '12px',
           padding: '24px',
         }}>
-          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', marginBottom: '20px', fontFamily: 'sans-serif' }}>
+          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', marginBottom: '20px' }}>
             Categorias do Orçamento
           </div>
 
@@ -317,7 +314,6 @@ export default function OrcamentoPage() {
                     textTransform: 'uppercase',
                     letterSpacing: '0.1em',
                     color: 'var(--ink-subtle)',
-                    fontFamily: 'sans-serif',
                     fontWeight: '600',
                   }}
                 >
@@ -361,7 +357,6 @@ export default function OrcamentoPage() {
                       fontSize: '14px',
                       fontWeight: '500',
                       color: 'var(--navy)',
-                      fontFamily: 'sans-serif',
                     }}
                   >
                     {cat.name}
@@ -394,7 +389,6 @@ export default function OrcamentoPage() {
                       style={{
                         fontSize: '13px',
                         color: 'var(--ink)',
-                        fontFamily: 'sans-serif',
                         cursor: 'pointer',
                         padding: '4px 8px',
                         borderRadius: '6px',
@@ -434,7 +428,6 @@ export default function OrcamentoPage() {
                       style={{
                         fontSize: '13px',
                         color: 'var(--ink)',
-                        fontFamily: 'sans-serif',
                         cursor: 'pointer',
                         padding: '4px 8px',
                         borderRadius: '6px',
@@ -454,7 +447,6 @@ export default function OrcamentoPage() {
                     fontSize: '13px',
                     fontWeight: '600',
                     color: percent > 100 ? '#EF4444' : 'var(--ink)',
-                    fontFamily: 'sans-serif',
                   }}
                 >
                   R$ {spent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
@@ -486,7 +478,6 @@ export default function OrcamentoPage() {
                       fontSize: '12px',
                       fontWeight: '600',
                       color: barColor,
-                      fontFamily: 'sans-serif',
                       minWidth: '42px',
                       textAlign: 'right',
                     }}
@@ -515,7 +506,6 @@ export default function OrcamentoPage() {
                 fontSize: '14px',
                 fontWeight: '700',
                 color: 'var(--navy)',
-                fontFamily: 'sans-serif',
               }}
             >
               Total
@@ -525,7 +515,6 @@ export default function OrcamentoPage() {
                 fontSize: '13px',
                 fontWeight: '700',
                 color: 'var(--navy)',
-                fontFamily: 'sans-serif',
               }}
             >
               R$ {totalPlannedBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
@@ -535,7 +524,6 @@ export default function OrcamentoPage() {
                 fontSize: '13px',
                 fontWeight: '700',
                 color: 'var(--navy)',
-                fontFamily: 'sans-serif',
               }}
             >
               $ {totalPlannedUSD.toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -545,7 +533,6 @@ export default function OrcamentoPage() {
                 fontSize: '13px',
                 fontWeight: '700',
                 color: totalSpentBRL > totalPlannedAll ? '#EF4444' : 'var(--navy)',
-                fontFamily: 'sans-serif',
               }}
             >
               R$ {totalSpentBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
@@ -557,7 +544,6 @@ export default function OrcamentoPage() {
                 color: getProgressColor(
                   totalPlannedAll > 0 ? (totalSpentBRL / totalPlannedAll) * 100 : 0
                 ),
-                fontFamily: 'sans-serif',
                 textAlign: 'right',
                 paddingRight: '4px',
               }}

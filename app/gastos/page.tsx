@@ -131,7 +131,6 @@ export default function GastosPage() {
     borderRadius: '7px',
     fontSize: '13px',
     outline: 'none',
-    fontFamily: 'sans-serif',
     background: 'white',
     boxSizing: 'border-box' as const,
   };
@@ -158,7 +157,7 @@ export default function GastosPage() {
           >
             <span style={{ fontSize: '28px' }}>🧾</span> Gastos
           </h1>
-          <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '8px', fontFamily: 'sans-serif' }}>
+          <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '8px' }}>
             Registre e acompanhe todos os gastos da viagem.
           </p>
         </div>
@@ -178,14 +177,14 @@ export default function GastosPage() {
           }}
         >
           <div>
-            <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', fontWeight: '600', marginBottom: '4px' }}>
+            <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', fontWeight: '600', marginBottom: '4px' }}>
               Total gasto (convertido em BRL)
             </div>
             <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--navy)', letterSpacing: '-0.02em' }}>
               R$ {runningTotalBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </div>
           </div>
-          <div style={{ fontSize: '13px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', textAlign: 'right' }}>
+          <div style={{ fontSize: '13px', color: 'var(--ink-muted)', textAlign: 'right' }}>
             <div>Taxa: 1 USD = R$ {exchangeRate.toFixed(2)}</div>
             <div style={{ marginTop: '4px' }}>{expenses.length} registro{expenses.length !== 1 ? 's' : ''}</div>
           </div>
@@ -193,14 +192,14 @@ export default function GastosPage() {
 
         {/* Add Form */}
         <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', marginBottom: '20px', fontFamily: 'sans-serif' }}>
+          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--navy)', marginBottom: '20px' }}>
             Adicionar gasto
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr 1fr', gap: '12px', marginBottom: '12px', alignItems: 'end' }}>
             {/* Amount */}
             <div>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '6px', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Valor</label>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Valor</label>
               <input
                 className="input-field"
                 type="number"
@@ -212,22 +211,22 @@ export default function GastosPage() {
                 onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
                 style={{ width: '100%', padding: '10px 12px', border: `1px solid ${amountError ? '#dc2626' : 'var(--border)'}`, borderRadius: '8px', fontSize: '15px', fontWeight: '600', outline: 'none', boxSizing: 'border-box' }}
               />
-              {amountError && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{amountError}</span>}
+              {amountError && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{amountError}</span>}
             </div>
 
             {/* Currency Toggle */}
             <div>
               <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border)' }}>
                 {(['USD', 'BRL'] as const).map((c) => (
-                  <button key={c} onClick={() => setCurrency(c)} style={{ padding: '10px 16px', fontSize: '13px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', fontFamily: 'sans-serif', background: currency === c ? '#1B3A6B' : 'white', color: currency === c ? 'white' : 'var(--ink-muted)', transition: 'all 0.15s' }}>{c}</button>
+                  <button key={c} onClick={() => setCurrency(c)} style={{ padding: '10px 16px', fontSize: '13px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', background: currency === c ? '#1B3A6B' : 'white', color: currency === c ? 'white' : 'var(--ink-muted)', transition: 'all 0.15s' }}>{c}</button>
                 ))}
               </div>
             </div>
 
             {/* Category */}
             <div>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '6px', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Categoria</label>
-              <select className="input-field" value={category} onChange={(e) => setCategory(e.target.value as BudgetCategoryId)} style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', outline: 'none', background: 'white', fontFamily: 'sans-serif', boxSizing: 'border-box' }}>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Categoria</label>
+              <select className="input-field" value={category} onChange={(e) => setCategory(e.target.value as BudgetCategoryId)} style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', outline: 'none', background: 'white', boxSizing: 'border-box' }}>
                 {DEFAULT_BUDGET_CATEGORIES.map((cat) => (
                   <option key={cat.id} value={cat.id}>{cat.icon} {cat.name}</option>
                 ))}
@@ -236,20 +235,20 @@ export default function GastosPage() {
 
             {/* Date */}
             <div>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '6px', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Data</label>
-              <input className="input-field" type="date" value={date} onChange={(e) => setDate(e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', outline: 'none', fontFamily: 'sans-serif', boxSizing: 'border-box' }} />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Data</label>
+              <input className="input-field" type="date" value={date} onChange={(e) => setDate(e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }} />
             </div>
           </div>
 
           {/* Description */}
           <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '6px', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Descrição</label>
-            <input className="input-field" type="text" placeholder="Ex: Almoco no Magic Kingdom" value={description} onChange={(e) => setDescription(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAdd()} style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', outline: 'none', fontFamily: 'sans-serif', boxSizing: 'border-box' }} />
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Descrição</label>
+            <input className="input-field" type="text" placeholder="Ex: Almoco no Magic Kingdom" value={description} onChange={(e) => setDescription(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAdd()} style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }} />
           </div>
 
           {/* Confirm Button */}
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <button className="btn-primary" onClick={handleAdd} style={{ padding: '12px 36px', background: '#1B3A6B', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif', whiteSpace: 'nowrap' }}>
+            <button className="btn-primary" onClick={handleAdd} style={{ padding: '12px 36px', background: '#1B3A6B', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' }}>
               ✓ Confirmar gasto
             </button>
           </div>
@@ -257,8 +256,8 @@ export default function GastosPage() {
 
         {/* Filter */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-          <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>Filtrar:</span>
-          <select className="input-field" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value as BudgetCategoryId | 'all')} style={{ padding: '8px 12px', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', outline: 'none', background: 'white', fontFamily: 'sans-serif' }}>
+          <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--ink-muted)' }}>Filtrar:</span>
+          <select className="input-field" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value as BudgetCategoryId | 'all')} style={{ padding: '8px 12px', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', outline: 'none', background: 'white' }}>
             <option value="all">Todas as categorias</option>
             {DEFAULT_BUDGET_CATEGORIES.map((cat) => (
               <option key={cat.id} value={cat.id}>{cat.icon} {cat.name}</option>
@@ -270,7 +269,7 @@ export default function GastosPage() {
         {groupedByDate.length === 0 && (
           <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '48px 24px', textAlign: 'center' }}>
             <div style={{ fontSize: '36px', marginBottom: '12px' }}>💸</div>
-            <div style={{ fontSize: '15px', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>Nenhum gasto registrado ainda. Adicione o primeiro acima!</div>
+            <div style={{ fontSize: '15px', color: 'var(--ink-muted)' }}>Nenhum gasto registrado ainda. Adicione o primeiro acima!</div>
           </div>
         )}
 
@@ -279,8 +278,8 @@ export default function GastosPage() {
           return (
             <div key={dateKey} style={{ marginBottom: '24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', padding: '0 4px' }}>
-                <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--navy)', fontFamily: 'sans-serif', textTransform: 'capitalize' }}>{formatDate(dateKey)}</div>
-                <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>Total: R$ {dayTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--navy)', textTransform: 'capitalize' }}>{formatDate(dateKey)}</div>
+                <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--ink-muted)' }}>Total: R$ {dayTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
               </div>
 
               <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
@@ -296,7 +295,7 @@ export default function GastosPage() {
                         {/* Edit row - grid of fields */}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr 1fr', gap: '10px', marginBottom: '10px', alignItems: 'end' }}>
                           <div>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '4px', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Valor</label>
+                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Valor</label>
                             <input
                               type="number"
                               step="0.01"
@@ -306,19 +305,19 @@ export default function GastosPage() {
                               autoFocus
                               style={{ ...inputStyle, width: '100%', fontWeight: '600', border: `1px solid ${editAmountError ? '#dc2626' : 'var(--border)'}` }}
                             />
-                            {editAmountError && <span style={{ fontSize: '11px', color: '#dc2626', fontFamily: 'sans-serif' }}>{editAmountError}</span>}
+                            {editAmountError && <span style={{ fontSize: '11px', color: '#dc2626' }}>{editAmountError}</span>}
                           </div>
 
                           <div>
                             <div style={{ display: 'flex', borderRadius: '7px', overflow: 'hidden', border: '1px solid var(--border)' }}>
                               {(['USD', 'BRL'] as const).map((c) => (
-                                <button key={c} onClick={() => setEditCurrency(c)} style={{ padding: '7px 12px', fontSize: '12px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', fontFamily: 'sans-serif', background: editCurrency === c ? '#1B3A6B' : 'white', color: editCurrency === c ? 'white' : 'var(--ink-muted)' }}>{c}</button>
+                                <button key={c} onClick={() => setEditCurrency(c)} style={{ padding: '7px 12px', fontSize: '12px', fontWeight: '700', border: 'none', borderLeft: c === 'BRL' ? '1px solid var(--border)' : 'none', cursor: 'pointer', background: editCurrency === c ? '#1B3A6B' : 'white', color: editCurrency === c ? 'white' : 'var(--ink-muted)' }}>{c}</button>
                               ))}
                             </div>
                           </div>
 
                           <div>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '4px', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Categoria</label>
+                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Categoria</label>
                             <select value={editCategory} onChange={(e) => setEditCategory(e.target.value as BudgetCategoryId)} style={{ ...inputStyle, width: '100%' }}>
                               {DEFAULT_BUDGET_CATEGORIES.map((c) => (
                                 <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
@@ -327,14 +326,14 @@ export default function GastosPage() {
                           </div>
 
                           <div>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '4px', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Data</label>
+                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Data</label>
                             <input type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} style={{ ...inputStyle, width: '100%' }} />
                           </div>
                         </div>
 
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                           <div style={{ flex: 1 }}>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '4px', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Descrição</label>
+                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: 'var(--ink-muted)', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Descrição</label>
                             <input
                               type="text"
                               placeholder="Descrição"
@@ -347,13 +346,13 @@ export default function GastosPage() {
                           <div style={{ display: 'flex', gap: '8px', alignSelf: 'flex-end' }}>
                             <button
                               onClick={handleSaveEdit}
-                              style={{ padding: '7px 18px', background: '#1B3A6B', color: 'white', border: 'none', borderRadius: '7px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif', whiteSpace: 'nowrap' }}
+                              style={{ padding: '7px 18px', background: '#1B3A6B', color: 'white', border: 'none', borderRadius: '7px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' }}
                             >
                               ✓ Salvar
                             </button>
                             <button
                               onClick={() => setEditingId(null)}
-                              style={{ padding: '7px 14px', background: 'transparent', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '7px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif' }}
+                              style={{ padding: '7px 14px', background: 'transparent', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '7px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}
                             >
                               Cancelar
                             </button>
@@ -372,16 +371,16 @@ export default function GastosPage() {
                     >
                       {/* Expense info */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, minWidth: 0 }}>
-                        <div style={{ minWidth: '100px', fontSize: '15px', fontWeight: '700', color: 'var(--navy)', fontFamily: 'sans-serif' }}>
+                        <div style={{ minWidth: '100px', fontSize: '15px', fontWeight: '700', color: 'var(--navy)' }}>
                           {exp.currency === 'BRL' ? 'R$' : '$'}{' '}
                           {exp.amount.toLocaleString(exp.currency === 'BRL' ? 'pt-BR' : 'en-US', { minimumFractionDigits: 2 })}
                           <span style={{ fontSize: '11px', fontWeight: '500', color: 'var(--ink-subtle)', marginLeft: '4px' }}>{exp.currency}</span>
                         </div>
-                        <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--ink-muted)', background: 'var(--border)', padding: '3px 10px', borderRadius: '9999px', fontFamily: 'sans-serif', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--ink-muted)', background: 'var(--border)', padding: '3px 10px', borderRadius: '9999px', whiteSpace: 'nowrap' }}>
                           {cat ? `${cat.icon} ${cat.name}` : exp.category}
                         </div>
                         {exp.description && (
-                          <div style={{ fontSize: '13px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: '13px', color: 'var(--ink-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {exp.description}
                           </div>
                         )}
@@ -390,15 +389,15 @@ export default function GastosPage() {
                       {/* Actions */}
                       {isConfirming ? (
                         <div style={{ display: 'flex', gap: '8px', marginLeft: '12px', flexShrink: 0 }}>
-                          <span style={{ fontSize: '12px', color: '#EF4444', fontFamily: 'sans-serif', alignSelf: 'center', fontWeight: '600' }}>Excluir?</span>
-                          <button onClick={() => { deleteExpense(exp.id); setConfirmDeleteId(null); }} style={{ padding: '6px 14px', background: '#EF4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif' }}>Sim</button>
-                          <button onClick={() => setConfirmDeleteId(null)} style={{ padding: '6px 14px', background: 'transparent', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif' }}>Cancelar</button>
+                          <span style={{ fontSize: '12px', color: '#EF4444', alignSelf: 'center', fontWeight: '600' }}>Excluir?</span>
+                          <button onClick={() => { deleteExpense(exp.id); setConfirmDeleteId(null); }} style={{ padding: '6px 14px', background: '#EF4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Sim</button>
+                          <button onClick={() => setConfirmDeleteId(null)} style={{ padding: '6px 14px', background: 'transparent', color: 'var(--ink-muted)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Cancelar</button>
                         </div>
                       ) : (
                         <div style={{ display: 'flex', gap: '8px', marginLeft: '12px', flexShrink: 0 }}>
                           <button
                             onClick={() => handleStartEdit(exp)}
-                            style={{ padding: '6px 14px', background: 'transparent', color: 'var(--navy)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif', transition: 'all 0.15s' }}
+                            style={{ padding: '6px 14px', background: 'transparent', color: 'var(--navy)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.15s' }}
                             onMouseEnter={(e) => { e.currentTarget.style.background = '#F0F4FF'; }}
                             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                           >
@@ -406,7 +405,7 @@ export default function GastosPage() {
                           </button>
                           <button
                             onClick={() => setConfirmDeleteId(exp.id)}
-                            style={{ padding: '6px 14px', background: 'transparent', color: '#EF4444', border: '1px solid #FCA5A5', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', fontFamily: 'sans-serif', transition: 'all 0.15s' }}
+                            style={{ padding: '6px 14px', background: 'transparent', color: '#EF4444', border: '1px solid #FCA5A5', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.15s' }}
                             onMouseEnter={(e) => { e.currentTarget.style.background = '#FEF2F2'; }}
                             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                           >

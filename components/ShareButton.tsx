@@ -64,7 +64,6 @@ export default function ShareButton() {
         cursor: 'pointer',
         fontSize: '13px',
         fontWeight: '500',
-        fontFamily: 'sans-serif',
         width: '100%',
         transition: 'all 0.2s',
       }}

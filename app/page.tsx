@@ -61,14 +61,14 @@ function QuickCard({
         }}
       >
         <div style={{ fontSize: '28px', marginBottom: '8px' }}>{emoji}</div>
-        <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '4px' }}>
+        <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', marginBottom: '4px' }}>
           {label}
         </div>
-        <div style={{ fontSize: '16px', fontWeight: '700', color, lineHeight: 1.3, fontFamily: 'sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', flex: 1 }}>
+        <div style={{ fontSize: '16px', fontWeight: '700', color, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', flex: 1 }}>
           {value}
         </div>
         {sub && (
-          <div style={{ fontSize: '12px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', marginTop: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <div style={{ fontSize: '12px', color: 'var(--ink-muted)', marginTop: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {sub}
           </div>
         )}
@@ -286,13 +286,13 @@ export default function Dashboard() {
       <div className="animate-fade-in dashboard-content" style={{ padding: '40px 48px', maxWidth: '1100px' }}>
         {/* Header */}
         <div style={{ marginBottom: '12px' }}>
-          <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'var(--ink-subtle)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
             ✈️ {trip.originCode} → {trip.destinationCode} · {trip.destination}
           </div>
           <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--ink)', margin: 0, lineHeight: 1.15 }}>
             Family Trip Manager
           </h1>
-          <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '8px', fontFamily: 'sans-serif', lineHeight: 1.5 }}>
+          <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '8px', lineHeight: 1.5 }}>
             Tudo sobre a viagem da família em um só lugar. 🌴
           </p>
         </div>
@@ -313,7 +313,7 @@ export default function Dashboard() {
             <div style={{ position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)', fontSize: '64px', opacity: 0.1, lineHeight: 1 }}>
               📅
             </div>
-            <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.85, fontFamily: 'sans-serif', marginBottom: '8px' }}>
+            <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.85, marginBottom: '8px' }}>
               {new Date(today + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
             </div>
             <div style={{ fontSize: '22px', fontWeight: '700', marginBottom: '20px', letterSpacing: '-0.01em' }}>
@@ -337,17 +337,17 @@ export default function Dashboard() {
                     onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
                   >
                     {item.time && (
-                      <div style={{ fontSize: '13px', fontWeight: '700', opacity: 0.9, fontFamily: 'sans-serif', minWidth: '38px' }}>
+                      <div style={{ fontSize: '13px', fontWeight: '700', opacity: 0.9, minWidth: '38px' }}>
                         {item.time}
                       </div>
                     )}
                     <span style={{ fontSize: '22px', flexShrink: 0 }}>{item.icon}</span>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '14px', fontWeight: '600', color: 'white', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: 'sans-serif' }}>
+                      <div style={{ fontSize: '14px', fontWeight: '600', color: 'white', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {item.title}
                       </div>
                       {item.subtitle && (
-                        <div style={{ fontSize: '12px', opacity: 0.75, fontFamily: 'sans-serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '2px' }}>
+                        <div style={{ fontSize: '12px', opacity: 0.75, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '2px' }}>
                           {item.subtitle}
                         </div>
                       )}
@@ -375,7 +375,7 @@ export default function Dashboard() {
             </div>
             {hasStartDate && daysLeft !== null ? (
               <>
-                <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.85, fontFamily: 'sans-serif', marginBottom: '4px' }}>
+                <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.85, marginBottom: '4px' }}>
                   {daysLeft > 0 ? 'Contagem regressiva' : daysLeft === 0 ? 'Hoje é o dia!' : 'Viagem em andamento'}
                 </div>
                 <div style={{ fontSize: '56px', fontWeight: '800', letterSpacing: '-0.04em', lineHeight: 1.1 }}>
@@ -391,7 +391,7 @@ export default function Dashboard() {
                     </span>
                   )}
                 </div>
-                <div style={{ fontSize: '14px', opacity: 0.8, fontFamily: 'sans-serif', marginTop: '4px' }}>
+                <div style={{ fontSize: '14px', opacity: 0.8, marginTop: '4px' }}>
                   {new Date(departureDate + 'T00:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}
                   {returnDate && (
                     <> — {new Date(returnDate + 'T00:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}</>
@@ -400,13 +400,13 @@ export default function Dashboard() {
               </>
             ) : (
               <>
-                <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.85, fontFamily: 'sans-serif', marginBottom: '8px' }}>
+                <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.85, marginBottom: '8px' }}>
                   Contagem regressiva
                 </div>
-                <div style={{ fontSize: '24px', fontWeight: '600', fontFamily: 'sans-serif' }}>
+                <div style={{ fontSize: '24px', fontWeight: '600' }}>
                   Defina a data da viagem
                 </div>
-                <div style={{ fontSize: '14px', opacity: 0.8, fontFamily: 'sans-serif', marginTop: '4px' }}>
+                <div style={{ fontSize: '14px', opacity: 0.8, marginTop: '4px' }}>
                   Cadastre seus voos ou defina as datas manualmente.
                 </div>
               </>
@@ -445,20 +445,20 @@ export default function Dashboard() {
           {/* Next Events */}
           <div className="card" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0, fontFamily: 'sans-serif' }}>
+              <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>
                 📅 Próximos Eventos
               </h2>
-              <Link href="/agenda" style={{ fontSize: '12px', color: 'var(--ocean)', textDecoration: 'none', fontFamily: 'sans-serif' }}>
+              <Link href="/agenda" style={{ fontSize: '12px', color: 'var(--ocean)', textDecoration: 'none' }}>
                 Ver agenda →
               </Link>
             </div>
             {upcomingEvents.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '28px 0' }}>
                 <div style={{ fontSize: '36px', marginBottom: '10px', opacity: 0.3 }}>🗓️</div>
-                <p style={{ color: 'var(--ink-muted)', fontSize: '14px', fontFamily: 'sans-serif', margin: '0 0 14px' }}>
+                <p style={{ color: 'var(--ink-muted)', fontSize: '14px', margin: '0 0 14px' }}>
                   Nenhum evento próximo.
                 </p>
-                <Link href="/agenda" className="btn-primary" style={{ display: 'inline-block', padding: '8px 20px', background: 'var(--ocean)', color: 'white', borderRadius: '8px', textDecoration: 'none', fontSize: '13px', fontFamily: 'sans-serif' }}>
+                <Link href="/agenda" className="btn-primary" style={{ display: 'inline-block', padding: '8px 20px', background: 'var(--ocean)', color: 'white', borderRadius: '8px', textDecoration: 'none', fontSize: '13px' }}>
                   Adicionar evento
                 </Link>
               </div>
@@ -468,10 +468,10 @@ export default function Dashboard() {
                   <div key={ev.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 14px', border: '1px solid var(--border)', borderRadius: '10px', background: 'var(--background)' }}>
                     <div style={{ fontSize: '22px', flexShrink: 0 }}>{EVENT_EMOJIS[ev.type] || '📌'}</div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)', fontFamily: 'sans-serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {ev.title}
                       </div>
-                      <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginTop: '2px' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', marginTop: '2px' }}>
                         {new Date(ev.date + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' })}
                         {ev.time && ` as ${ev.time}`}
                       </div>
@@ -487,15 +487,15 @@ export default function Dashboard() {
             {/* Budget Progress */}
             <div className="card" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0, fontFamily: 'sans-serif' }}>💸 Orçamento Geral</h2>
-                <Link href="/orcamento" style={{ fontSize: '12px', color: 'var(--ocean)', textDecoration: 'none', fontFamily: 'sans-serif' }}>
+                <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>💸 Orçamento Geral</h2>
+                <Link href="/orcamento" style={{ fontSize: '12px', color: 'var(--ocean)', textDecoration: 'none' }}>
                   Detalhes →
                 </Link>
               </div>
               <div style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '13px', fontFamily: 'sans-serif', color: 'var(--ink-muted)' }}>Gasto</span>
-                  <span style={{ fontSize: '13px', fontFamily: 'sans-serif', color: 'var(--ink)' }}>
+                  <span style={{ fontSize: '13px', color: 'var(--ink-muted)' }}>Gasto</span>
+                  <span style={{ fontSize: '13px', color: 'var(--ink)' }}>
                     R$ {totalSpentBRL.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     {' / '}
                     R$ {totalPlannedBRL.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
@@ -515,7 +515,7 @@ export default function Dashboard() {
                 />
               </div>
               {totalPlannedBRL > 0 && (
-                <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>
+                <div style={{ fontSize: '12px', color: 'var(--ink-subtle)' }}>
                   {Math.round((totalSpentBRL / totalPlannedBRL) * 100)}% utilizado
                   {totalSpentBRL < totalPlannedBRL && (
                     <> · R$ {(totalPlannedBRL - totalSpentBRL).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} disponível</>
@@ -527,8 +527,8 @@ export default function Dashboard() {
             {/* Documents Status */}
             <div className="card" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0, fontFamily: 'sans-serif' }}>📋 Documentos</h2>
-                <Link href="/documentos" style={{ fontSize: '12px', color: 'var(--ocean)', textDecoration: 'none', fontFamily: 'sans-serif' }}>
+                <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>📋 Documentos</h2>
+                <Link href="/documentos" style={{ fontSize: '12px', color: 'var(--ocean)', textDecoration: 'none' }}>
                   Ver todos →
                 </Link>
               </div>
@@ -537,16 +537,16 @@ export default function Dashboard() {
                   width: '56px', height: '56px', borderRadius: '50%',
                   background: docsCompleted === docsTotal && docsTotal > 0 ? 'linear-gradient(135deg, var(--green), #34d399)' : 'linear-gradient(135deg, var(--sky), var(--ocean))',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'white', fontSize: '16px', fontWeight: '700', fontFamily: 'sans-serif', flexShrink: 0,
+                  color: 'white', fontSize: '16px', fontWeight: '700', flexShrink: 0,
                 }}>
                   {docsTotal > 0 ? `${Math.round((docsCompleted / docsTotal) * 100)}%` : '—'}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)', fontFamily: 'sans-serif', marginBottom: '6px' }}>
+                  <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)', marginBottom: '6px' }}>
                     {docsCompleted} de {docsTotal} concluídos
                   </div>
                   <ProgressBar value={docsCompleted} max={docsTotal} color={docsCompleted === docsTotal && docsTotal > 0 ? 'var(--green)' : 'var(--sky)'} height={6} />
-                  <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginTop: '4px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', marginTop: '4px' }}>
                     {documents.filter((d) => d.status === 'pendente').length > 0 && (
                       <>{documents.filter((d) => d.status === 'pendente').length} pendente(s)</>
                     )}
@@ -566,7 +566,7 @@ export default function Dashboard() {
 
         {/* Family Members */}
         <div className="card" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', marginBottom: '32px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 16px', fontFamily: 'sans-serif' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 16px' }}>
             👨‍👩‍👦 Viajantes
           </h2>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
@@ -579,8 +579,8 @@ export default function Dashboard() {
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 16px', background: 'var(--background)', borderRadius: '12px', border: '1px solid var(--border)' }}>
                   <span style={{ fontSize: '24px' }}>{roleEmoji}</span>
                   <div>
-                    <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)', fontFamily: 'sans-serif' }}>{member.name || roleLabel}</div>
-                    <div style={{ fontSize: '11px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>
+                    <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)' }}>{member.name || roleLabel}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--ink-subtle)' }}>
                       {roleLabel}
                       {member.age !== undefined && ` · ${member.age} anos`}
                       {member.heightCm !== undefined && ` · ${member.heightCm}cm`}
@@ -594,13 +594,13 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Link href="/agenda" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--ocean)', color: 'white', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600', fontFamily: 'sans-serif' }}>
+          <Link href="/agenda" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--ocean)', color: 'white', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
             📅 Ver Agenda
           </Link>
-          <Link href="/orcamento" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--surface)', color: 'var(--ink)', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600', fontFamily: 'sans-serif', border: '1px solid var(--border)' }}>
+          <Link href="/orcamento" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--surface)', color: 'var(--ink)', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600', border: '1px solid var(--border)' }}>
             💰 Gerenciar Gastos
           </Link>
-          <Link href="/parques" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--surface)', color: 'var(--ink)', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600', fontFamily: 'sans-serif', border: '1px solid var(--border)' }}>
+          <Link href="/parques" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--surface)', color: 'var(--ink)', borderRadius: '10px', textDecoration: 'none', fontSize: '14px', fontWeight: '600', border: '1px solid var(--border)' }}>
             🎢 Guia dos Parques
           </Link>
         </div>

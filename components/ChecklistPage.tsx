@@ -58,7 +58,7 @@ export default function ChecklistPage({
         <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--ink)', margin: 0, lineHeight: 1.15, display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span style={{ fontSize: '32px' }}>{emoji}</span> {title}
         </h1>
-        <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '10px', fontFamily: 'sans-serif', lineHeight: 1.6 }}>
+        <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '10px', lineHeight: 1.6 }}>
           {description}
         </p>
       </div>
@@ -66,10 +66,10 @@ export default function ChecklistPage({
       {/* Progress */}
       <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px', marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-          <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)', fontFamily: 'sans-serif' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--ink)' }}>
             {checkedItems} de {totalItems} itens prontos
           </span>
-          <span style={{ fontSize: '14px', fontWeight: '700', color: pct === 100 ? 'var(--green)' : 'var(--ocean)', fontFamily: 'sans-serif' }}>
+          <span style={{ fontSize: '14px', fontWeight: '700', color: pct === 100 ? 'var(--green)' : 'var(--ocean)' }}>
             {pct}%
           </span>
         </div>
@@ -125,10 +125,10 @@ export default function ChecklistPage({
         return (
           <div key={group.category} className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px', marginBottom: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0, fontFamily: 'sans-serif' }}>
+              <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>
                 {group.category}
               </h2>
-              <span style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>
+              <span style={{ fontSize: '12px', color: 'var(--ink-subtle)' }}>
                 {groupChecked}/{group.items.length}
               </span>
             </div>
@@ -157,7 +157,6 @@ export default function ChecklistPage({
                       fontSize: '14px',
                       color: item.checked ? 'var(--ink-subtle)' : 'var(--ink)',
                       textDecoration: item.checked ? 'line-through' : 'none',
-                      fontFamily: 'sans-serif',
                       flex: 1,
                       lineHeight: 1.4,
                     }}

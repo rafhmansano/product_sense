@@ -335,7 +335,7 @@ export default function TripProvider({ children }: { children: React.ReactNode }
       return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--background)', gap: '16px' }}>
           <div style={{ fontSize: '40px' }}>✈️</div>
-          <div style={{ fontSize: '16px', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>Carregando viagem...</div>
+          <div style={{ fontSize: '16px', color: 'var(--ink-muted)' }}>Carregando viagem...</div>
         </div>
       );
     }
@@ -381,7 +381,6 @@ export default function TripProvider({ children }: { children: React.ReactNode }
             borderRadius: '14px',
             padding: '18px 20px',
             boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-            fontFamily: 'sans-serif',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
@@ -434,7 +433,6 @@ export default function TripProvider({ children }: { children: React.ReactNode }
             padding: '8px 14px',
             borderRadius: '999px',
             fontSize: '12px',
-            fontFamily: 'sans-serif',
             fontWeight: 500,
             zIndex: 1000,
             background: statusConfig.bg,

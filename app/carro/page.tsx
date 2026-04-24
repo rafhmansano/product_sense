@@ -130,7 +130,6 @@ function AttachmentsSection({
             background: 'transparent',
             color: 'var(--ocean)',
             cursor: 'pointer',
-            fontFamily: 'sans-serif',
           }}
         >
           {uploading ? 'Carregando...' : '+ Adicionar'}
@@ -146,11 +145,11 @@ function AttachmentsSection({
       </div>
 
       {error && (
-        <p style={{ fontSize: '12px', color: '#dc2626', margin: '0 0 8px', fontFamily: 'sans-serif' }}>{error}</p>
+        <p style={{ fontSize: '12px', color: '#dc2626', margin: '0 0 8px' }}>{error}</p>
       )}
 
       {attachments.length === 0 ? (
-        <p style={{ fontSize: '13px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', margin: 0 }}>
+        <p style={{ fontSize: '13px', color: 'var(--ink-subtle)', margin: 0 }}>
           Nenhum documento anexado. Adicione o contrato de aluguel, vouchers ou fotos.
         </p>
       ) : (
@@ -178,8 +177,8 @@ function AttachmentsSection({
                 </a>
               )}
               <div style={{ padding: '6px 8px' }}>
-                <div style={{ fontSize: '11px', fontFamily: 'sans-serif', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{att.name}</div>
-                <div style={{ fontSize: '10px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>{formatSize(att.size)}</div>
+                <div style={{ fontSize: '11px', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{att.name}</div>
+                <div style={{ fontSize: '10px', color: 'var(--ink-subtle)' }}>{formatSize(att.size)}</div>
               </div>
               <button
                 onClick={() => onRemove(att.id)}
@@ -188,7 +187,7 @@ function AttachmentsSection({
                   borderRadius: '50%', background: 'rgba(0,0,0,0.55)', border: 'none',
                   color: 'white', fontSize: '12px', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  lineHeight: 1, fontFamily: 'sans-serif',
+                  lineHeight: 1,
                 }}
               >
                 ×
@@ -380,7 +379,7 @@ export default function CarroPage() {
               Aluguel de Carro
             </h1>
             {carRentals.length > 0 && (
-              <p style={{ fontSize: '13px', color: 'var(--ink-muted)', margin: '4px 0 0 48px', fontFamily: 'sans-serif' }}>
+              <p style={{ fontSize: '13px', color: 'var(--ink-muted)', margin: '4px 0 0 48px' }}>
                 {carRentals.length} {carRentals.length === 1 ? 'aluguel cadastrado' : 'alugueis cadastrados'}
               </p>
             )}
@@ -424,7 +423,7 @@ export default function CarroPage() {
             <p style={{ color: 'var(--ink-muted)', fontSize: '15px', margin: '0 0 8px' }}>
               Nenhum aluguel de carro cadastrado ainda.
             </p>
-            <p style={{ color: 'var(--ink-subtle)', fontSize: '13px', margin: '0 0 20px', fontFamily: 'sans-serif' }}>
+            <p style={{ color: 'var(--ink-subtle)', fontSize: '13px', margin: '0 0 20px' }}>
               Adicione quantos alugueis precisar — ideal para viagens com escalas ou múltiplos destinos.
             </p>
             <button className="btn-primary" onClick={handleAddNew}>

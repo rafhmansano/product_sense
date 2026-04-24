@@ -288,7 +288,7 @@ export default function FamiliaPage() {
         <h1 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--ink)', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span>👨‍👩‍👦</span> Família
         </h1>
-        <p style={{ fontSize: '14px', color: 'var(--ink-muted)', margin: 0, fontFamily: 'sans-serif' }}>
+        <p style={{ fontSize: '14px', color: 'var(--ink-muted)', margin: 0 }}>
           Gerencie os membros da viagem e convide outras pessoas
         </p>
       </div>
@@ -298,7 +298,7 @@ export default function FamiliaPage() {
         <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '4px' }}>
+              <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)', marginBottom: '4px' }}>
                 Nome da família
               </div>
               {editingFamilyName ? (
@@ -311,7 +311,7 @@ export default function FamiliaPage() {
                     autoFocus
                     style={familyNameError ? { borderColor: '#dc2626' } : {}}
                   />
-                  {familyNameError && <span style={{ fontSize: '12px', color: '#dc2626', fontFamily: 'sans-serif' }}>{familyNameError}</span>}
+                  {familyNameError && <span style={{ fontSize: '12px', color: '#dc2626' }}>{familyNameError}</span>}
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <button
                       onClick={handleSaveFamilyName}
@@ -329,7 +329,7 @@ export default function FamiliaPage() {
                   </div>
                 </div>
               ) : (
-                <div style={{ fontSize: '18px', fontWeight: '700', color: 'var(--ink)', fontFamily: 'sans-serif' }}>
+                <div style={{ fontSize: '18px', fontWeight: '700', color: 'var(--ink)' }}>
                   {familyName || familyNameValue || 'Sem nome'}
                 </div>
               )}
@@ -351,7 +351,7 @@ export default function FamiliaPage() {
       {/* Members list */}
       <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0, fontFamily: 'sans-serif' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>
             Viajantes ({trip.members.length})
           </h2>
           <button
@@ -380,10 +380,10 @@ export default function FamiliaPage() {
                 {ROLE_ICONS[member.role] || '👤'}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--ink)', fontFamily: 'sans-serif' }}>
+                <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--ink)' }}>
                   {member.name || 'Sem nome'}
                 </div>
-                <div style={{ fontSize: '12px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '2px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--ink-muted)', display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '2px' }}>
                   <span>{ROLE_LABELS[member.role]}</span>
                   {member.age !== undefined && <span>• {member.age} anos</span>}
                   {member.heightCm !== undefined && <span>• {member.heightCm}cm</span>}
@@ -411,7 +411,7 @@ export default function FamiliaPage() {
           ))}
 
           {trip.members.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '24px', color: 'var(--ink-muted)', fontSize: '14px', fontFamily: 'sans-serif' }}>
+            <div style={{ textAlign: 'center', padding: '24px', color: 'var(--ink-muted)', fontSize: '14px' }}>
               Nenhum viajante cadastrado
             </div>
           )}
@@ -421,7 +421,7 @@ export default function FamiliaPage() {
       {/* Add/Edit form */}
       {showAddForm && (
         <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 16px', fontFamily: 'sans-serif' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 16px' }}>
             {editingId !== null ? 'Editar viajante' : 'Novo viajante'}
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -436,7 +436,7 @@ export default function FamiliaPage() {
                 autoFocus
                 style={nameError ? { borderColor: '#dc2626' } : {}}
               />
-              {nameError && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{nameError}</span>}
+              {nameError && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{nameError}</span>}
             </div>
             <div>
               <label className="label">Papel na família</label>
@@ -504,10 +504,10 @@ export default function FamiliaPage() {
       {/* Invite section */}
       {isSupabaseConfigured() && user && (
         <div className="card" style={{ background: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '16px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 6px', fontFamily: 'sans-serif' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 6px' }}>
             Convidar para o app
           </h2>
-          <p style={{ fontSize: '13px', color: 'var(--ink-muted)', margin: '0 0 16px', fontFamily: 'sans-serif' }}>
+          <p style={{ fontSize: '13px', color: 'var(--ink-muted)', margin: '0 0 16px' }}>
             Convide alguem para acessar e editar os dados da viagem
           </p>
 
@@ -523,7 +523,7 @@ export default function FamiliaPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {/* Invite code display */}
               <div style={{ padding: '16px', background: 'var(--background)', borderRadius: '12px', border: '1px solid var(--border)', textAlign: 'center' }}>
-                <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-muted)', marginBottom: '6px', fontFamily: 'sans-serif' }}>
+                <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-muted)', marginBottom: '6px' }}>
                   Codigo de convite
                 </div>
                 <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--ocean)', letterSpacing: '0.15em', fontFamily: 'monospace' }}>
@@ -544,7 +544,6 @@ export default function FamiliaPage() {
                     fontSize: '13px',
                     fontWeight: '500',
                     cursor: 'pointer',
-                    fontFamily: 'sans-serif',
                   }}
                 >
                   {copiedCode ? '✓ Copiado!' : '📋 Copiar codigo'}
@@ -560,7 +559,6 @@ export default function FamiliaPage() {
                     fontSize: '13px',
                     fontWeight: '500',
                     cursor: 'pointer',
-                    fontFamily: 'sans-serif',
                   }}
                 >
                   {copiedLink ? '✓ Copiado!' : '🔗 Copiar link'}
@@ -605,7 +603,7 @@ export default function FamiliaPage() {
 
       {/* Info card */}
       <div style={{ padding: '16px 18px', background: 'rgba(59, 130, 246, 0.06)', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.12)' }}>
-        <div style={{ fontSize: '13px', color: 'var(--ocean)', fontFamily: 'sans-serif', lineHeight: 1.5 }}>
+        <div style={{ fontSize: '13px', color: 'var(--ocean)', lineHeight: 1.5 }}>
           <strong>Dica:</strong> Cadastre todos os viajantes com idade e altura para facilitar a verificação de restrições de atrações nos parques. Use o convite para que outros membros da familia possam acessar e editar a viagem.
         </div>
       </div>

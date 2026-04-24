@@ -111,7 +111,6 @@ function AttachmentsSection({
             background: 'transparent',
             color: 'var(--ocean)',
             cursor: 'pointer',
-            fontFamily: 'sans-serif',
           }}
         >
           {uploading ? 'Carregando...' : '+ Adicionar'}
@@ -127,11 +126,11 @@ function AttachmentsSection({
       </div>
 
       {error && (
-        <p style={{ fontSize: '12px', color: '#dc2626', margin: '0 0 8px', fontFamily: 'sans-serif' }}>{error}</p>
+        <p style={{ fontSize: '12px', color: '#dc2626', margin: '0 0 8px' }}>{error}</p>
       )}
 
       {attachments.length === 0 ? (
-        <p style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', margin: 0 }}>
+        <p style={{ fontSize: '12px', color: 'var(--ink-subtle)', margin: 0 }}>
           Adicione cartões de embarque, e-tickets ou documentos deste voo.
         </p>
       ) : (
@@ -159,8 +158,8 @@ function AttachmentsSection({
                 </a>
               )}
               <div style={{ padding: '5px 7px' }}>
-                <div style={{ fontSize: '10px', fontFamily: 'sans-serif', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{att.name}</div>
-                <div style={{ fontSize: '10px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>{formatSize(att.size)}</div>
+                <div style={{ fontSize: '10px', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{att.name}</div>
+                <div style={{ fontSize: '10px', color: 'var(--ink-subtle)' }}>{formatSize(att.size)}</div>
               </div>
               <button
                 onClick={() => onRemove(att.id)}
@@ -169,7 +168,7 @@ function AttachmentsSection({
                   borderRadius: '50%', background: 'rgba(0,0,0,0.55)', border: 'none',
                   color: 'white', fontSize: '11px', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  lineHeight: 1, fontFamily: 'sans-serif',
+                  lineHeight: 1,
                 }}
               >
                 ×
@@ -284,12 +283,12 @@ export default function VoosPage() {
               <div>
                 <label className="label">Companhia Aérea</label>
                 <input className="input-field" placeholder="Ex: LATAM, GOL, American Airlines" value={form.airline} onChange={(e) => handleChange('airline', e.target.value)} style={formErrors.airline ? { borderColor: '#dc2626' } : {}} />
-                {formErrors.airline && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{formErrors.airline}</span>}
+                {formErrors.airline && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{formErrors.airline}</span>}
               </div>
               <div>
                 <label className="label">Número do Voo</label>
                 <input className="input-field" placeholder="Ex: LA8180" value={form.flightNumber} onChange={(e) => handleChange('flightNumber', e.target.value)} style={formErrors.flightNumber ? { borderColor: '#dc2626' } : {}} />
-                {formErrors.flightNumber && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{formErrors.flightNumber}</span>}
+                {formErrors.flightNumber && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{formErrors.flightNumber}</span>}
               </div>
             </div>
 
@@ -319,7 +318,7 @@ export default function VoosPage() {
               <div>
                 <label className="label">Data de Partida</label>
                 <input type="date" className="input-field" value={form.departureDate} onChange={(e) => handleChange('departureDate', e.target.value)} style={formErrors.departureDate ? { borderColor: '#dc2626' } : {}} />
-                {formErrors.departureDate && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{formErrors.departureDate}</span>}
+                {formErrors.departureDate && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{formErrors.departureDate}</span>}
               </div>
               <div>
                 <label className="label">Horario de Partida</label>

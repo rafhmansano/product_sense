@@ -58,7 +58,7 @@ export default function LoginPage() {
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{ fontSize: '40px', marginBottom: '12px' }}>✈️</div>
           <h1 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--ink)', margin: '0 0 8px' }}>Family Trip Manager</h1>
-          <p style={{ fontSize: '14px', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>Entre para gerenciar sua viagem em família</p>
+          <p style={{ fontSize: '14px', color: 'var(--ink-muted)' }}>Entre para gerenciar sua viagem em família</p>
         </div>
 
         <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '16px', padding: '28px' }}>
@@ -66,16 +66,16 @@ export default function LoginPage() {
             <div>
               <label className="label">Email</label>
               <input className="input-field" type="email" value={email} onChange={(e) => { setEmail(e.target.value); setFieldErrors((p) => ({ ...p, email: undefined })); }} placeholder="seu@email.com" style={fieldErrors.email ? { borderColor: '#dc2626' } : {}} />
-              {fieldErrors.email && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{fieldErrors.email}</span>}
+              {fieldErrors.email && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{fieldErrors.email}</span>}
             </div>
             <div>
               <label className="label">Senha</label>
               <input className="input-field" type="password" value={password} onChange={(e) => { setPassword(e.target.value); setFieldErrors((p) => ({ ...p, password: undefined })); }} placeholder="Sua senha" style={fieldErrors.password ? { borderColor: '#dc2626' } : {}} />
-              {fieldErrors.password && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block', fontFamily: 'sans-serif' }}>{fieldErrors.password}</span>}
+              {fieldErrors.password && <span style={{ fontSize: '12px', color: '#dc2626', marginTop: '4px', display: 'block' }}>{fieldErrors.password}</span>}
             </div>
 
             {error && (
-              <div style={{ padding: '10px 14px', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', fontSize: '13px', color: '#dc2626', fontFamily: 'sans-serif' }}>
+              <div style={{ padding: '10px 14px', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', fontSize: '13px', color: '#dc2626' }}>
                 {error}
               </div>
             )}
@@ -91,19 +91,19 @@ export default function LoginPage() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '20px 0' }}>
             <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
-            <span style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>ou</span>
+            <span style={{ fontSize: '12px', color: 'var(--ink-subtle)' }}>ou</span>
             <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
           </div>
 
           <button
             onClick={() => signInWithGoogle()}
-            style={{ width: '100%', padding: '12px', background: 'white', color: 'var(--ink)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', fontFamily: 'sans-serif' }}
+            style={{ width: '100%', padding: '12px', background: 'white', color: 'var(--ink)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}
           >
             Entrar com Google
           </button>
         </div>
 
-        <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: 'var(--ink-muted)', fontFamily: 'sans-serif' }}>
+        <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: 'var(--ink-muted)' }}>
           Não tem conta?{' '}
           <Link href="/cadastro" style={{ color: 'var(--ocean)', textDecoration: 'none', fontWeight: '600' }}>
             Criar conta

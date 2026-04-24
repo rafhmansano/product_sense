@@ -149,7 +149,6 @@ export default function OnboardingTour() {
               borderRadius: '20px',
               fontSize: '12px',
               cursor: 'pointer',
-              fontFamily: 'sans-serif',
               fontWeight: '500',
               transition: 'background 0.2s',
             }}
@@ -182,7 +181,6 @@ export default function OnboardingTour() {
             style={{
               fontSize: '15px',
               color: 'var(--ink-muted)',
-              fontFamily: 'sans-serif',
               lineHeight: 1.7,
               margin: 0,
               textAlign: 'center',
@@ -238,7 +236,6 @@ export default function OnboardingTour() {
                   fontSize: '15px',
                   fontWeight: '600',
                   cursor: 'pointer',
-                  fontFamily: 'sans-serif',
                   transition: 'all 0.2s',
                 }}
               >
@@ -258,7 +255,6 @@ export default function OnboardingTour() {
                 fontSize: '15px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                fontFamily: 'sans-serif',
                 transition: 'all 0.2s',
               }}
             >
@@ -271,7 +267,6 @@ export default function OnboardingTour() {
             style={{
               fontSize: '12px',
               color: 'var(--ink-subtle)',
-              fontFamily: 'sans-serif',
             }}
           >
             {step + 1} de {STEPS.length}

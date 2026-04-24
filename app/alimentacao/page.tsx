@@ -61,7 +61,7 @@ export default function AlimentacaoPage() {
           <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--ink)', margin: 0, lineHeight: 1.15, display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ fontSize: '32px' }}>🍽️</span> Alimentacao
           </h1>
-          <p style={{ fontSize: '16px', color: 'var(--ink-muted)', marginTop: '12px', fontFamily: 'sans-serif', maxWidth: '600px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '16px', color: 'var(--ink-muted)', marginTop: '12px', maxWidth: '600px', lineHeight: 1.6 }}>
             Restaurantes, comidas nos parques, supermercados e dicas para economizar.
           </p>
         </div>
@@ -69,7 +69,7 @@ export default function AlimentacaoPage() {
         {/* === CUSTOM RESTAURANTS (user added) === */}
         <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--ink)', margin: 0, fontFamily: 'sans-serif' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>
               Meus Restaurantes
             </h2>
             <button
@@ -89,7 +89,7 @@ export default function AlimentacaoPage() {
               </div>
               <input className="input-field" placeholder="Localizacao geral (ex: Disney Springs)" value={restForm.location} onChange={(e) => setRestForm({ ...restForm, location: e.target.value })} />
               <input className="input-field" placeholder="Destaque / observacao" value={restForm.highlight} onChange={(e) => setRestForm({ ...restForm, highlight: e.target.value })} />
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontFamily: 'sans-serif', color: 'var(--ink)' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: 'var(--ink)' }}>
                 <input type="checkbox" checked={restForm.kidFriendly} onChange={(e) => setRestForm({ ...restForm, kidFriendly: e.target.checked })} style={{ width: '16px', height: '16px' }} />
                 Kid-friendly
               </label>
@@ -105,7 +105,7 @@ export default function AlimentacaoPage() {
           )}
 
           {customRestaurants.length === 0 && !showRestForm ? (
-            <div style={{ textAlign: 'center', padding: '24px', color: 'var(--ink-muted)', fontSize: '14px', fontFamily: 'sans-serif' }}>
+            <div style={{ textAlign: 'center', padding: '24px', color: 'var(--ink-muted)', fontSize: '14px' }}>
               Nenhum restaurante adicionado. Clique em "+ Adicionar" para registrar restaurantes e comidas que voce quer experimentar.
             </div>
           ) : (
@@ -114,22 +114,22 @@ export default function AlimentacaoPage() {
                 <div key={r.id} style={{ padding: '14px 16px', border: '1px solid var(--border)', borderRadius: '10px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                   <span style={{ fontSize: '22px', flexShrink: 0 }}>🍴</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--ink)', fontFamily: 'sans-serif' }}>
+                    <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--ink)' }}>
                       {r.name}
                       {r.kidFriendly && <span style={{ color: 'var(--green)', marginLeft: '6px', fontSize: '12px' }}> Kids ✓</span>}
                     </div>
                     {(r.parkOrArea || r.internalLocation) && (
-                      <div style={{ fontSize: '12px', color: 'var(--sky-dark)', fontFamily: 'sans-serif', marginTop: '2px' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--sky-dark)', marginTop: '2px' }}>
                         {[r.parkOrArea, r.internalLocation].filter(Boolean).join(' > ')}
                       </div>
                     )}
                     {r.location && (
-                      <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginTop: '2px' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', marginTop: '2px' }}>
                         {r.location}
                       </div>
                     )}
                     {r.highlight && (
-                      <div style={{ fontSize: '13px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', marginTop: '4px' }}>
+                      <div style={{ fontSize: '13px', color: 'var(--ink-muted)', marginTop: '4px' }}>
                         {r.highlight}
                       </div>
                     )}
@@ -146,7 +146,7 @@ export default function AlimentacaoPage() {
         {/* === FOOD ITEMS (user added) === */}
         <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--ink)', margin: 0, fontFamily: 'sans-serif' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--ink)', margin: 0 }}>
               Minha Lista de Comidas
             </h2>
             <button
@@ -179,7 +179,7 @@ export default function AlimentacaoPage() {
           )}
 
           {foodItems.length === 0 && !showFoodForm ? (
-            <div style={{ textAlign: 'center', padding: '24px', color: 'var(--ink-muted)', fontSize: '14px', fontFamily: 'sans-serif' }}>
+            <div style={{ textAlign: 'center', padding: '24px', color: 'var(--ink-muted)', fontSize: '14px' }}>
               Nenhum item adicionado. Adicione comidas para experimentar nos parques ou itens para comprar.
             </div>
           ) : (
@@ -189,18 +189,18 @@ export default function AlimentacaoPage() {
                 if (catItems.length === 0) return null;
                 return (
                   <div key={catKey}>
-                    <h3 style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-subtle)', margin: '0 0 8px', fontFamily: 'sans-serif' }}>
+                    <h3 style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-subtle)', margin: '0 0 8px' }}>
                       {catLabel}
                     </h3>
                     {catItems.map((item) => (
                       <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '8px', background: item.checked ? '#f0fdf4' : 'transparent' }}>
                         <input type="checkbox" checked={item.checked} onChange={() => toggleFoodItem(item.id)} style={{ width: '18px', height: '18px', accentColor: 'var(--green)', cursor: 'pointer', flexShrink: 0 }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <span style={{ fontSize: '14px', color: item.checked ? 'var(--ink-subtle)' : 'var(--ink)', textDecoration: item.checked ? 'line-through' : 'none', fontFamily: 'sans-serif' }}>
+                          <span style={{ fontSize: '14px', color: item.checked ? 'var(--ink-subtle)' : 'var(--ink)', textDecoration: item.checked ? 'line-through' : 'none' }}>
                             {item.name}
                           </span>
                           {item.notes && (
-                            <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginTop: '2px' }}>
+                            <div style={{ fontSize: '12px', color: 'var(--ink-subtle)', marginTop: '2px' }}>
                               {item.notes}
                             </div>
                           )}
@@ -219,11 +219,11 @@ export default function AlimentacaoPage() {
 
         {/* === SUGGESTED RESTAURANTS (read-only) === */}
         <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 20px', fontFamily: 'sans-serif' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 20px' }}>
             Restaurantes Recomendados
           </h2>
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'sans-serif' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border)' }}>
                   <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)' }}>Restaurante</th>
@@ -250,7 +250,7 @@ export default function AlimentacaoPage() {
 
         {/* Supermercados */}
         <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 20px', fontFamily: 'sans-serif' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 20px' }}>
             Supermercados em Orlando
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -258,8 +258,8 @@ export default function AlimentacaoPage() {
               <div key={idx} style={{ padding: '16px 20px', border: '1px solid var(--border)', borderRadius: '10px', display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
                 <span style={{ fontSize: '24px', flexShrink: 0 }}>🛒</span>
                 <div>
-                  <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--ink)', fontFamily: 'sans-serif' }}>{s.name}</div>
-                  <div style={{ fontSize: '13px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', marginTop: '4px', lineHeight: 1.5 }}>{s.description}</div>
+                  <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--ink)' }}>{s.name}</div>
+                  <div style={{ fontSize: '13px', color: 'var(--ink-muted)', marginTop: '4px', lineHeight: 1.5 }}>{s.description}</div>
                 </div>
               </div>
             ))}
@@ -268,14 +268,14 @@ export default function AlimentacaoPage() {
 
         {/* Dicas */}
         <div className="card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 20px', fontFamily: 'sans-serif' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--ink)', margin: '0 0 20px' }}>
             Dicas de Alimentacao nos Parques
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {FOOD_TIPS.map((tip, idx) => (
               <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '12px 16px', background: '#fefce8', borderRadius: '10px', border: '1px solid #fef08a' }}>
                 <span style={{ fontSize: '16px', flexShrink: 0 }}>💡</span>
-                <span style={{ fontSize: '14px', color: 'var(--ink)', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{tip}</span>
+                <span style={{ fontSize: '14px', color: 'var(--ink)', lineHeight: 1.5 }}>{tip}</span>
               </div>
             ))}
           </div>

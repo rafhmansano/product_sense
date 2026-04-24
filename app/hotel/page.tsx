@@ -109,7 +109,6 @@ function AttachmentsSection({
             background: 'transparent',
             color: 'var(--ocean)',
             cursor: 'pointer',
-            fontFamily: 'sans-serif',
           }}
         >
           {uploading ? 'Carregando...' : '+ Adicionar'}
@@ -125,11 +124,11 @@ function AttachmentsSection({
       </div>
 
       {error && (
-        <p style={{ fontSize: '12px', color: '#dc2626', margin: '0 0 8px', fontFamily: 'sans-serif' }}>{error}</p>
+        <p style={{ fontSize: '12px', color: '#dc2626', margin: '0 0 8px' }}>{error}</p>
       )}
 
       {attachments.length === 0 ? (
-        <p style={{ fontSize: '13px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', margin: 0 }}>
+        <p style={{ fontSize: '13px', color: 'var(--ink-subtle)', margin: 0 }}>
           Nenhum documento anexado. Adicione confirmações de reserva, vouchers ou fotos.
         </p>
       ) : (
@@ -166,10 +165,10 @@ function AttachmentsSection({
                 </a>
               )}
               <div style={{ padding: '6px 8px' }}>
-                <div style={{ fontSize: '11px', fontFamily: 'sans-serif', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <div style={{ fontSize: '11px', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {att.name}
                 </div>
-                <div style={{ fontSize: '10px', color: 'var(--ink-subtle)', fontFamily: 'sans-serif' }}>
+                <div style={{ fontSize: '10px', color: 'var(--ink-subtle)' }}>
                   {formatSize(att.size)}
                 </div>
               </div>
@@ -191,7 +190,6 @@ function AttachmentsSection({
                   alignItems: 'center',
                   justifyContent: 'center',
                   lineHeight: 1,
-                  fontFamily: 'sans-serif',
                 }}
               >
                 ×
@@ -512,7 +510,7 @@ export default function HotelPage() {
             <div>
               <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'var(--ocean)', margin: 0 }}>Hotel</h1>
               {hotels.length > 0 && (
-                <p style={{ fontSize: '13px', color: 'var(--ink-muted)', margin: '2px 0 0', fontFamily: 'sans-serif' }}>
+                <p style={{ fontSize: '13px', color: 'var(--ink-muted)', margin: '2px 0 0' }}>
                   {hotels.length} {hotels.length === 1 ? 'hospedagem cadastrada' : 'hospedagens cadastradas'}
                 </p>
               )}

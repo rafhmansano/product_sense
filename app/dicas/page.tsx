@@ -38,7 +38,6 @@ export default function DicasPage() {
               fontSize: '16px',
               color: 'var(--ink-muted)',
               marginTop: '12px',
-              fontFamily: 'sans-serif',
               maxWidth: '600px',
               lineHeight: 1.6,
             }}
@@ -90,7 +89,6 @@ export default function DicasPage() {
                       fontSize: '18px',
                       fontWeight: '600',
                       color: 'var(--navy)',
-                      fontFamily: 'sans-serif',
                     }}
                   >
                     {category.category}
@@ -99,7 +97,6 @@ export default function DicasPage() {
                     style={{
                       fontSize: '12px',
                       color: 'var(--ink-subtle)',
-                      fontFamily: 'sans-serif',
                       marginRight: '8px',
                     }}
                   >
@@ -155,7 +152,6 @@ export default function DicasPage() {
                           style={{
                             fontSize: '14px',
                             color: 'var(--ink)',
-                            fontFamily: 'sans-serif',
                             lineHeight: 1.6,
                           }}
                         >

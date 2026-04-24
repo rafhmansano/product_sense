@@ -15,7 +15,7 @@ export default function ListasPage() {
           <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em', color: 'var(--ink)', margin: 0, lineHeight: 1.15, display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ fontSize: '32px' }}>🛒</span> Listas de Compras
           </h1>
-          <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '10px', fontFamily: 'sans-serif', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '15px', color: 'var(--ink-muted)', marginTop: '10px', lineHeight: 1.6 }}>
             Itens de farmacia e mercado para comprar em Orlando.
           </p>
         </div>
@@ -34,7 +34,6 @@ export default function ListasPage() {
               fontWeight: tab === 'farmacia' ? '600' : '400',
               fontSize: '14px',
               cursor: 'pointer',
-              fontFamily: 'sans-serif',
               boxShadow: tab === 'farmacia' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
               transition: 'all 0.2s',
             }}
@@ -53,7 +52,6 @@ export default function ListasPage() {
               fontWeight: tab === 'mercado' ? '600' : '400',
               fontSize: '14px',
               cursor: 'pointer',
-              fontFamily: 'sans-serif',
               boxShadow: tab === 'mercado' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
               transition: 'all 0.2s',
             }}

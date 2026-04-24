@@ -32,7 +32,6 @@ function StatusBadge({ status, onClick }: { status: TripDocument['status']; onCl
         color: config.color,
         fontSize: '12px',
         fontWeight: '600',
-        fontFamily: 'sans-serif',
         border: 'none',
         cursor: 'pointer',
         transition: 'opacity 0.15s',
@@ -110,7 +109,6 @@ export default function DocumentosPage() {
               fontSize: '16px',
               color: 'var(--ink-muted)',
               marginTop: '12px',
-              fontFamily: 'sans-serif',
               maxWidth: '600px',
               lineHeight: 1.6,
             }}
@@ -131,10 +129,10 @@ export default function DocumentosPage() {
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--navy)', fontFamily: 'sans-serif' }}>
+            <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--navy)' }}>
               Progresso Geral
             </span>
-            <span style={{ fontSize: '14px', fontWeight: '600', color: progressPercent === 100 ? '#16a34a' : 'var(--navy)', fontFamily: 'sans-serif' }}>
+            <span style={{ fontSize: '14px', fontWeight: '600', color: progressPercent === 100 ? '#16a34a' : 'var(--navy)' }}>
               {concluidos}/{total} ({progressPercent}%)
             </span>
           </div>
@@ -165,7 +163,7 @@ export default function DocumentosPage() {
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--navy)', margin: 0, fontFamily: 'sans-serif' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--navy)', margin: 0 }}>
               Lista de Documentos
             </h2>
             <button
@@ -179,7 +177,6 @@ export default function DocumentosPage() {
                 borderRadius: '8px',
                 fontSize: '13px',
                 fontWeight: '600',
-                fontFamily: 'sans-serif',
                 cursor: 'pointer',
                 transition: 'opacity 0.15s',
               }}
@@ -204,7 +201,7 @@ export default function DocumentosPage() {
               }}
             >
               <div>
-                <label className="label" style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                <label className="label" style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-subtle)', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   Nome do Documento
                 </label>
                 <input
@@ -219,14 +216,13 @@ export default function DocumentosPage() {
                     border: '1px solid var(--border)',
                     borderRadius: '8px',
                     fontSize: '14px',
-                    fontFamily: 'sans-serif',
                     outline: 'none',
                     boxSizing: 'border-box',
                   }}
                 />
               </div>
               <div>
-                <label className="label" style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                <label className="label" style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-subtle)', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   Responsável
                 </label>
                 <input
@@ -241,14 +237,13 @@ export default function DocumentosPage() {
                     border: '1px solid var(--border)',
                     borderRadius: '8px',
                     fontSize: '14px',
-                    fontFamily: 'sans-serif',
                     outline: 'none',
                     boxSizing: 'border-box',
                   }}
                 />
               </div>
               <div>
-                <label className="label" style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-subtle)', fontFamily: 'sans-serif', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                <label className="label" style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'var(--ink-subtle)', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   Observações
                 </label>
                 <input
@@ -263,7 +258,6 @@ export default function DocumentosPage() {
                     border: '1px solid var(--border)',
                     borderRadius: '8px',
                     fontSize: '14px',
-                    fontFamily: 'sans-serif',
                     outline: 'none',
                     boxSizing: 'border-box',
                   }}
@@ -281,7 +275,6 @@ export default function DocumentosPage() {
                   borderRadius: '8px',
                   fontSize: '14px',
                   fontWeight: '600',
-                  fontFamily: 'sans-serif',
                   cursor: 'pointer',
                   transition: 'opacity 0.15s',
                 }}
@@ -312,14 +305,13 @@ export default function DocumentosPage() {
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '15px', fontWeight: '500', color: 'var(--navy)', fontFamily: 'sans-serif' }}>
+                    <span style={{ fontSize: '15px', fontWeight: '500', color: 'var(--navy)' }}>
                       {doc.name}
                     </span>
                     <span
                       style={{
                         fontSize: '11px',
                         color: 'var(--ink-subtle)',
-                        fontFamily: 'sans-serif',
                         padding: '2px 8px',
                         background: '#f1f5f9',
                         borderRadius: '4px',
@@ -329,7 +321,7 @@ export default function DocumentosPage() {
                     </span>
                   </div>
                   {doc.notes && (
-                    <div style={{ fontSize: '12px', color: 'var(--ink-muted)', fontFamily: 'sans-serif', marginTop: '4px', lineHeight: 1.5 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--ink-muted)', marginTop: '4px', lineHeight: 1.5 }}>
                       {doc.notes}
                     </div>
                   )}
@@ -348,7 +340,6 @@ export default function DocumentosPage() {
                     border: '1px solid #fecaca',
                     borderRadius: '6px',
                     fontSize: '12px',
-                    fontFamily: 'sans-serif',
                     cursor: 'pointer',
                     transition: 'all 0.15s',
                     flexShrink: 0,
@@ -370,7 +361,7 @@ export default function DocumentosPage() {
             {documents.length === 0 && (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
                 <div style={{ fontSize: '32px', marginBottom: '12px', opacity: 0.3 }}>📋</div>
-                <p style={{ color: 'var(--ink-muted)', fontSize: '14px', fontFamily: 'sans-serif', margin: 0 }}>
+                <p style={{ color: 'var(--ink-muted)', fontSize: '14px', margin: 0 }}>
                   Nenhum documento adicionado ainda.
                 </p>
               </div>
