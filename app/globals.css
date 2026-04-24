@@ -332,27 +332,16 @@ h3 {
   margin: 0 0 16px;
 }
 
-/* ─── Sidebar layout ─────────────────────────────────── */
-.desktop-sidebar { display: flex; flex-direction: column; }
-.mobile-header, .mobile-drawer, .mobile-drawer-backdrop { display: none; }
-.main-content { margin-left: 240px; }
+/* ─── Top nav layout ─────────────────────────────────── */
+.main-content { /* no margin needed — nav is fixed top, AppShell adds paddingTop: 44px */ }
 
 /* ─── Mobile ─────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .desktop-sidebar  { display: none !important; }
-  .mobile-header    { display: flex !important; }
-  .mobile-drawer, .mobile-drawer-backdrop { display: flex !important; }
-  .main-content {
-    margin-left: 0 !important;
-    padding-top: 56px !important;
-    padding-bottom: 32px !important;
-  }
+@media (max-width: 800px) {
+  .main-content > div { padding: 24px 20px !important; }
   .page-container { padding: 24px 20px !important; }
-  .dashboard-content, .main-content > div { padding: 24px 20px !important; }
   .dashboard-two-col { grid-template-columns: 1fr !important; }
   .quick-cards-grid  { grid-template-columns: repeat(2, 1fr) !important; }
   .card { padding: 18px 20px !important; border-radius: var(--radius-md) !important; }
   div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
   h1 { font-size: 28px !important; letter-spacing: -0.02em !important; }
-  .page-header h1 { font-size: 28px !important; }
 }
