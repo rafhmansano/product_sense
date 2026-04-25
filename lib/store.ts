@@ -96,6 +96,7 @@ interface AppState extends TripData {
   toggleChecklistItem: (list: 'suitcaseItems' | 'backpackItems' | 'pharmacyItems' | 'groceryItems', id: string) => void;
   addChecklistItem: (list: 'suitcaseItems' | 'backpackItems' | 'pharmacyItems' | 'groceryItems', item: ChecklistItem) => void;
   deleteChecklistItem: (list: 'suitcaseItems' | 'backpackItems' | 'pharmacyItems' | 'groceryItems', id: string) => void;
+  bulkAddSuitcaseItems: (items: ChecklistItem[]) => void;
 
   // Custom Restaurants
   addRestaurant: (r: CustomRestaurant) => void;
@@ -379,6 +380,8 @@ export const useAppStore = create<AppState>()(
         set((state) => ({
           [list]: state[list].filter((item: ChecklistItem) => item.id !== id),
         })),
+      bulkAddSuitcaseItems: (items) =>
+        set((state) => ({ suitcaseItems: [...state.suitcaseItems, ...items] })),
 
       // Custom Restaurants
       addRestaurant: (r) =>

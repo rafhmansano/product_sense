@@ -3,7 +3,13 @@
 import { useState } from 'react';
 import AppShell from '@/components/AppShell';
 import { useAppStore } from '@/lib/store';
-import type { ChecklistItem } from '@/types';
+import type { ChecklistItem, FamilyMember } from '@/types';
+
+function isEligibleForReplication(m: FamilyMember): boolean {
+  if (m.role === 'pai' || m.role === 'mae') return true;
+  if ((m.role === 'crianca' || m.role === 'adolescente') && m.age !== undefined && m.age > 7) return true;
+  return false;
+}
 
 export default function MalaPage() {
   const trip = useAppStore((s) => s.trip);
@@ -11,6 +17,7 @@ export default function MalaPage() {
   const toggleChecklistItem = useAppStore((s) => s.toggleChecklistItem);
   const addChecklistItem = useAppStore((s) => s.addChecklistItem);
   const deleteChecklistItem = useAppStore((s) => s.deleteChecklistItem);
+  const bulkAddSuitcaseItems = useAppStore((s) => s.bulkAddSuitcaseItems);
 
   const members = trip.members ?? [];
   const hasPassengers = members.length > 0;
@@ -19,6 +26,29 @@ export default function MalaPage() {
   const [newItem, setNewItem] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [replicateDone, setReplicateDone] = useState(false);
+
+  const generalItems = suitcaseItems.filter((i) => !i.passenger);
+
+  // Members who qualify for replication and don't already have items
+  const eligibleMembers = members.filter(
+    (m) => isEligibleForReplication(m) && !suitcaseItems.some((i) => i.passenger === m.name)
+  );
+
+  function handleReplicate() {
+    if (eligibleMembers.length === 0 || generalItems.length === 0) return;
+    const ts = Date.now();
+    const newItems: ChecklistItem[] = eligibleMembers.flatMap((m, mi) =>
+      generalItems.map((item, ii) => ({
+        ...item,
+        id: `suit-rep-${ts}-${mi}-${ii}`,
+        checked: false,
+        passenger: m.name,
+      }))
+    );
+    bulkAddSuitcaseItems(newItems);
+    setReplicateDone(true);
+  }
 
   const currentItems = activePassenger === 'geral'
     ? suitcaseItems.filter((i) => !i.passenger)
@@ -208,6 +238,50 @@ export default function MalaPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Replicate banner — shown on Geral tab when eligible members exist */}
+        {hasPassengers && activePassenger === 'geral' && generalItems.length > 0 && (
+          eligibleMembers.length > 0 && !replicateDone ? (
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              gap: '12px', padding: '14px 18px', marginBottom: '20px',
+              background: 'var(--blue-xlight)', borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--blue-light)', flexWrap: 'wrap',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '20px' }}>📋</span>
+                <div>
+                  <p style={{ margin: 0, fontSize: '14px', fontWeight: '600', color: 'var(--ink)' }}>
+                    Replicar lista para passageiros
+                  </p>
+                  <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'var(--ink-muted)' }}>
+                    Copia os {generalItems.length} itens gerais para:{' '}
+                    <strong>{eligibleMembers.map((m) => m.name).join(', ')}</strong>
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={handleReplicate}
+                className="btn-primary"
+                style={{ flexShrink: 0 }}
+              >
+                Replicar lista
+              </button>
+            </div>
+          ) : replicateDone ? (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '10px',
+              padding: '12px 16px', marginBottom: '20px',
+              background: 'var(--green-light)', borderRadius: 'var(--radius-md)',
+              border: '1px solid rgba(52,199,89,0.25)',
+            }}>
+              <span style={{ fontSize: '18px' }}>✓</span>
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--green-dark)' }}>
+                Lista replicada com sucesso! Acesse cada passageiro para personalizar.
+              </p>
+            </div>
+          ) : null
         )}
 
         {/* No passengers hint */}
