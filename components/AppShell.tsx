@@ -4,16 +4,9 @@ import Navigation from './Navigation';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--alabaster)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--background)', overflowX: 'hidden' }}>
       <Navigation />
-      <main
-        style={{
-          marginLeft: '220px',
-          flex: 1,
-          minHeight: '100vh',
-          overflow: 'auto',
-        }}
-      >
+      <main className="main-content" style={{ paddingTop: '44px', minHeight: '100vh', overflowX: 'hidden' }}>
         {children}
       </main>
     </div>
