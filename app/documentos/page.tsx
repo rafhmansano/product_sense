@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AppShell from '@/components/AppShell';
 import { useAppStore } from '@/lib/store';
 import { FileAttachment, TripDocument } from '@/types';
@@ -17,11 +17,15 @@ const STATUS_CONFIG: Record<string, { label: string; bg: string; color: string; 
   'nao-iniciado': { label: 'Não Iniciado', bg: '#fee2e2', color: 'var(--red)', icon: '✗' },
 };
 
-function readFileAsDataUrl(file: File): Promise<string> {
+function readFileWithProgress(file: File, onProgress: (pct: number) => void): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
+    reader.onprogress = (e) => {
+      if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 90));
+    };
+    reader.onload = () => { onProgress(100); resolve(reader.result as string); };
     reader.onerror = reject;
+    onProgress(5);
     reader.readAsDataURL(file);
   });
 }
@@ -62,7 +66,19 @@ function AttachmentsSection({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
+  // Optimistic pending attachments shown immediately before store confirms
+  const [pending, setPending] = useState<FileAttachment[]>([]);
+
+  // Once the parent's attachments prop includes a pending item, remove it from pending
+  useEffect(() => {
+    if (pending.length > 0) {
+      setPending((prev) => prev.filter((p) => !attachments.some((a) => a.id === p.id)));
+    }
+  }, [attachments, pending.length]);
+
+  const allAttachments = [...attachments, ...pending];
 
   const handleFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -74,20 +90,24 @@ function AttachmentsSection({
         continue;
       }
       try {
-        const dataUrl = await readFileAsDataUrl(file);
-        onAdd({
+        const dataUrl = await readFileWithProgress(file, setProgress);
+        const att: FileAttachment = {
           id: `att_${Date.now()}_${Math.random().toString(36).slice(2)}`,
           name: file.name,
           type: file.type,
           size: file.size,
           dataUrl,
           addedAt: new Date().toISOString(),
-        });
+        };
+        // Show immediately in UI, then save to store
+        setPending((prev) => [...prev, att]);
+        onAdd(att);
       } catch {
         setError(`Erro ao carregar "${file.name}". Tente novamente.`);
       }
     }
     setUploading(false);
+    setProgress(0);
     if (inputRef.current) inputRef.current.value = '';
   };
 
@@ -95,7 +115,7 @@ function AttachmentsSection({
     <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--border)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
         <span style={{ fontSize: '11px', fontWeight: '600', color: 'var(--ink-subtle)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          📎 Anexos {attachments.length > 0 && `(${attachments.length})`}
+          📎 Anexos {allAttachments.length > 0 && `(${allAttachments.length})`}
         </span>
         <button
           onClick={() => inputRef.current?.click()}
@@ -107,9 +127,10 @@ function AttachmentsSection({
             background: 'transparent',
             color: 'var(--blue)',
             cursor: uploading ? 'wait' : 'pointer',
+            opacity: uploading ? 0.6 : 1,
             transition: 'all 0.15s',
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,113,227,0.06)'; }}
+          onMouseEnter={(e) => { if (!uploading) e.currentTarget.style.background = 'rgba(0,113,227,0.06)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
         >
           {uploading ? 'Carregando…' : '+ Adicionar'}
@@ -124,73 +145,93 @@ function AttachmentsSection({
         />
       </div>
 
+      {/* Progress bar */}
+      {uploading && (
+        <div style={{ height: '4px', background: 'var(--border)', borderRadius: '9999px', overflow: 'hidden', marginBottom: '8px' }}>
+          <div style={{
+            height: '100%',
+            width: `${Math.max(progress, 8)}%`,
+            background: 'linear-gradient(90deg, var(--blue), #4A90E2)',
+            borderRadius: '9999px',
+            transition: 'width 0.25s ease',
+          }} />
+        </div>
+      )}
+
       {error && (
         <p style={{ fontSize: '12px', color: 'var(--red)', margin: '0 0 8px' }}>{error}</p>
       )}
 
-      {attachments.length === 0 ? (
+      {allAttachments.length === 0 ? (
         <p style={{ fontSize: '12px', color: 'var(--ink-subtle)', margin: 0, fontStyle: 'italic' }}>
           Imagens, PDFs ou documentos escaneados
         </p>
       ) : (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          {attachments.map((att) => (
-            <div
-              key={att.id}
-              style={{
-                position: 'relative',
-                border: '1px solid var(--border)',
-                borderRadius: '10px',
-                overflow: 'hidden',
-                background: 'var(--background)',
-                width: '88px',
-                cursor: 'pointer',
-              }}
-              onClick={() => openAttachment(att)}
-              title={`${att.name} — clique para abrir`}
-            >
-              {att.type.startsWith('image/') ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={att.dataUrl}
-                  alt={att.name}
-                  style={{ width: '100%', height: '56px', objectFit: 'cover', display: 'block' }}
-                />
-              ) : (
-                <div style={{
-                  height: '56px',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: '#f1f5f9',
-                  fontSize: '26px',
-                }}>
-                  {att.type === 'application/pdf' ? '📄' : '📝'}
-                </div>
-              )}
-              <div style={{ padding: '4px 6px' }}>
-                <div style={{ fontSize: '10px', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {att.name}
-                </div>
-                <div style={{ fontSize: '10px', color: 'var(--ink-subtle)' }}>{formatSize(att.size)}</div>
-              </div>
-              <button
-                onClick={(e) => { e.stopPropagation(); onRemove(att.id); }}
+          {allAttachments.map((att) => {
+            const isPending = pending.some((p) => p.id === att.id);
+            return (
+              <div
+                key={att.id}
                 style={{
-                  position: 'absolute', top: '3px', right: '3px',
-                  width: '18px', height: '18px',
-                  borderRadius: '50%',
-                  background: 'rgba(0,0,0,0.5)',
-                  border: 'none',
-                  color: 'white', fontSize: '11px',
-                  cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  lineHeight: 1,
+                  position: 'relative',
+                  border: `1px solid ${isPending ? 'var(--blue)' : 'var(--border)'}`,
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  background: isPending ? 'rgba(0,113,227,0.04)' : 'var(--background)',
+                  width: '88px',
+                  cursor: isPending ? 'default' : 'pointer',
+                  opacity: isPending ? 0.75 : 1,
+                  transition: 'opacity 0.3s',
                 }}
-                title="Remover anexo"
+                onClick={() => !isPending && openAttachment(att)}
+                title={isPending ? 'Salvando…' : `${att.name} — clique para abrir`}
               >
-                ×
-              </button>
-            </div>
-          ))}
+                {att.type.startsWith('image/') ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={att.dataUrl}
+                    alt={att.name}
+                    style={{ width: '100%', height: '56px', objectFit: 'cover', display: 'block' }}
+                  />
+                ) : (
+                  <div style={{
+                    height: '56px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: isPending ? 'rgba(0,113,227,0.08)' : '#f1f5f9',
+                    fontSize: '26px',
+                  }}>
+                    {att.type === 'application/pdf' ? '📄' : '📝'}
+                  </div>
+                )}
+                <div style={{ padding: '4px 6px' }}>
+                  <div style={{ fontSize: '10px', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {isPending ? 'Salvando…' : att.name}
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'var(--ink-subtle)' }}>{formatSize(att.size)}</div>
+                </div>
+                {!isPending && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onRemove(att.id); }}
+                    style={{
+                      position: 'absolute', top: '3px', right: '3px',
+                      width: '18px', height: '18px',
+                      borderRadius: '50%',
+                      background: 'rgba(0,0,0,0.5)',
+                      border: 'none',
+                      color: 'white', fontSize: '11px',
+                      cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      lineHeight: 1,
+                    }}
+                    title="Remover anexo"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

@@ -301,23 +301,24 @@ export interface RestaurantInfo {
   location: string;
   highlight: string;
   kidFriendly: boolean;
+  mapsUrl?: string;
 }
 
 export const RESTAURANTS: RestaurantInfo[] = [
-  { name: 'The Boathouse', location: 'Disney Springs', highlight: 'Frutos do mar premium. Tour de barcos anfíbios. Bom para famílias com crianças maiores e adolescentes.', kidFriendly: true },
-  { name: 'T-Rex Cafe', location: 'Disney Springs', highlight: 'Temático com dinossauros e animatrônicos. Crianças de todas as idades adoram! Barulhento.', kidFriendly: true },
-  { name: 'Rainforest Cafe', location: 'Disney Springs / Animal Kingdom', highlight: 'Animatrônicos de animais. Divertido para crianças. Menu kids disponível.', kidFriendly: true },
-  { name: 'Voodoo Doughnut', location: 'Universal CityWalk', highlight: 'Donuts temáticos gigantes - sobremesa imperdível para toda família.', kidFriendly: true },
-  { name: 'Shake Shack', location: 'I-Drive / Disney Springs', highlight: 'Hambúrgueres e shakes de qualidade. Menu kids disponível.', kidFriendly: true },
-  { name: 'Olive Garden', location: 'Várias localizações', highlight: 'Italiano acessível com breadsticks ilimitados. Ótimo para famílias grandes e crianças seletivas.', kidFriendly: true },
-  { name: 'Chick-fil-A', location: 'Várias localizações', highlight: 'Fast food premium - nuggets e sanduíches de frango. Playground em algumas unidades.', kidFriendly: true },
-  { name: 'Culver\'s', location: 'Várias localizações', highlight: 'ButterBurgers e frozen custard. Menu kids variado.', kidFriendly: true },
-  { name: 'Be Our Guest', location: 'Magic Kingdom', highlight: 'Jantar no castelo da Bela! Reservar com 60 dias. Experiência mágica para crianças.', kidFriendly: true },
-  { name: 'Cinderella\'s Royal Table', location: 'Magic Kingdom', highlight: 'Jantar dentro do Castelo da Cinderela com princesas. Reservar com antecedência!', kidFriendly: true },
-  { name: 'Three Broomsticks', location: 'Universal IoA - Hogsmeade', highlight: 'Comida britânica no mundo de Harry Potter. Butterbeer! Ambiente imersivo para fãs.', kidFriendly: true },
-  { name: 'Boma - Flavors of Africa', location: 'Animal Kingdom Lodge', highlight: 'Buffet africano com variedade enorme. Ótimo para famílias grandes e crianças seletivas.', kidFriendly: true },
-  { name: 'Bubba Gump Shrimp Co.', location: 'I-Drive / CityWalk', highlight: 'Temático Forrest Gump. Frutos do mar e menu kids divertido. Adolescentes curtem!', kidFriendly: true },
-  { name: 'Texas de Brazil', location: 'I-Drive', highlight: 'Churrascaria rodízio estilo brasileiro. Salad bar extenso. Ótimo para famílias que sentem saudade de casa!', kidFriendly: true },
+  { name: 'The Boathouse', location: 'Disney Springs', highlight: 'Frutos do mar premium. Tour de barcos anfíbios. Bom para famílias com crianças maiores e adolescentes.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=The+Boathouse+Disney+Springs+Orlando+FL' },
+  { name: 'T-Rex Cafe', location: 'Disney Springs', highlight: 'Temático com dinossauros e animatrônicos. Crianças de todas as idades adoram! Barulhento.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=T-Rex+Cafe+Disney+Springs+Orlando+FL' },
+  { name: 'Rainforest Cafe', location: 'Disney Springs / Animal Kingdom', highlight: 'Animatrônicos de animais. Divertido para crianças. Menu kids disponível.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Rainforest+Cafe+Disney+Springs+Orlando+FL' },
+  { name: 'Voodoo Doughnut', location: 'Universal CityWalk', highlight: 'Donuts temáticos gigantes - sobremesa imperdível para toda família.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Voodoo+Doughnut+Universal+CityWalk+Orlando+FL' },
+  { name: 'Shake Shack', location: 'I-Drive / Disney Springs', highlight: 'Hambúrgueres e shakes de qualidade. Menu kids disponível.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Shake+Shack+International+Drive+Orlando+FL' },
+  { name: 'Olive Garden', location: 'Várias localizações', highlight: 'Italiano acessível com breadsticks ilimitados. Ótimo para famílias grandes e crianças seletivas.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Olive+Garden+Orlando+FL' },
+  { name: 'Chick-fil-A', location: 'Várias localizações', highlight: 'Fast food premium - nuggets e sanduíches de frango. Playground em algumas unidades.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Chick-fil-A+Orlando+FL' },
+  { name: 'Culver\'s', location: 'Várias localizações', highlight: 'ButterBurgers e frozen custard. Menu kids variado.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Culvers+Orlando+FL' },
+  { name: 'Be Our Guest', location: 'Magic Kingdom', highlight: 'Jantar no castelo da Bela! Reservar com 60 dias. Experiência mágica para crianças.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Be+Our+Guest+Restaurant+Magic+Kingdom+Walt+Disney+World+FL' },
+  { name: 'Cinderella\'s Royal Table', location: 'Magic Kingdom', highlight: 'Jantar dentro do Castelo da Cinderela com princesas. Reservar com antecedência!', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Cinderella+Royal+Table+Magic+Kingdom+Walt+Disney+World+FL' },
+  { name: 'Three Broomsticks', location: 'Universal IoA - Hogsmeade', highlight: 'Comida britânica no mundo de Harry Potter. Butterbeer! Ambiente imersivo para fãs.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Three+Broomsticks+Universal+Islands+of+Adventure+Orlando+FL' },
+  { name: 'Boma - Flavors of Africa', location: 'Animal Kingdom Lodge', highlight: 'Buffet africano com variedade enorme. Ótimo para famílias grandes e crianças seletivas.', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Boma+Flavors+of+Africa+Animal+Kingdom+Lodge+Orlando+FL' },
+  { name: 'Bubba Gump Shrimp Co.', location: 'I-Drive / CityWalk', highlight: 'Temático Forrest Gump. Frutos do mar e menu kids divertido. Adolescentes curtem!', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Bubba+Gump+Shrimp+Company+International+Drive+Orlando+FL' },
+  { name: 'Texas de Brazil', location: 'I-Drive', highlight: 'Churrascaria rodízio estilo brasileiro. Salad bar extenso. Ótimo para famílias que sentem saudade de casa!', kidFriendly: true, mapsUrl: 'https://maps.google.com/?q=Texas+de+Brazil+International+Drive+Orlando+FL' },
 ];
 
 export interface SupermarketInfo {

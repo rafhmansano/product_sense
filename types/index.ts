@@ -276,6 +276,7 @@ export interface ChecklistItem {
   name: string;
   checked: boolean;
   category: string;
+  passenger?: string;
 }
 
 // === CUSTOM RESTAURANTS ===

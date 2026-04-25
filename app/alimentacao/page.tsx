@@ -230,6 +230,7 @@ export default function AlimentacaoPage() {
                   <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)' }}>Localizacao</th>
                   <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)' }}>Destaque</th>
                   <th style={{ textAlign: 'center', padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)' }}>Kids</th>
+                  <th style={{ textAlign: 'center', padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-subtle)' }}>Mapa</th>
                 </tr>
               </thead>
               <tbody>
@@ -240,6 +241,18 @@ export default function AlimentacaoPage() {
                     <td style={{ padding: '12px', fontSize: '13px', color: 'var(--ink)' }}>{r.highlight}</td>
                     <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px' }}>
                       {r.kidFriendly ? <span style={{ color: '#16a34a' }}>&#10003;</span> : <span style={{ color: 'var(--red)' }}>&#10007;</span>}
+                    </td>
+                    <td style={{ padding: '12px', textAlign: 'center' }}>
+                      {r.mapsUrl && (
+                        <a
+                          href={r.mapsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: 'var(--blue)', textDecoration: 'none', fontSize: '13px', fontWeight: '500', whiteSpace: 'nowrap' }}
+                        >
+                          🗺️ Ver
+                        </a>
+                      )}
                     </td>
                   </tr>
                 ))}
